@@ -1,0 +1,20 @@
+{{- if .Values.namespaces }}
+{{- range $index, $ns := .Values.namespaces }}
+{{- if ne $index 0 }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openshift.io/description: ""
+    openshift.io/display-name: ""
+  labels:
+    kubernetes.io/metadata.name: {{ $ns }}
+    openshift.io/cluster-monitoring: "true"
+  name: {{ $ns }}
+spec:
+  finalizers:
+  - kubernetes
+{{- end }}
+{{- end }}
+{{- end }}

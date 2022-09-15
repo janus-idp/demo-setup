@@ -1,0 +1,37 @@
+{{- if and (.Values.namespaces) (.Values.teamInstancesAreClusterScoped) }}
+{{- $rules := .Values.clusterRoleRulesServer }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: argocd-server
+    app.kubernetes.io/name: {{ .Values.namespaces | first }}-gitops-argocd-server
+    app.kubernetes.io/part-of: {{ .Values.namespaces | first }}
+  name: {{ .Values.namespaces | first }}-gitops-argocd-server
+{{- if $rules }}
+{{- toYaml $rules | nindent 0 }}
+{{- else }}
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - delete  # supports deletion a live object in UI
+  - get     # supports viewing live object manifest in UI
+  - patch   # supports `argocd app patch`
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - list    # supports listing events in UI
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/log
+  verbs:
+  - get     # supports viewing pod logs from UI
+{{- end }}
+{{- end }}

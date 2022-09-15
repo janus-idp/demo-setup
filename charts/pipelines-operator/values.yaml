@@ -1,0 +1,20 @@
+---
+# name of instances
+name: openshift-pipelines
+
+# this will create RBAC for each openshift when created (set to true)
+# if this is false each namespace will need to configure role bindings
+# Currently for MVP this is not an option to disable cluster wide RBAC for pipelnes. This could be a future enhancement.
+#createRbacResources: true
+
+# operator manages upgrades
+operator:
+  channel: latest
+  installPlanApproval: Automatic
+  name: openshift-pipelines-operator-rh
+  sourceName: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: openshift-pipelines-operator-rh.v1.8.0
+
+# When not using helm set this to true
+ignoreHelmHooks: false

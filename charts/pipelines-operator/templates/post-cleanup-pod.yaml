@@ -1,0 +1,55 @@
+{{- if not .Values.ignoreHelmHooks }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: csv-cleanup
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "-1"
+rules:
+- apiGroups:
+  - operators.coreos.com
+  resources:
+  - 'clusterserviceversions'
+  verbs:
+  - get
+  - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: csv-cleanup-rolebinding
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "-1"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: csv-cleanup
+subjects:
+- kind: ServiceAccount
+  name: default
+  #namespace: {{ .Release.Namespace  }}
+  namespace: assemble
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pipeline-cleanup 
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  containers:
+  - name: crd-check 
+    image: quay.io/openshift/origin-cli:latest
+    imagePullPolicy: IfNotPresent
+    command: ['sh', '-c', 'oc delete csv {{ .Values.operator.startingCSV }} -n openshift-operators;']
+  restartPolicy: Never
+  terminationGracePeriodSeconds: 0
+  serviceAccount: default
+  serviceAccountName: default
+{{- end }}

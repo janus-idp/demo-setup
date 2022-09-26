@@ -7,7 +7,10 @@ ignoreHelmHooks: false
 
 # add to this list to deploy team instances to these namespaces
 namespaces:
-- assemble-argocd
+- ${{values.application_id}}
+
+#Git organization
+owner: ${{values.owner}}
 
 # operator manages upgrades
 operator:

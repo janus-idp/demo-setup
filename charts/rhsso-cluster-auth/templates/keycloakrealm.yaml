@@ -1,0 +1,16 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakRealm
+metadata:
+  labels:
+    {{- include "rhsso-cluster-auth.labels" . | nindent 4 }}
+  name: {{ .Values.keycloak.realm.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  realm:
+    id: {{ .Values.keycloak.realm.name }}
+    realm: {{ .Values.keycloak.realm.name }}
+    enabled: {{ .Values.keycloak.realm.enabled }}
+    displayName: {{ .Values.keycloak.realm.displayName }}
+  instanceSelector:
+    matchLabels:
+      {{- include "rhsso-cluster-auth.selectorLabels" . | nindent 6 }}

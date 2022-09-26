@@ -1,0 +1,22 @@
+keycloak:
+  instances: 1
+  hostname: ""
+  routeName: ""
+  realm:
+    name: openshift
+    enabled: true
+    displayName: Openshift Authentication Realm
+  client:
+    name: openshift
+    secretName: openshift-client
+openshift:
+  base_domain: ""
+  idp:
+    name: RHSSO
+    ca:
+      sync: false
+      secret: ""
+      namespace: openshift-ingress
+      key: ""
+patches:
+  apply: true

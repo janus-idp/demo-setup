@@ -11,6 +11,15 @@ spec:
     realm: {{ .Values.keycloak.realm.name }}
     enabled: {{ .Values.keycloak.realm.enabled }}
     displayName: {{ .Values.keycloak.realm.displayName }}
+{{- if .Values.keycloak.realm.identityProvider.enabled }}
+    identityProviders:
+      - alias: github
+        config:
+          clientId: {{ required "GitHub Identity Provider Client ID Must be Provided" .Values.keycloak.realm.identityProvider.clientId }}
+          clientSecret: {{ required "GitHub Identity Provider Client Secret Must be Provided" .Values.keycloak.realm.identityProvider.clientSecret }}
+          syncMode: IMPORT
+        providerId: github
+{{- end }}
   instanceSelector:
     matchLabels:
       {{- include "rhsso-cluster-auth.selectorLabels" . | nindent 6 }}

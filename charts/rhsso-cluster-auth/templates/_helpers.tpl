@@ -65,13 +65,6 @@ Create the name of the service account to use
 {{/*
 Create the Redirect URI for OpenShift Authentication 
 */}}
-{{- define "rhsso-cluster-auth.redirecturi" -}}
-{{- printf "https://oauth-openshift.apps.%s" (required "Base domain must be provided" .Values.openshift.base_domain) }}/oauth2callback/{{ .Values.openshift.idp.name }}
-{{- end }}
-
-{{/*
-Create the Redirect URI for OpenShift Authentication 
-*/}}
 {{- define "rhsso-cluster-auth.clientSecretName" -}}
 {{ printf "keycloak-client-secret-%s" .Values.keycloak.client.name }}
 {{- end }}

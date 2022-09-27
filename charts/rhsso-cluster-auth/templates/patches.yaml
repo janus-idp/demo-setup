@@ -8,6 +8,37 @@ spec:
   serviceAccountRef:
     name: default
   patches:
+    update-keycloak-client-redirecturi:
+      targetObjectRef:
+        apiVersion: keycloak.org/v1alpha1
+        kind: KeycloakClient
+        name: {{ .Values.keycloak.client.name }}
+        namespace: {{ .Release.Namespace }} 
+      sourceObjectRefs:
+      - apiVersion: config.openshift.io/v1
+        kind: DNS
+        name: cluster
+      patchTemplate: |
+        spec:
+          client:
+            redirectUris:
+            - {{ "{{" }} (printf "https://oauth-openshift.apps.%s/oauth2callback/{{ .Values.openshift.idp.name }}" (index . 1).spec.baseDomain) {{ "}}" }}
+      patchType: application/merge-patch+json
+    sync-keycloak-client-secret:
+      targetObjectRef:
+        apiVersion: v1
+        kind: Secret
+        name: {{ include "rhsso-cluster-auth.clientSecretName" . }}
+        namespace: openshift-config
+      sourceObjectRefs:
+      - apiVersion: v1
+        kind: Secret
+        name: {{ include "rhsso-cluster-auth.clientSecretName" . }}
+        namespace: {{ .Release.Namespace }}  
+      patchTemplate: |
+        data:
+          clientSecret: {{ "{{" }} (index . 1).data.CLIENT_SECRET {{ "}}" }}
+      patchType: application/merge-patch+json
     keycloak-ocp-oauth-provider:
       targetObjectRef:
         apiVersion: config.openshift.io/v1
@@ -34,20 +65,4 @@ spec:
         {{ "{{" }} (index . 0).spec.identityProviders | toYaml | indent 4 {{ "}}" }}
           {{ "{{-" }} end {{ "}}" }}            
       patchType: application/merge-patch+json
-    sync-keycloak-client-secret:
-      targetObjectRef:
-        apiVersion: v1
-        kind: Secret
-        name: {{ include "rhsso-cluster-auth.clientSecretName" . }}
-        namespace: openshift-config
-      sourceObjectRefs:
-      - apiVersion: v1
-        kind: Secret
-        name: {{ include "rhsso-cluster-auth.clientSecretName" . }}
-        namespace: {{ .Release.Namespace }}  
-      patchTemplate: |
-        data:
-          clientSecret: {{ "{{" }} (index . 1).data.CLIENT_SECRET {{ "}}" }}
-      patchType: application/merge-patch+json
-
 {{- end }}

@@ -6,11 +6,14 @@ keycloak:
     name: openshift
     enabled: true
     displayName: Openshift Authentication Realm
+    identityProvider:
+      enabled: true
+      clientId: ""
+      clientSecret: ""
   client:
     name: openshift
     secretName: openshift-client
 openshift:
-  base_domain: ""
   idp:
     name: RHSSO
     ca:

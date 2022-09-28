@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/halkyonio/assemble-platforms.git
+    repoURL: https://github.com/davgordo/assemble-platforms.git
     targetRevision: HEAD
     path: charts/assemble-backstage
     helm:

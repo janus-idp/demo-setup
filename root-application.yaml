@@ -6,8 +6,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/halkyonio/assemble-platforms.git
-    targetRevision: HEAD
+    repoURL: https://github.com/davgordo/assemble-platforms.git
+    targetRevision: bootstrap
     path: applications
     directory:
       include: "*.yaml"

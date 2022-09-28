@@ -17,6 +17,19 @@ spec:
     defaultClientScopes:
       - profile
       - email
-      - roles
     consentRequired: false
-  
+    protocolMappers:
+      - name: team-mapper
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-attribute-mapper
+        consentRequired: false
+        config:
+          userinfo.token.claim: "true"
+          multivalued: "true"
+          user.attribute: "teams"
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: "teams"
+          jsonType.label: "String"
+  roles:
+    - name: assemble

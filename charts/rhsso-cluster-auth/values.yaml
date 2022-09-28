@@ -2,6 +2,8 @@ keycloak:
   instances: 1
   hostname: ""
   routeName: ""
+  setup:
+    image: registry.redhat.io/openshift4/ose-tools-rhel8:v4.11
   realm:
     name: openshift
     enabled: true
@@ -23,3 +25,6 @@ openshift:
       key: ""
 patches:
   apply: true
+
+assemble:
+  group: assemble

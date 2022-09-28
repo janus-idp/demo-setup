@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: pipelines-operator
+  name: assemble-backstage
   namespace: assemble-argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io  
@@ -10,19 +10,51 @@ spec:
   source:
     repoURL: https://github.com/halkyonio/assemble-platforms.git
     targetRevision: HEAD
-    path: charts/pipelines-operator
+    path: charts/assemble-backstage
     helm:
       values: | 
-        operator:
-          channel: latest
-          installPlanApproval: Automatic
-          name: openshift-pipelines-operator-rh
-          sourceName: redhat-operators
-          sourceNamespace: openshift-marketplace
-          startingCSV: openshift-pipelines-operator-rh.v1.8.0
+        name: assemble-backstage
+        replicaCount: 1
+        image:
+          repository: quay.io/assemble/backstage
+          pullPolicy: Always
+          tag: "55a870a1b99a04f7b22339804a5a2b7ed1c4ff58"
+        imagePullSecrets: []
+        nameOverride: ""
+        fullnameOverride: ""
+        service:
+          type: ClusterIP
+          port: 8080
+          targetPort: 7007
+        postgres:
+          external: false
+          persistent: true
+          database_user: postgres
+          database_password: "somepassword"
+          port: 5432
+          image: registry.redhat.io/rhel9/postgresql-13:1-73
+          resources:
+            limits:
+              cpu: 400m
+              memory: 596Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+        resources: {}
+        serviceAccount:
+          create: true
+          annotations: {}
+        backstage:
+          companyname: "Assemble"
+          catalog:
+            rules:
+              - allow: [Component, System, API, Resource, Location]
+            locations:
+              - type: url
+                target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-components.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: openshift-operators
+    namespace: assemble
   syncPolicy:
     automated: 
       prune: true

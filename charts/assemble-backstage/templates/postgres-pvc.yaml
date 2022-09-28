@@ -1,0 +1,17 @@
+{{- if .Values.postgres.persistent }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name:  {{ include "assemble-backstage.fullname" . }}-postgres
+  labels:
+    paas.redhat.com/appcode: "ASBL-001"
+  annotations:
+    kubernetes.io/reclaimPolicy: Delete 
+spec:
+  storageClassName: aws-efs-tier-c3
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2G
+{{- end }}

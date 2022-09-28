@@ -1,0 +1,9 @@
+apiVersion: v2
+appVersion: v2.4.11
+description: A Helm chart for customising the deployment of the Red Hat Pipelines Operator
+name: assemble-backstage
+version: 0.1.0
+home: https://github.com/halkyonio/assemble-platforms/charts
+maintainers:
+- name: eformat
+- name: springdo

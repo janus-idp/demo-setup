@@ -1,0 +1,19 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  name: {{ include "assemble-backstage.fullname" . }}
+  labels:
+    {{- include "assemble-backstage.labels" . | nindent 4 }}
+spec:
+  port:
+    targetPort: http
+  tls:
+    insecureEdgeTerminationPolicy: Allow
+    termination: edge
+  to:
+    kind: Service
+    name: {{ include "assemble-backstage.fullname" . }}
+    weight: 100
+  wildcardPolicy: None

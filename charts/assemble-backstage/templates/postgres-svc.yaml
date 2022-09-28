@@ -1,0 +1,20 @@
+{{- if not .Values.postgres.external }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "assemble-backstage.fullname" . }}-postgres
+  labels:
+    app.kubernetes.io/name: {{ include "assemble-backstage.fullname" . }}-postgres
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.postgres.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/component: postgresql
+    app.kubernetes.io/instance: backstage
+    app.kubernetes.io/name: {{ include "assemble-backstage.fullname" . }}-postgresql
+{{- end }}

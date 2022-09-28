@@ -1,0 +1,52 @@
+{{- if not .Values.postgres.external }}
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: {{ include "assemble-backstage.fullname" . }}-postgresql
+  labels:
+    {{- include "assemble-backstage.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: postgresql
+      app.kubernetes.io/instance: backstage
+      app.kubernetes.io/name: {{ include "assemble-backstage.fullname" . }}-postgresql
+  template:
+    metadata:
+      name: {{ include "assemble-backstage.fullname" . }}-postgresql
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/component: postgresql
+        app.kubernetes.io/instance: backstage
+        app.kubernetes.io/name: {{ include "assemble-backstage.fullname" . }}-postgresql
+    spec:
+      containers:
+        - name: postgresql
+          env:
+            - name: POSTGRESQL_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "assemble-backstage.fullname" . }}-postgresql"
+                  key: databasePassword
+          ports:
+            - name: tcp-postgresql
+              containerPort: 5432
+              protocol: TCP
+          volumeMounts:
+{{- if .Values.postgres.persistent }}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgresdb
+{{- end }}
+          terminationMessagePolicy: File
+          image: "{{ .Values.postgres.image }}"
+      serviceAccount: {{ include "assemble-backstage.serviceAccountName" . }}
+{{- if .Values.postgres.persistent }}
+      volumes:
+      - name: postgresdb
+        persistentVolumeClaim:
+          claimName: {{ include "assemble-backstage.fullname" . }}-postgresql
+{{- end }}
+  serviceName: {{ include "assemble-backstage.fullname" . }}-postgresql
+{{- end }}

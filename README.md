@@ -17,3 +17,4 @@ helm install my-gitops -f my-values.yaml charts/gitops-operator
 For more info on each chart checkout these!
 * [gitops-operator](/charts/gitops-operator)
 * [pipelines-operator](/charts/pipelines-operator)
+* [assemble-backstage](/charts/assemble-backstage)

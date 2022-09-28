@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/davgordo/assemble-platforms.git
-    targetRevision: HEAD
+    targetRevision: bootstrap
     path: charts/assemble-backstage
     helm:
       values: | 

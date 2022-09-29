@@ -1,0 +1,19 @@
+{{- if .Values.operatorgroup.create }}
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: {{ template "operator.fullname" . }}
+  generateName: {{ template "operator.fullname" . }}-
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "operator.labels" . | nindent 4 }}
+  {{- if .Values.operatorgroup.annotations }}
+  annotations:
+    {{- toYaml .Values.operatorgroup.annotations | nindent 4 }}
+  {{- end }}
+spec:
+{{- if not .Values.operatorgroup.allNamespaces }}
+  targetNamespaces:
+    - {{ .Release.Namespace }}
+{{- end }}
+{{- end }}

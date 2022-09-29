@@ -1,0 +1,30 @@
+keycloak:
+  instances: 1
+  hostname: ""
+  routeName: ""
+  setup:
+    image: registry.redhat.io/openshift4/ose-tools-rhel8:v4.11
+  realm:
+    name: openshift
+    enabled: true
+    displayName: Openshift Authentication Realm
+    identityProvider:
+      enabled: true
+      clientId: ""
+      clientSecret: ""
+  client:
+    name: openshift
+    secretName: openshift-client
+openshift:
+  idp:
+    name: RHSSO
+    ca:
+      sync: false
+      secret: ""
+      namespace: openshift-ingress
+      key: ""
+patches:
+  apply: true
+
+assemble:
+  group: assemble

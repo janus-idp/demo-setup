@@ -46,8 +46,6 @@ spec:
                 -d "grant_type=password" \
                 "$KEYCLOAK_SERVER/auth/realms/master/protocol/openid-connect/token" | jq -r '.access_token')
 
-              echo $KEYCLOAK_TOKEN
-
               echo "Waiting for $KEYCLOAK_REALM realm to be created"
               while [[ "$(curl -s -k -H "Authorization: Bearer $KEYCLOAK_TOKEN" -L -o /dev/null -w ''%{http_code}'' ${KEYCLOAK_SERVER}/auth/admin/realms/$KEYCLOAK_REALM)" != "200" ]]; do sleep 5; done
 

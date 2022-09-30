@@ -46,7 +46,7 @@ spec:
           annotations: {}
         backstage:
           companyname: "Assemble"
-          baseUrl: 'https://assemble-backstage-assemble.apps.cluster-sqmgp.sqmgp.sandbox75.opentlc.com'
+          baseUrl: 'https://assemble-backstage-assemble.apps.cluster-88p5w.88p5w.sandbox1000.opentlc.com'
           catalog:
             rules:
               - allow: [Component, System, API, Resource, Location]

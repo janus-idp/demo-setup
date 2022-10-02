@@ -1,0 +1,12 @@
+apiVersion: keycloak.org/v1alpha1
+kind: Keycloak
+metadata:
+  name: {{ template "rhsso-backstage.name" . }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+  labels:
+    {{- include "rhsso-backstage.labels" . | nindent 4 }}
+spec:
+  instances: {{ .Values.keycloak.instances }}
+  externalAccess:
+    enabled: true

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: rhsso-backstage
+description: Deploys an instance of Red Hat Single Sign On (RHSSO) to support Backstage
+type: application
+version: 0.1.0

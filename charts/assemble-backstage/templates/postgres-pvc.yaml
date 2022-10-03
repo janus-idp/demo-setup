@@ -1,17 +1,21 @@
-{{- if .Values.postgres.persistent }}
+{{- if .Values.postgres.storage }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name:  {{ include "assemble-backstage.fullname" . }}-postgres
+  name:  {{ include "assemble-backstage.fullname" . }}-postgresql
+{{- if .Values.postgres.storage.labels  }}
   labels:
-    paas.redhat.com/appcode: "ASBL-001"
+    {{- toYaml .Values.postgres.storage.labels | nindent 4 }}
+{{- end }}
   annotations:
     kubernetes.io/reclaimPolicy: Delete 
 spec:
-  storageClassName: aws-efs-tier-c3
+{{- if .Values.postgres.storage.storageClass }}
+  storageClassName: "{{ .Values.postgres.storage.storageClass }}"
+{{- end }}
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 2G
+      storage: {{ .Values.postgres.storage.size }}
 {{- end }}

@@ -33,8 +33,7 @@ spec:
             - name: tcp-postgresql
               containerPort: 5432
               protocol: TCP
-          volumeMounts:
-{{- if .Values.postgres.persistent }}
+{{- if .Values.postgres.storage.enabled }}
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgresdb
@@ -42,7 +41,7 @@ spec:
           terminationMessagePolicy: File
           image: "{{ .Values.postgres.image }}"
       serviceAccount: {{ include "assemble-backstage.serviceAccountName" . }}
-{{- if .Values.postgres.persistent }}
+{{- if .Values.postgres.storage.enabled }}
       volumes:
       - name: postgresdb
         persistentVolumeClaim:

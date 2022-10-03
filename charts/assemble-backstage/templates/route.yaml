@@ -1,16 +1,17 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  annotations:
-    openshift.io/host.generated: "true"
   name: {{ include "assemble-backstage.fullname" . }}
   labels:
     {{- include "assemble-backstage.labels" . | nindent 4 }}
 spec:
+{{- if .Values.route }}
+  host: {{ .Values.route.host }}
+{{- end }}
   port:
     targetPort: http
   tls:
-    insecureEdgeTerminationPolicy: Allow
+    insecureEdgeTerminationPolicy: Redirect
     termination: edge
   to:
     kind: Service

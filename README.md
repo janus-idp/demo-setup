@@ -18,3 +18,18 @@ For more info on each chart checkout these!
 * [gitops-operator](/charts/gitops-operator)
 * [pipelines-operator](/charts/pipelines-operator)
 * [assemble-backstage](/charts/assemble-backstage)
+
+## Backstage Github Apps
+
+
+1. Follow the steps from the [Backstage Documentation](https://backstage.io/docs/integrations/github/github-apps)
+2. The CLI command will set up everything but some permissions are missing. Make sure you have the following permissions to the GitHubApp created by the CLI:
+
+* You need Read and Write access for:
+    * Actions
+    * Administration
+    * Contents
+
+* You need Read Only access for:
+    * Metadata
+    * Members

@@ -1,0 +1,68 @@
+{{- if .Values.patches.apply }}
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: Patch
+metadata:
+  name: config-patches
+  namespace: openshift-config
+spec:
+  serviceAccountRef:
+    name: default
+  patches:
+    update-keycloak-client-redirecturi:
+      targetObjectRef:
+        apiVersion: keycloak.org/v1alpha1
+        kind: KeycloakClient
+        name: {{ .Values.keycloak.client.name }}
+        namespace: {{ .Release.Namespace }} 
+      sourceObjectRefs:
+      - apiVersion: config.openshift.io/v1
+        kind: DNS
+        name: cluster
+      patchTemplate: |
+        spec:
+          client:
+            redirectUris:
+            - {{ "{{" }} (printf "https://oauth-openshift.apps.%s/oauth2callback/{{ .Values.openshift.idp.name }}" (index . 1).spec.baseDomain) {{ "}}" }}
+      patchType: application/merge-patch+json
+    sync-keycloak-client-secret:
+      targetObjectRef:
+        apiVersion: v1
+        kind: Secret
+        name: {{ include "rhsso-cluster-auth.clientSecretName" . }}
+        namespace: openshift-config
+      sourceObjectRefs:
+      - apiVersion: v1
+        kind: Secret
+        name: {{ include "rhsso-cluster-auth.clientSecretName" . }}
+        namespace: {{ .Release.Namespace }}  
+      patchTemplate: |
+        data:
+          clientSecret: {{ "{{" }} (index . 1).data.CLIENT_SECRET {{ "}}" }}
+      patchType: application/merge-patch+json
+    keycloak-ocp-oauth-provider:
+      targetObjectRef:
+        apiVersion: config.openshift.io/v1
+        kind: OAuth
+        name: cluster
+      sourceObjectRefs:
+      - apiVersion: v1
+        kind: Secret
+        name: {{ include "rhsso-cluster-auth.clientSecretName" . }}
+        namespace: {{ .Release.Namespace }}  
+      - apiVersion: route.openshift.io/v1
+        kind: Route
+        name: "keycloak"
+        namespace: {{ .Release.Namespace }}   
+      patchTemplate: |
+        {{ "{{-" }} $keycloakIDP:= dict "name" "RHSSO" "mappingMethod" "claim" "type" "OpenID" "openID" (dict "clientID" ((index . 1).data.CLIENT_ID | b64dec) "clientSecret" (dict "name" {{ (include "rhsso-cluster-auth.clientSecretName" .) | quote }}) "issuer" (printf "https://%s/auth/realms/{{ .Values.keycloak.realm.name }}" (index . 2).spec.host)  "claims" (dict "preferredUsername" (list "preferred_username") "name" (list "name") "email" (list "email") "groups" (list "teams") ) ) {{ "-}}" }}
+        spec:
+          identityProviders:
+          {{ "{{-" }} if not (index . 0).spec.identityProviders {{ "}}" }}
+        {{ "{{" }} list $keycloakIDP | toYaml | indent 4 {{ "}}" }}
+          {{ "{{-" }} else if (not (has $keycloakIDP (index . 0).spec.identityProviders)) {{ "}}" }}
+        {{ "{{" }} append (index . 0).spec.identityProviders $keycloakIDP | toYaml | indent 4 {{ "}}" }}
+          {{ "{{-" }} else {{ "}}" }}
+        {{ "{{" }} (index . 0).spec.identityProviders | toYaml | indent 4 {{ "}}" }}
+          {{ "{{-" }} end {{ "}}" }}            
+      patchType: application/merge-patch+json
+{{- end }}

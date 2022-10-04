@@ -1,0 +1,35 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakClient
+metadata:
+  name: {{ .Values.keycloak.client.name }}
+  labels:
+    {{- include "rhsso-cluster-auth.labels" . | nindent 4 }}
+spec:
+  realmSelector:
+    matchLabels:
+      {{- include "rhsso-cluster-auth.selectorLabels" . | nindent 6 }}
+  client:
+    clientId: {{ .Values.keycloak.client.name }}
+    clientAuthenticatorType: client-secret
+    standardFlowEnabled: true
+    directAccessGrantsEnabled: true
+    implicitFlowEnabled: false
+    defaultClientScopes:
+      - profile
+      - email
+    consentRequired: false
+    protocolMappers:
+      - name: team-mapper
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-attribute-mapper
+        consentRequired: false
+        config:
+          userinfo.token.claim: "true"
+          multivalued: "true"
+          user.attribute: "teams"
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: "teams"
+          jsonType.label: "String"
+  roles:
+    - name: assemble

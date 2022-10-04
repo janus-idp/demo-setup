@@ -1,0 +1,65 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    {{- include "rhsso-cluster-auth.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+  name: {{ template "rhsso-cluster-auth.name" . }}-identitymapper-job
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      activeDeadlineSeconds: 600
+      containers:
+        - image: {{ .Values.keycloak.setup.image }}
+          env:
+            - name: KEYCLOAK_SERVER
+              value: http://keycloak-discovery:8080
+            - name: KEYCLOAK_REALM
+              value: {{ .Values.keycloak.realm.name }}
+            - name: KEYCLOAK_USER
+              valueFrom:
+                secretKeyRef:
+                  key: ADMIN_USERNAME
+                  name: credential-{{ template "rhsso-cluster-auth.name" . }}
+            - name: KEYCLOAK_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: ADMIN_PASSWORD
+                  name: credential-{{ template "rhsso-cluster-auth.name" . }}
+          command:
+            - /bin/bash
+            - -c
+            - |
+              #!/bin/bash
+
+              echo "Waiting for Keycloak to be ready"
+              while [[ "$(curl -s -k -L -o /dev/null -w ''%{http_code}'' ${KEYCLOAK_SERVER}/auth)" != "200" ]]; do sleep 5; done
+
+              echo "Fetching Keycloak token"
+              KEYCLOAK_TOKEN=$(curl -s \
+                -d "client_id=admin-cli" \
+                -d "username=$KEYCLOAK_USER" \
+                -d "password=$KEYCLOAK_PASSWORD" \
+                -d "grant_type=password" \
+                "$KEYCLOAK_SERVER/auth/realms/master/protocol/openid-connect/token" | jq -r '.access_token')
+
+              echo "Waiting for $KEYCLOAK_REALM realm to be created"
+              while [[ "$(curl -s -k -H "Authorization: Bearer $KEYCLOAK_TOKEN" -L -o /dev/null -w ''%{http_code}'' ${KEYCLOAK_SERVER}/auth/admin/realms/$KEYCLOAK_REALM)" != "200" ]]; do sleep 5; done
+
+              IDENTITY_PROVIDER_MAPPING=$(curl -s -k -H "Authorization: Bearer $KEYCLOAK_TOKEN" -L ${KEYCLOAK_SERVER}/auth/admin/realms/$KEYCLOAK_REALM/identity-provider/instances/github/mappers | jq '. | length')
+
+              if [ "${IDENTITY_PROVIDER_MAPPING}" == "0" ]; then
+                curl -s -k -X POST -H "Authorization: Bearer $KEYCLOAK_TOKEN" -H "Content-Type: application/json" \
+                -d "{\"name\" : \"team-mapper\",\"identityProviderAlias\" : \"github\",\"identityProviderMapper\" : \"hardcoded-attribute-idp-mapper\",\"config\" : {\"attribute.value\" : \"{{ .Values.assemble.group }}\",\"attribute\" : \"teams\"}}" \
+                "${KEYCLOAK_SERVER}/auth/admin/realms/$KEYCLOAK_REALM/identity-provider/instances/github/mappers"
+              fi    
+          imagePullPolicy: Always
+          name: {{ template "rhsso-cluster-auth.name" . }}-identitymapper-job
+      dnsPolicy: ClusterFirst
+      restartPolicy: OnFailure
+      serviceAccount: default
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 30

@@ -3,8 +3,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name:  {{ include "assemble-backstage.fullname" . }}-postgresql
-{{- if .Values.postgres.storage.labels  }}
   labels:
+    {{- include "assemble-backstage.postgresql.labels" . | nindent 4 }}
+{{- if .Values.postgres.storage.labels  }}
     {{- toYaml .Values.postgres.storage.labels | nindent 4 }}
 {{- end }}
   annotations:

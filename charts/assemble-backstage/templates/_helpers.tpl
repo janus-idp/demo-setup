@@ -51,6 +51,26 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Postgresql Common labels
+*/}}
+{{- define "assemble-backstage.postgresql.labels" -}}
+helm.sh/chart: {{ include "assemble-backstage.chart" . }}
+{{ include "assemble-backstage.postgresql.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Postresql Selector labels
+*/}}
+{{- define "assemble-backstage.postgresql.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "assemble-backstage.name" . }}-{{ .Values.postgres.database_name }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "assemble-backstage.serviceAccountName" -}}

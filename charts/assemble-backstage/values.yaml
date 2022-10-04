@@ -68,7 +68,7 @@ serviceAccount:
 ## There is a secret created via the template/
 backstage:
   companyname: "My Company"
-  #baseUrl: 'https://assemble-test-assemble.apps-crc.testing'
+  baseUrl: 'https://assemble-test-assemble.apps-crc.testing'
   #baseUrl: 'https://assemble-test-assemble--runtime-int.apps.mpp-e1-preprod.syvu.p1.openshiftapps.com'
 
   database:

@@ -4,8 +4,7 @@ kind: Service
 metadata:
   name: {{ include "assemble-backstage.fullname" . }}-postgresql
   labels:
-    app.kubernetes.io/name: {{ include "assemble-backstage.fullname" . }}-postgresql
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "assemble-backstage.postgresql.labels" . | nindent 4 }}
 spec:
   clusterIP: None
   ports:
@@ -14,7 +13,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/component: postgresql
-    app.kubernetes.io/instance: backstage
-    app.kubernetes.io/name: {{ include "assemble-backstage.fullname" . }}-postgresql
+    {{- include "assemble-backstage.postgresql.selectorLabels" . | nindent 4 }}
 {{- end }}

@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "assemble-backstage.fullname" . }}-postgres
+  name: {{ include "assemble-backstage.fullname" . }}-postgresql
   labels:
-    app.kubernetes.io/name: {{ include "assemble-backstage.fullname" . }}-postgres
+    app.kubernetes.io/name: {{ include "assemble-backstage.fullname" . }}-postgresql
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   clusterIP: None
   ports:
-    - port: {{ .Values.postgres.port }}
+    - port: {{ .Values.postgres.database_port }}
       targetPort: http
       protocol: TCP
       name: http

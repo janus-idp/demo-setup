@@ -27,6 +27,8 @@ The operator version can be configuring by modifying the operator configuration 
 A container version of postgresql will be deployed along with the assamble-backstage application when the external flag is 'false'.  You can
  suppply a database password or a random value can be used and stored in the postgres secret.  
 
+Note: If you use the random password with tools like ArgoCd you could have passwords change due to re-generation of random values. In that case you should supply a password as part of setup.
+
 ```yaml
 postgres:
   external: false

@@ -34,6 +34,21 @@ spec:
               secretKeyRef:
                 name: {{ include "assemble-backstage.fullname" . }}-postgresql
                 key: databasePassword 
+          - name: POSTGRES_HOST
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "assemble-backstage.fullname" . }}-postgresql
+                key: databaseHost        
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "assemble-backstage.fullname" . }}-postgresql
+                key: databaseUser
+          - name: POSTGRES_PORT
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "assemble-backstage.fullname" . }}-postgresql
+                key: databasePort
           ports:
             - name: http
               containerPort: {{ .Values.service.targetPort }}

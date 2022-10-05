@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "assemble-backstage.fullname" . }}
+  labels:
+    {{- include "assemble-backstage.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "assemble-backstage.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "assemble-backstage.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "assemble-backstage.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+{{- if .Values.securityContext }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+{{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ['node', 'packages/backend', '--config', '/config/app-config.yaml']   
+          env:
+          - name: POSTGRES_ADMIN_PASSWORD  
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "assemble-backstage.fullname" . }}-postgresql
+                key: databasePassword 
+          - name: POSTGRES_HOST
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "assemble-backstage.fullname" . }}-postgresql
+                key: databaseHost        
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "assemble-backstage.fullname" . }}-postgresql
+                key: databaseUser
+          - name: POSTGRES_PORT
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "assemble-backstage.fullname" . }}-postgresql
+                key: databasePort
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: assemble-config
+              readOnly: true
+              mountPath: /config
+      volumes:
+        - name: assemble-config
+          secret:
+            secretName: assemble-config
+            defaultMode: 420
+

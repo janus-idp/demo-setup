@@ -60,6 +60,9 @@ helm.sh/chart: {{ include "assemble-backstage.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.postgres.storage.labels }}
+{{- tpl (toYaml .Values.postgres.storage.labels) $ }}
+{{- end     }}
 {{- end }}
 
 {{/*
@@ -104,4 +107,16 @@ databasePassword: "{{ randAlphaNum 20 }}"
 {{- end -}}
 {{- end -}}
 
+{{/*
+Create the oauth proxy name
+*/}}
+{{- define "assemble-backstage.oauthProxy.name" -}}
+{{- printf "%s-oauth-proxy" (include "assemble-backstage.fullname" . ) }}
+{{- end }}
 
+{{/*
+Create the postgresql name
+*/}}
+{{- define "assemble-backstage.postgresql.name" -}}
+{{- printf "%s-postgresql" (include "assemble-backstage.fullname" . ) }}
+{{- end }}

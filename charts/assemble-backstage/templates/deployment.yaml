@@ -20,6 +20,38 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "assemble-backstage.serviceAccountName" . }}
       containers:
+{{- if .Values.oauth.enabled }}
+        - name: {{ include "assemble-backstage.oauthProxy.name" . }}
+          env:
+            - name: OAUTH2_PROXY_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "assemble-backstage.oauthProxy.name" . }}
+                  key: clientId
+            - name: OAUTH2_PROXY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "assemble-backstage.oauthProxy.name" . }}
+                  key: clientSecret
+            - name: OAUTH2_PROXY_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "assemble-backstage.oauthProxy.name" . }}
+                  key: cookieSecret
+            - name: OAUTH2_PROXY_OIDC_ISSUER_URL
+              value: "{{ .Values.oauth.issuerUrl }}"
+          ports:
+            - containerPort: {{ .Values.oauth.port }}
+              protocol: TCP
+          imagePullPolicy: {{ .Values.oauth.image.pullPolicy }}
+          image: "{{ .Values.oauth.image.repository }}:{{ .Values.oauth.image.tag }}"
+          args:
+            - '--provider=oidc'
+            - '--email-domain=*'
+            - '--upstream=http://localhost:{{ .Values.backstage.port }}'
+            - '--http-address=0.0.0.0:{{ .Values.oauth.port }}'
+            - '--skip-provider-button'
+{{- end }}
         - name: {{ .Chart.Name }}
 {{- if .Values.securityContext }}
           securityContext:
@@ -29,10 +61,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ['node', 'packages/backend', '--config', '/config/app-config.yaml']   
           env:
+{{- if .Values.postgres.storage.enabled }}
           - name: POSTGRES_ADMIN_PASSWORD  
             valueFrom:
               secretKeyRef:
-                name: {{ include "assemble-backstage.fullname" . }}-postgresql
+                name: {{ include "assemble-backstage.postgresql.name" . }}
                 key: databasePassword 
           - name: POSTGRES_HOST
             valueFrom:
@@ -49,9 +82,10 @@ spec:
               secretKeyRef:
                 name: {{ include "assemble-backstage.fullname" . }}-postgresql
                 key: databasePort
+{{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.targetPort }}
+              containerPort: {{ .Values.backstage.port }}
               protocol: TCP
           livenessProbe:
             httpGet:

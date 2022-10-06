@@ -12,6 +12,7 @@ Use the following steps to deploy the chart to an OpenShift cluster
     1. [RHSSO Operator](../operator/values-rhsso-operator.yaml)
        1. Operator deployed to a namespace called `backstage`
 2. Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app) within the desired GitHub organization
+    1. Configure the Redirect URL using the format: <https://<KEYCLOAK_HOST>/auth/realms/><REALM>/broker/github/endpoint
 
 ### Deployment
 

@@ -40,6 +40,10 @@ spec:
                   key: cookieSecret
             - name: OAUTH2_PROXY_OIDC_ISSUER_URL
               value: "{{ .Values.oauth.issuerUrl }}"
+{{- if .Values.oauth.insecure }}
+            - name: OAUTH2_PROXY_SSL_INSECURE_SKIP_VERIFY
+              value: "true"
+{{- end }}
           ports:
             - containerPort: {{ .Values.oauth.port }}
               protocol: TCP

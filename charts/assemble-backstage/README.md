@@ -52,7 +52,7 @@ The 'catalog:' section will define the sources for configuring the catalog secti
 # backstage configuration
 backstage:
   companyname: "My Company"
-  baseUrl: 'https://assemble-dev-assemble.apps-crc.testing'
+  baseUrl: 'https://<BACKSTAGE_HOST>'
 
   ## Override Catalog with here
   catalog:
@@ -90,6 +90,7 @@ oauth:
   enabled: true
   clientId: <CLIENT_ID>
   clientSecret: <CLIENT_SECRET>
+  issuerUrl: https://<KEYCLOAK_HOST>/auth/realms/<REALM>
 ```
 
 ## Removing

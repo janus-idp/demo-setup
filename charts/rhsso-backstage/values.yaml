@@ -1,0 +1,21 @@
+keycloak:
+  instances: 1
+  hostname: ""
+  routeName: ""
+  realm:
+    name: backstage
+    enabled: true
+    displayName: Backstage Authentication Realm
+    identityProvider:
+      enabled: true
+      clientId: ""
+      clientSecret: ""
+  client:
+    name: backstage
+    secretName: openshift-client
+
+assemble:
+  group: assemble
+
+backstage:
+  host: ""

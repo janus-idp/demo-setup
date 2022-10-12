@@ -1,0 +1,22 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakClient
+metadata:
+  name: {{ .Values.keycloak.client.name }}
+  labels:
+    {{- include "rhsso-backstage.labels" . | nindent 4 }}
+spec:
+  realmSelector:
+    matchLabels:
+      {{- include "rhsso-backstage.selectorLabels" . | nindent 6 }}
+  client:
+    clientId: {{ .Values.keycloak.client.name }}
+    clientAuthenticatorType: client-secret
+    standardFlowEnabled: true
+    directAccessGrantsEnabled: true
+    implicitFlowEnabled: false
+    defaultClientScopes:
+      - profile
+      - email
+    consentRequired: false
+    redirectUris:
+      - {{ required "Backstage host is required" (printf "https://%s/oauth2/callback" .Values.backstage.host) }}

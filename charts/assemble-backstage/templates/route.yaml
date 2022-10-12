@@ -5,9 +5,7 @@ metadata:
   labels:
     {{- include "assemble-backstage.labels" . | nindent 4 }}
 spec:
-{{- if .Values.route }}
-  host: {{ .Values.route.host }}
-{{- end }}
+  host: {{ (trimPrefix  "https://" .Values.backstage.baseUrl) | trimPrefix  "http://" | trimSuffix "/"  }}
   port:
     targetPort: http
   tls:

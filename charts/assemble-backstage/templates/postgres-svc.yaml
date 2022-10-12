@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "assemble-backstage.fullname" . }}-postgresql
+  name: {{ include "assemble-backstage.postgresql.name" . }}
   labels:
     {{- include "assemble-backstage.postgresql.labels" . | nindent 4 }}
 spec:

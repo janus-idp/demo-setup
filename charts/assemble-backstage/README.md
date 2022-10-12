@@ -4,16 +4,11 @@ The Assemble Backstage Helm Chart customizes and deploys the backstage backend a
 
 ## Installing the chart
 
-To install the chart from source:
+To install the chart, execute the following command passing in the b:
+
 ```bash
 # within this directory 
-oc new-project assemble
-helm upgrade --install assemble-dev . -f values.yaml 
-```
-To install using oc apply
-```bash
-# within this directory
-helm template assemble-dev . | oc apply -f- 
+helm upgrade --install assemble-dev . -n assemble --create-namespace
 ```
 
 ## Configuration
@@ -24,8 +19,8 @@ The operator version can be configuring by modifying the operator configuration 
 
 ### Postgres Database Configuration
 
-A container version of postgresql will be deployed along with the assamble-backstage application when the external flag is 'false'.  You can
- suppply a database password or a random value can be used and stored in the postgres secret.  
+A container version of postgresql will be deployed along with the assemble-backstage application when the external flag is 'false'.  You can
+ supply a database password or a random value can be used and stored in the postgres secret.  
 
 Note: If you use the random password with tools like ArgoCd you could have passwords change due to re-generation of random values. In that case you should supply a password as part of setup.
 
@@ -46,19 +41,18 @@ postgres:
       cpu: 100m
       memory: 128Mi
 ```
+
 ### Backstage Configuration
 
-There is a secret which containts the backstage app-config.yaml which can be modified using the following sample.   
+There is a secret which contains the backstage `app-config.yaml` which can be modified using the following sample.
 
-The 'catalog:' section will define the soures for configuring the catalog section of the app-config.yaml. This content will replace the yaml of that section of the configuraiton.  Refer to [Backstage Catalog Configuration](https://backstage.io/docs/features/software-catalog/configuration) for more details.  
-
-Note: The baseUrl must match the exposed route to ensure communication betweeen the UI and backend services.
+The 'catalog:' section will define the sources for configuring the catalog section of the app-config.yaml. This content will replace the yaml of that section of the configuration.  Refer to [Backstage Catalog Configuration](https://backstage.io/docs/features/software-catalog/configuration) for more details.  
 
 ```yaml
 # backstage configuration
 backstage:
   companyname: "My Company"
-  baseUrl: 'https://assemble-dev-assemble.apps-crc.testing'
+  baseUrl: 'https://<BACKSTAGE_HOST>'
 
   ## Override Catalog with here
   catalog:
@@ -85,16 +79,24 @@ backstage:
       #    - allow: [User, Group]
 ```
 
+### OAuth
+
+By default, access to Backstage is not protected by any authentication or authorization. A OAuth proxy can be used to restrict access. An OAuth client must be created within an identity provider and made available to Helm during installation. The redirect URL must reference https://<baseUrl>/oauth2/callback.
+
+The following values can be used to enable OAuth for backstage:
+
+```yaml
+oauth:
+  enabled: true
+  clientId: <CLIENT_ID>
+  clientSecret: <CLIENT_SECRET>
+  issuerUrl: https://<KEYCLOAK_HOST>/auth/realms/<REALM>
+```
 
 ## Removing
 
 To delete the chart:
+
 ```bash
-helm uninstall assemble-dev --namespace assemble
+helm uninstall assemble-dev -n assemble
 ```
-
-To delete when not using helm
-```
-helm template assemble-dev | oc delete -f-
-```
-

@@ -2,7 +2,7 @@
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-  name: {{ include "assemble-backstage.fullname" . }}-postgresql
+  name: {{ include "assemble-backstage.postgresql.name" . }}
   labels:
     {{- include "assemble-backstage.postgresql.labels" . | nindent 4 }}
 spec:
@@ -12,7 +12,7 @@ spec:
         {{- include "assemble-backstage.postgresql.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      name: {{ include "assemble-backstage.fullname" . }}-postgresql
+      name: {{ include "assemble-backstage.postgresql.name" . }}
       creationTimestamp: null
       labels:
         {{- include "assemble-backstage.postgresql.selectorLabels" . | nindent 8 }}
@@ -23,11 +23,11 @@ spec:
             - name: POSTGRESQL_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: "{{ include "assemble-backstage.fullname" . }}-postgresql"
+                  name: {{ include "assemble-backstage.postgresql.name" . }}
                   key: databasePassword
           ports:
             - name: tcp-postgresql
-              containerPort: 5432
+              containerPort: {{ .Values.postgres.database_port }}
               protocol: TCP
 {{- if .Values.postgres.storage.enabled }}
           volumeMounts:
@@ -41,7 +41,7 @@ spec:
       volumes:
       - name: postgresdb
         persistentVolumeClaim:
-          claimName: {{ include "assemble-backstage.fullname" . }}-postgresql
+          claimName: {{ include "assemble-backstage.postgresql.name" . }}
 {{- end }}
-  serviceName: {{ include "assemble-backstage.fullname" . }}-postgresql
+  serviceName: {{ include "assemble-backstage.postgresql.name" . }}
 {{- end }}

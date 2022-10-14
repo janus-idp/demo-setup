@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: quay.io/assemble/backstage
   pullPolicy: Always
-  tag: "55a870a1b99a04f7b22339804a5a2b7ed1c4ff58"
+  tag: "eeaca7ec935bd83d3efe0e3c9f9aaecd833c26b4"
 
 imagePullSecrets: []
 nameOverride: ""

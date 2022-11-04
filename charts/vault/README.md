@@ -4,7 +4,7 @@ The Vault Helm Chart extends the Hashicorp [Vault Helm Chart](https://github.com
 
 ## Installing the chart
 
-The values.yaml file in the folder charts/vault folder needs to be modfied for each environment. The default values file will not include plugins for external tools like Quay and Github but those plugins can be included by adding to the values file.  To install the basic vault service do the following:
+The values.yaml file in the folder charts/vault folder needs to be modified for each environment. The default values file will not include plugins for external tools like Quay and Github but those plugins can be included by adding to the values file.  To install the basic vault service do the following:
 
 1) Make a copy of the charts/vault/values.yaml 
 ```bash
@@ -12,9 +12,9 @@ cp charts/vault/values.yaml my-values.yaml
 ```
 2) Update the namespace place holder with the target namespace, i.e 'assemble'.
 ```bash
-ed -i 's/<namespace_replace>/assemble/g' ./my-values.yaml
+sed -i 's/<namespace_replace>/assemble/g' ./my-values.yaml
 ```
-3) Create or verify using taget project
+3) Create or verify using target project
 ```
 oc new-project assemble
 ```
@@ -32,7 +32,7 @@ helm install vault --set base_domain="example.com" --values ./my-values.yaml ./c
 
 ## Post installation verification
 
-NOTE:: There is a known intermitten [issue](https://github.com/hashicorp/vault-helm/issues/674) with the helm install of vault where the generated certificate is not valid for the vault service after initial install. Check the logs for the vault pod auto-inialize containers for errors.
+NOTE: There is a known intermittent [issue](https://github.com/hashicorp/vault-helm/issues/674) with the helm install of vault where the generated certificate is not valid for the vault service after initial install. Check the logs for the vault pod auto-inialize containers for errors.
 
 ```bash
 oc logs vault-0 -c auto-initializer
@@ -76,15 +76,15 @@ oc delete secret vault-server-tls
 oc scale --replicas=1 statefulset/vault
 ```
 
-It will take up to 10 minutes for the secret to get re-created. Once that is done the vault pod should start up successfully.
+It will take up to 10 minutes for the 'vault-server-tls' secret to get re-created. Once that is done the vault pod should start up successfully.
 
 ## Configuration
 
-The [values.yml](values.yaml) contains examples of additional plugins for the vault to generate secrets for services like quay and github. To enable the plugins remove the comments '#" in front of the extraInitContainers and extraContainers sections and update appropiate values. 
+The [values.yml](values.yaml) contains examples of additional plugins for the vault to generate secrets for services like quay and github. To enable the plugins remove the comments '#" in front of the extraInitContainers and extraContainers sections and update appropriate values. 
 
 ## Removing
 
 To delete the chart:
 ```bash
-helm uninstall pipelines --namespace assemble-pipelines
+helm uninstall vault --namespace assemble
 ```

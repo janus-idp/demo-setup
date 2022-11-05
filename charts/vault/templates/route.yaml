@@ -4,7 +4,7 @@ metadata:
   name: {{ include "vault.fullname" . }}
   labels:
     {{- include "vault.labels" . | nindent 4 }}
-{{- if .Values.vault.server.route.createCert }} 
+{{- if .Values.route.useCertManager }} 
   annotations:
     cert-utils-operator.redhat-cop.io/certs-from-secret: {{ include "vault.fullname" . }}-tls
 {{- end }}

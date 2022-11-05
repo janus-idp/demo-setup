@@ -2,6 +2,8 @@ global:
   openshift: true
   tlsDisable: false
 
+# To the use the cert manager operator to generate a certificate for the route set to true and set the base_domain variable
+# --set base_domain="example.com"
 route:
   useCertManager: false
 

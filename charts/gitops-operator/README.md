@@ -7,8 +7,7 @@ The GitOps  Helm Chart customizes and deploys the [RedHat GitOps Operator](https
 To install the chart from source:
 ```bash
 # within this directory 
-oc new-project assemble-argocd
-helm upgrade --install argocd . -f values.yaml 
+helm upgrade --install argocd . -f values.yaml -n assemble-argocd --create-namespace
 ```
 
 ## Configuration

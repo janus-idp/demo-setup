@@ -25,8 +25,11 @@ oauth:
     # requests:
     #   cpu: 100m
     #   memory: 128Mi
+  # Must be formatted 'https://<KEYCLOAK_HOST>/auth/realms/<REALM>'
   issuerUrl: ""
+  # The ID of the Keycloak Client
   clientId: ""
+  # The Secret of the Keycloak Client
   clientSecret: ""
   port: 4180
 
@@ -88,6 +91,7 @@ serviceAccount:
 backstage:
   companyname: "My Company"
   port: 7007
+  # The base URL for the frontend application e.g. https://<hostname>
   baseUrl: ""
 
   database:

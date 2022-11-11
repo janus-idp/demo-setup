@@ -7,8 +7,7 @@ The Openshift Pipelines Helm Chart customizes and deploys the [RedHat Openshift 
 To install the chart from source:
 ```bash
 # within this directory 
-oc new-project assemble-pipelines
-helm upgrade --install pipelines . -f values.yaml 
+helm upgrade --install pipelines . -f values.yaml -n assemble-pipelines --create-namespace
 ```
 To install using oc apply
 ```bash

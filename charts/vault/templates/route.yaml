@@ -1,0 +1,23 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ include "vault.fullname" . }}
+  labels:
+    {{- include "vault.labels" . | nindent 4 }}
+{{- if .Values.route.useCertManager }} 
+  annotations:
+    cert-utils-operator.redhat-cop.io/certs-from-secret: {{ include "vault.fullname" . }}-tls
+{{- end }}
+spec:
+{{- if .Values.route.useCertManager }}
+  host: {{ include "vault.fullname" . }}.apps.{{ .Values.base_domain }}
+{{- end }}
+  to:
+    kind: Service
+    name: {{ include "vault.fullname" . }}
+    weight: 100
+  port:
+    targetPort: 8200
+  tls:
+    termination: reencrypt
+  wildcardPolicy: None

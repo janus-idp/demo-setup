@@ -4,7 +4,7 @@ The Vault Helm Chart extends the Hashicorp [Vault Helm Chart](https://github.com
 
 ## Installing the chart
 
-The values.yaml file in the folder charts/vault folder needs to be modified for each environment. The default values file will not include plugins for external tools like Quay and Github but those plugins can be included by adding to the values file.  To install the basic vault service do the following:
+The `values.yaml` file in the folder charts/vault folder needs to be modified for each environment. The default values file will not include plugins for external tools like Quay and Github but those plugins can be included by adding to the values file.  To install the basic vault service do the following:
 
 1) Make a copy of the charts/vault/values.yaml 
 ```bash
@@ -19,55 +19,44 @@ sed -i 's/<namespace_replace>/assemble/g' ./my-values.yaml
 oc new-project assemble
 ```
 
-4) Get your base domain for the cluster.
-```
-mydomain=$(oc get routes --all-namespaces | grep -i console-openshift | awk '{ print $3 }')
-echo ${mydomain:31}
-```
-
-5) Install via Helm
+4) Install via Helm
 ```bach
-helm install vault --set base_domain="example.com" --values ./my-values.yaml ./charts/vault
+helm upgrade -n assemble -u vault --set base_domain=$(oc get dns cluster -o jsonpath='{ .spec.baseDomain }' --values ./my-values.yaml ./charts/vault
 ```
 
 ## Post installation verification
 
-NOTE: There is a known intermittent [issue](https://github.com/hashicorp/vault-helm/issues/674) with the helm install of vault where the generated certificate is not valid for the vault service after initial install. Check the logs for the vault pod auto-inialize containers for errors.
+NOTE: There is a known intermittent [issue](https://github.com/hashicorp/vault-helm/issues/674) with the helm install of vault where the generated certificate is not valid for the vault service after initial install. Execute the following command to determine if the issue did occur as part of the installation:
 
 ```bash
-oc logs vault-0 -c auto-initializer
-``
+oc get svc vault -o jsonpath='{ .metadata.annotations.service\.alpha\.openshift\.io/serving-cert-generation-error }'
+```
 
-If you see an error like '... vault-internal.assemble.svc.cluster.local, not vault.assemble.svc.' perform the following steps to fix.
+If a value was returned, perform the following actions:
 
-1) Scale the vault statefullset to zero.
+
+1) Scale the vault StatefulSet to zero.
 
 ```bash
 oc scale --replicas=0 statefulset/vault
 ```
-2) Edit the vault-internal service
+
+2) Remove the annotations from the vault-internal service
 
 ```bash
-oc edit svc vault-internal
-
-## Remove the three annotations similary to the following
-# 11     service.alpha.openshift.io/serving-cert-signed-by: openshift-service-serving-signer@1667207204
-# 12     service.beta.openshift.io/serving-cert-secret-name: vault-server-tls
-# 13     service.beta.openshift.io/serving-cert-signed-by: openshift-service-serving-signer@1667207204
+kubectl patch svc vault-internal --type='json' -p '[{"op": "remove", "path": "/metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name"}]'
+kubectl patch svc vault-internal --type='json' -p '[{"op": "remove", "path": "/metadata/annotations/service.alpha.openshift.io~1serving-cert-signed-by"}]'
+kubectl patch svc vault-internal --type='json' -p '[{"op": "remove", "path": "/metadata/annotations/service.beta.openshift.io~1serving-cert-signed-by"}]'
 ```
 
-3) Edit the vault service
+3) Remove the annotations from the the vault service
 
 ```bash
-oc edit svc vault
-
-## Remove the four annotations similar to the ones below
-#11     service.alpha.openshift.io/serving-cert-generation-error: secret assemble-dev/vault-server-tls
-#12       does not have corresponding service UID 36678892-121f-4693-94a4-173a41a6b8c4
-#13     service.alpha.openshift.io/serving-cert-generation-error-num: "10"
-#14     service.beta.openshift.io/serving-cert-generation-error: secret assemble-dev/vault-server-tls
-#15       does not have corresponding service UID 36678892-121f-4693-94a4-173a41a6b8c4
-#16     service.beta.openshift.io/serving-cert-generation-error-num: "10"
+kubectl patch svc vault --type='json' -p '[{"op": "remove", "path": "/metadata/annotations/service.alpha.openshift.io~1serving-cert-generation-error"}]'
+kubectl patch svc vault --type='json' -p '[{"op": "remove", "path": "/metadata/annotations/service.beta.openshift.io~1serving-cert-generation-error"}]'
+kubectl patch svc vault --type='json' -p '[{"op": "remove", "path": "/metadata/annotations/service.alpha.openshift.io~1serving-cert-generation-error-num"}]'
+kubectl patch svc vault --type='json' -p '[{"op": "remove", "path": "/metadata/annotations/service.beta.openshift.io~1serving-cert-generation-error-num"}]'
+```
 
 4) Delete the vault-server-tls generated secret and scale the statefullset back to 1
 
@@ -76,7 +65,7 @@ oc delete secret vault-server-tls
 oc scale --replicas=1 statefulset/vault
 ```
 
-It will take up to 10 minutes for the 'vault-server-tls' secret to get re-created. Once that is done the vault pod should start up successfully.
+It may take up to 10 minutes for the 'vault-server-tls' secret to get re-created. Once that is done the vault pod should start up successfully.
 
 ## Configuration
 
@@ -86,5 +75,5 @@ The [values.yml](values.yaml) contains examples of additional plugins for the va
 
 To delete the chart:
 ```bash
-helm uninstall vault --namespace assemble
+helm uninstall vault -n assemble
 ```

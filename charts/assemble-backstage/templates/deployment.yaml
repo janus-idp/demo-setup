@@ -63,7 +63,15 @@ spec:
 {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ['node', 'packages/backend', '--config', '/config/app-config.yaml']   
+          command:
+            - node
+            - packages/backend
+            - --config
+            - /config/app-config.yaml
+            {{- if .Values.additionalConfig }}
+            - --config
+            - /config/additional-config.yaml
+            {{- end }}
           env:
 {{- if .Values.postgres.storage.enabled }}
           - name: POSTGRES_ADMIN_PASSWORD  

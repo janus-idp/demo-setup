@@ -4,7 +4,7 @@ The Assemble Backstage Helm Chart customizes and deploys the backstage backend a
 
 ## Installing the chart
 
-To install the chart, execute the following command passing in the b:
+To install the chart, execute the following command:
 
 ```bash
 # within this directory 

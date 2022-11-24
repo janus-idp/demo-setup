@@ -12,23 +12,30 @@ Step-by-step instructions on getting Assemble running with RHSSO authentication 
 Install the RHSSO Operator and deploy Keycloak, configured with a GitHub App.  The following commands must be run from within the [rhsso-backstage](./charts/rhsso-backstage) directory.
 
 #### Install RHSSO Operator
-`helm upgrade --install rhsso-operator . -f ./values-rhsso-operator.yaml -n backstage --create-namespace`
-
+```
+helm upgrade --install rhsso-operator . -f ./values-rhsso-operator.yaml -n backstage --create-namespace
+```
 #### Create GitHub App
 Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app) within the desired organization.  Use the following commands to generate the sample values used for this demo.
 
 Homepage URL:
 
-`echo "https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"`
+```
+echo "https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+```
 
 Authorization callback URL:
 
-`echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"`
+```
+echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
+```
 
 #### Deploy the RHSSO Chart
 Use the following command to deploy the Helm Chart, replacing the relevant values with those from the GitHub App.
 
-`helm upgrade -i rhsso-backstage . -n backstage --set keycloak.realm.identityProvider.clientId=<GITHUB_OAUTH_CLIENTID> --set keycloak.realm.identityProvider.clientSecret=<GITHUB_OAUTH_CLIENTSECRET> --set backstage.host="assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"`
+```
+helm upgrade -i rhsso-backstage . -n backstage --set keycloak.realm.identityProvider.clientId=<GITHUB_OAUTH_CLIENTID> --set keycloak.realm.identityProvider.clientSecret=<GITHUB_OAUTH_CLIENTSECRET> --set backstage.host="assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+```
 
 Keycloak is now configured and deployed in the `backstage` namespace in OpenShift.
 #### Access Keycloak Admin Console
@@ -100,7 +107,9 @@ integrations:
 #### Deploy the Backstage Chart
 Use the following command to deploy the Helm Chart.
 
-`helm upgrade --install assemble-dev . -n assemble --create-namespace`
+```
+helm upgrade --install assemble-dev . -n assemble --create-namespace
+```
 
 Backstage is now configured and deployed in the `assemble` namespace in OpenShift.  Access the UI through the newly deployed Route.  Log in using authentication through GitHub.
 

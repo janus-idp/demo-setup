@@ -150,3 +150,6 @@ backstage:
       #  target: https://github.com/backstage/software-templates/blob/main/scaffolder-templates/react-ssr-template/template.yaml
       #  rules:
       #    - allow: [Template]
+
+## Creates additional config that is passed to backstage
+additionalConfig: {}

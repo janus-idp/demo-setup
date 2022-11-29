@@ -8,13 +8,11 @@ Use the following steps to deploy the chart to an OpenShift cluster
 
 ### Prerequisites
 
-1. Install the following Helm Charts
-    1. [RHSSO Operator](../operator/values-rhsso-operator.yaml)
-       1. Operator deployed to a namespace called `backstage`
-            1. Navigate to the [Operator chart]((../operator/)
-            2. ```shell
-                helm upgrade --install rhsso-operator . -f ./values-rhsso-operator.yaml -n backstage --create-namespace
-                ```
+1. Install the RHSSO Operator.  It is deployed to a namespace called `backstage`
+    ```shell
+    # from within the charts/operator directory
+    helm upgrade --install rhsso-operator . -f ./values-rhsso-operator.yaml -n backstage --create-namespace
+    ```
 2. Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app) within the desired GitHub organization
     1. Configure the Redirect URL using the format: `https://<KEYCLOAK_HOST>/auth/realms/<REALM>/broker/github/endpoint`
 

@@ -8,6 +8,11 @@ spec:
   realmSelector:
     matchLabels:
       {{- include "rhsso-backstage.selectorLabels" . | nindent 6 }}
+  serviceAccountClientRoles:
+    realm-management:
+      - query-groups
+      - query-users
+      - view-users
   client:
     clientId: {{ .Values.keycloak.client.name }}
     clientAuthenticatorType: client-secret
@@ -17,6 +22,8 @@ spec:
     defaultClientScopes:
       - profile
       - email
+      - roles
     consentRequired: false
+    serviceAccountsEnabled: true
     redirectUris:
       - {{ required "Backstage host is required" (printf "https://%s/oauth2/callback" .Values.backstage.host) }}

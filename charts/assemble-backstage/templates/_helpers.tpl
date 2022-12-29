@@ -120,3 +120,10 @@ Create the postgresql name
 {{- define "assemble-backstage.postgresql.name" -}}
 {{- printf "%s-postgresql" (include "assemble-backstage.fullname" . ) }}
 {{- end }}
+
+{{/*
+Create the rhsso issuerUrl
+*/}}
+{{- define "assemble-backstage.rhsso.issuerUrl" -}}
+{{- printf "%s/realms/%s" .Values.rhsso.baseUrl .Values.rhsso.realm }}
+{{- end }}

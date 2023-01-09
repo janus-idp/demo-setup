@@ -1,18 +1,19 @@
 # Assemble Platforms
-This repository contains automation to install the assemble platform including supporting components. 
+This repository contains automation to install the assemble platform, as well as supporting components. 
 
 ## Getting Started
 Step-by-step instructions on getting Assemble running with RHSSO authentication using the included helm charts.
 
 ### Prerequisites
 1. Clone this repository
-2. Log in to the OpenShift
+2. Log in to OpenShift
 
 ### RHSSO
 Install the RHSSO Operator and deploy Keycloak, configured with a GitHub App.  The following commands must be run from within the [rhsso-backstage](./charts/rhsso-backstage) directory.
 
 #### Install RHSSO Operator
 ```
+# From the charts/operator directory.
 helm upgrade --install rhsso-operator . -f ./values-rhsso-operator.yaml -n backstage --create-namespace
 ```
 #### Create GitHub App
@@ -34,6 +35,7 @@ echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?)
 Use the following command to deploy the Helm Chart, replacing the relevant values with those from the GitHub App.
 
 ```
+# From the charts/rhsso-backstage directory.
 helm upgrade -i rhsso-backstage . -n backstage --set keycloak.realm.identityProvider.clientId=<GITHUB_OAUTH_CLIENTID> --set keycloak.realm.identityProvider.clientSecret=<GITHUB_OAUTH_CLIENTSECRET> --set backstage.host="assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
 ```
 
@@ -101,9 +103,9 @@ In `./templates/assemble-config-secret.yaml`:
 integrations:
     github:
     - host: github.com
-        token: <ACCESS_TOKEN>
+      token: <ACCESS_TOKEN>
 ```
-
+> **_NOTE:_**  The token must be wrapped in single quotes, even when applying the token through an environment variable.
 #### Deploy the Backstage Chart
 Use the following command to deploy the Helm Chart.
 

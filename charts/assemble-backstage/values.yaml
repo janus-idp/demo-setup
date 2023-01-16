@@ -3,16 +3,26 @@ replicaCount: 1
 image:
   repository: quay.io/assemble/backstage
   pullPolicy: Always
-  tag: "eeaca7ec935bd83d3efe0e3c9f9aaecd833c26b4"
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+rhsso:
+  baseUrl: ""
+  realm: backstage
+  # The ID of the Keycloak Client
+  clientId: ""
+  # The Secret of the Keycloak Client
+  clientSecret: ""
+  # Enable the backstage plugin
+  backstagePluginEnabled: false
+
 oauth:
   enabled: false
   insecure: false
-  cookieSecret: YXFpdWFoZm5vamRxeHBlcWJhdXNyeWRiZGtkeHZsYWQ=
+  cookieSecret: ""
   image:
     repository: quay.io/oauth2-proxy/oauth2-proxy
     pullPolicy: Always
@@ -25,12 +35,6 @@ oauth:
     # requests:
     #   cpu: 100m
     #   memory: 128Mi
-  # Must be formatted 'https://<KEYCLOAK_HOST>/auth/realms/<REALM>'
-  issuerUrl: ""
-  # The ID of the Keycloak Client
-  clientId: ""
-  # The Secret of the Keycloak Client
-  clientSecret: ""
   port: 4180
 
 service:
@@ -93,6 +97,9 @@ backstage:
   port: 7007
   # The base URL for the frontend application e.g. https://<hostname>
   baseUrl: ""
+
+  # Ignore NodeJS insecure certificate warnings
+  tlsInsecure: false
 
   database:
     client: pg

@@ -79,18 +79,31 @@ backstage:
       #    - allow: [User, Group]
 ```
 
+### RHSSO
+
+Red Hat Single Sign On (SSO) is integrated to act as a single source of identity. Several integrations are enabled by default, including the [Keycloak Backstage Plugin](https://github.com/janus-idp/backstage-plugins/tree/main/plugins/keycloak-backend).
+
+The following values can be used to configure RHSSO with backend pluign support:
+
+```yaml
+rhsso:
+  baseUrl: "https://<RHSSO_HOST>/auth"
+  realm: backstage
+  clientId: <CLIENT_ID>
+  clientSecret: <CLIENT_SECRET>
+  backstagePluginEnabled: true
+```
+
+
 ### OAuth
 
-By default, access to Backstage is not protected by any authentication or authorization. A OAuth proxy can be used to restrict access. An OAuth client must be created within an identity provider and made available to Helm during installation. The redirect URL must reference https://<baseUrl>/oauth2/callback.
+By default, access to Backstage is not protected by any authentication or authorization. A OAuth proxy can be used to restrict access. An OAuth client must be created within an identity provider and made available to Helm during installation. 
 
 The following values can be used to enable OAuth for backstage:
 
 ```yaml
 oauth:
   enabled: true
-  clientId: <CLIENT_ID>
-  clientSecret: <CLIENT_SECRET>
-  issuerUrl: https://<KEYCLOAK_HOST>/auth/realms/<REALM>
 ```
 
 ## Removing

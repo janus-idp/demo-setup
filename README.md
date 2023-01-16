@@ -6,7 +6,7 @@ Step-by-step instructions on getting Assemble running with RHSSO authentication 
 
 ### Prerequisites
 1. Clone this repository
-2. Log in to  OpenShift
+2. Log in to OpenShift
 
 ### RHSSO
 Install the RHSSO Operator and deploy Keycloak, configured with a GitHub App.  The following commands must be run from within the [rhsso-backstage](./charts/rhsso-backstage) directory.
@@ -46,18 +46,19 @@ Log in to Keycloak using the credentials stored in the `credential-rhsso-backsta
 ### Backstage
 Configure Backstage and deploy to OpenShift.  The following commands must be run from within the [assemble-backstage](./charts/assemble-backstage) directory.
 
-#### OAuth Configuration
-Update the `oauth` section of `values.yaml` to the following:
+#### RHSSO Configuration
+Update the `rhsso` section of `values.yaml` to the following:
 ```
-oauth:
-  enabled: true
+rhsso:
+  # Generate this through the command line using
+  # echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth"
+  baseUrl: https://<RHSSO_HOST>/auth
   # The pre-set clientId set by the RHSSO Chart
   clientId: backstage
   # Found in Keycloak admin console, see above
   clientSecret: <KEYCLOAK_CLIENT_SECRET>
-  # Generate this through the command line using
-  # echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage"
-  issuerUrl: https://<KEYCLOAK_HOST>/auth/realms/<REALM>
+  # Enable the backstage plugin
+  backstagePluginEnabled: true
 ```
 #### Postgres Configuration
 Uncomment the following line in the `postgres` section of `values.yaml`.  If the password is not set, a new password will be generated on every deployment, causing an error and preventing pod startup on subsequent helm upgrades.

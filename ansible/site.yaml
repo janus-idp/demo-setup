@@ -1,0 +1,135 @@
+---
+- name: Gather Cluster Info.
+  gather_facts: false
+  hosts: 'localhost'
+  tasks:
+  - name: Validate GITHUB_TOKEN env
+    assert:
+      that: lookup('ansible.builtin.env', 'GITHUB_TOKEN') != ""
+      fail_msg: "Please create a github PAT and set it as the GITHUB_TOKEN env"
+  - name: Determine Host
+    shell: "oc cluster-info | grep -Eo '.cluster(.*?).com'"
+    register: cluster_response
+  - name: Extract Cluster
+    set_fact:
+      cluster_host: "{{ cluster_response.stdout }}"
+- name: Install RHSSO Operator Chart.
+  hosts: 'localhost'
+  tasks:
+  - name: Run RHSSO Helm Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: rhsso-operator
+      namespace: "{{ item.namespace }}"
+      chart_ref: ../charts/operator
+      values_files: ["../charts/operator/values-rhsso-operator.yaml"]
+      create_namespace: true
+- name: Install RHSSO Backstage Chart.
+  hosts: 'localhost'
+  tasks:
+  - name: Run RHSSO Backstage Helm Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: rhsso-backstage
+      namespace: "{{ item.namespace }}"
+      chart_ref: ../charts/rhsso-backstage
+      values:
+        keycloak:
+          realm:
+            identityProvider:
+              clientId: "{{ lookup('ansible.builtin.env', 'GITHUB_CLIENT_ID') }}"
+              clientSecret: "{{ lookup('ansible.builtin.env', 'GITHUB_CLIENT_SECRET') }}"
+              enabled: "{{ false if lookup('ansible.builtin.env', 'GITHUB_CLIENT_SECRET') == '' else true }}"
+        backstage:
+          host: "assemble-demo.apps{{ cluster_host }}"
+      values_files: ["../charts/rhsso-backstage/values.yaml"]
+      create_namespace: true
+  - name: Wait for Keycloak to be Ready
+    with_items: "{{ env }}"
+    uri:
+      url: https://keycloak-{{ item.namespace }}.apps{{ cluster_host }}/auth
+      status_code: 200
+    register: result
+    until: result.status == 200
+    retries: 300
+    delay: 2
+  - name: Fetching RHSSO Admin Credentials
+    with_items: "{{ env }}"
+    shell: "oc -n {{ item.namespace }} get secret credential-rhsso-backstage --template='{{ '{{' }}.data.ADMIN_PASSWORD{{ '}}' }}' | base64 -d"
+    register: sso_admin_pwd_rsp
+  - name: Extract Password
+    set_fact:
+      sso_admin_pwd: "{{ sso_admin_pwd_rsp.results[0].stdout }}"
+      keycloak_namespce: "{{ sso_admin_pwd_rsp.results[0].item.namespace }}"
+  - name: Get RHSSO Auth Token
+    uri:
+      url: https://keycloak-{{ keycloak_namespce }}.apps{{ cluster_host }}/auth/realms/master/protocol/openid-connect/token
+      method: POST
+      body_format: form-urlencoded
+      body:
+        grant_type: "password"
+        client_id: "admin-cli"
+        username: "admin"
+        password: "{{ sso_admin_pwd }}"
+      return_content: true
+    register: token_rsp
+  - name: Extract Token
+    set_fact:
+      access_token: "{{ token_rsp.json.access_token }}"
+  - name: Get Backstage Client UUID
+    uri:
+      url: https://keycloak-{{ keycloak_namespce }}.apps{{ cluster_host }}/auth/admin/realms/backstage/clients?clientId=backstage
+      status_code: 200
+      method: GET
+      headers:
+        Authorization: "bearer {{ access_token }}"
+      return_content: true
+    register: client_uuid_rsp
+    until: client_uuid_rsp.content != "[]"
+    retries: 30
+    delay: 2
+  - name: Extract UUID
+    set_fact:
+      client_uuid: "{{ client_uuid_rsp.json[0].id }}"
+  - name: Get Backstage Client Secret
+    uri:
+      url: https://keycloak-{{ keycloak_namespce }}.apps{{ cluster_host }}/auth/admin/realms/backstage/clients/{{ client_uuid }}/client-secret
+      method: GET
+      headers:
+        Authorization: "bearer {{ access_token }}"
+      return_content: true
+    register: client_secret_rsp
+  - name: Extract Client Secret
+    set_fact:
+      client_secret: "{{ client_secret_rsp.json.value }}"
+- name: Install Backstage Chart.
+  hosts: 'localhost'
+  tasks:
+  - name: Run Backstage Helm Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: assemble-dev
+      namespace: "{{ item.namespace }}"
+      chart_ref: ../charts/assemble-backstage
+      values:
+        rhsso:
+          baseUrl: "https://keycloak-{{ item.namespace }}.apps{{ cluster_host }}/auth"
+          clientId: "backstage"
+          clientSecret: "{{ client_secret }}"
+          backstagePluginEnabled: true
+        backstage:
+          baseUrl: "https://assemble-demo.apps{{ cluster_host }}"
+        oauth:
+          enabled: true
+        postgres:
+          database_password: "postgres"
+        github:
+          token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
+      values_files: ["../charts/assemble-backstage/values.yaml"]
+      create_namespace: true
+
+
+

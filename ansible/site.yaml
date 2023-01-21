@@ -101,6 +101,9 @@
         Authorization: "bearer {{ access_token }}"
       return_content: true
     register: client_secret_rsp
+    until: client_secret_rsp.content != "[]"
+    retries: 30
+    delay: 2
   - name: Extract Client Secret
     set_fact:
       client_secret: "{{ client_secret_rsp.json.value }}"

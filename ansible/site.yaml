@@ -3,10 +3,6 @@
   gather_facts: false
   hosts: 'localhost'
   tasks:
-  - name: Validate GITHUB_TOKEN env
-    assert:
-      that: lookup('ansible.builtin.env', 'GITHUB_TOKEN') != ""
-      fail_msg: "Please create a github PAT and set it as the GITHUB_TOKEN env"
   - name: Determine Host
     shell: "oc cluster-info | grep -Eo '.cluster(.*?).com'"
     register: cluster_response
@@ -55,6 +51,9 @@
     until: result.status == 200
     retries: 300
     delay: 2
+  - name: Pause until Keycloak is initialized
+    pause:
+      seconds: 10
   - name: Fetching RHSSO Admin Credentials
     with_items: "{{ env }}"
     shell: "oc -n {{ item.namespace }} get secret credential-rhsso-backstage --template='{{ '{{' }}.data.ADMIN_PASSWORD{{ '}}' }}' | base64 -d"
@@ -87,9 +86,6 @@
         Authorization: "bearer {{ access_token }}"
       return_content: true
     register: client_uuid_rsp
-    until: client_uuid_rsp.content != "[]"
-    retries: 30
-    delay: 2
   - name: Extract UUID
     set_fact:
       client_uuid: "{{ client_uuid_rsp.json[0].id }}"
@@ -101,9 +97,6 @@
         Authorization: "bearer {{ access_token }}"
       return_content: true
     register: client_secret_rsp
-    until: client_secret_rsp.content != "[]"
-    retries: 30
-    delay: 2
   - name: Extract Client Secret
     set_fact:
       client_secret: "{{ client_secret_rsp.json.value }}"
@@ -130,6 +123,7 @@
         postgres:
           database_password: "postgres"
         github:
+          enabled: "{{ false if lookup('ansible.builtin.env', 'GITHUB_TOKEN') == '' else true }}"
           token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
       values_files: ["../charts/assemble-backstage/values.yaml"]
       create_namespace: true

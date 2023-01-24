@@ -1,0 +1,29 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: manifests-repo
+  namespace: assemble-argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: git
+  url: 'https://github.com/assemble-platforms-test/manifests.git'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+spec:
+  destination:
+    namespace: assemble-argocd
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: argocd/
+    repoURL: 'https://github.com/assemble-platforms-test/manifests.git'
+    targetRevision: HEAD
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

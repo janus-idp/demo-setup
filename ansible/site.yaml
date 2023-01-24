@@ -145,6 +145,8 @@
             type: "repo-creds"
       values_files: ["../charts/gitops-operator/values.yaml"]
       create_namespace: true
-
-
+  - name: Apply ArgoCD Application Bootstrapper
+    kubernetes.core.k8s:
+      state: present
+      src: ./app-of-apps.yml
 

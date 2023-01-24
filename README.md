@@ -2,7 +2,7 @@
 This repository contains automation to install the assemble platform, as well as supporting components. 
 
 ## Getting Started
-Step-by-step instructions on getting Assemble running with RHSSO authentication using the included helm charts.
+Step-by-step instructions on getting Assemble running with RHSSO authentication using the included helm charts or by running an ansible playbook found [here](./ansible/README.md).
 
 ### Prerequisites
 1. Clone this repository

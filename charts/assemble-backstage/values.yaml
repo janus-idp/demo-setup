@@ -136,6 +136,11 @@ backstage:
       - type: url
         target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-components.yaml
 
+      # JanusIDP Quarkus Template
+      - type: url
+        target: https://github.com/janus-idp/software-templates/blob/main/scaffolder-templates/quarkus-web-template/template.yaml
+        rules:
+          - allow: [Template]
       # Backstage example systems
       #- type: url
       #  target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-systems.yaml

@@ -127,6 +127,24 @@
           token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
       values_files: ["../charts/assemble-backstage/values.yaml"]
       create_namespace: true
+- name: Install GitOps Chart.
+  hosts: 'localhost'
+  tasks:
+  - name: Run GitOps Helm Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: argocd
+      namespace: assemble-argocd
+      chart_ref: ../charts/gitops-operator
+      values:
+        secrets:
+          - name: repo-creds
+            username: "token"
+            password: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
+            type: "repo-creds"
+      values_files: ["../charts/gitops-operator/values.yaml"]
+      create_namespace: true
 
 
 

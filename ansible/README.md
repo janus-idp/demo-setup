@@ -37,7 +37,7 @@ helm plugin install https://github.com/databus23/helm-diff
   ```
   echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
   ```
-8. Create a Github Organization and set the `GITHUB_ORGANIZATION` environment variable to the name of the Organization.  You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
+8. OPTIONAL: If you would like setup to include GitOps configuration, create a Github Organization and set the `GITHUB_ORGANIZATION` environment variable to the name of the Organization.  You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
 
 ## Create the enviroment
 

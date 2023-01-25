@@ -10,9 +10,10 @@ This guide walks you though how to install Assemble with Ansible
  ansible-galaxy collection install community.general
 ```
 
-3. The `kubernetes`, `openshift`, and `PyYAML` python packages need to be installed before using this playbook.
+3. The `kubernetes`, `openshift`, `PyYAML`, and `PyGitub` python packages need to be installed before using this playbook.
  ```
  pip3 install --user kubernetes openshift PyYAML
+ pip3 install PyGithub
  ```
 
 4. The `helm diff` plugin needs to be installed before using this playbook.

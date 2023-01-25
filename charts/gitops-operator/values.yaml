@@ -57,20 +57,23 @@ argocd_cr:
   dex:
     openShiftOAuth: true
 
-  #initialRepositories: |
+initialRepositories: []
+  #initialRepositories:
   #  - name: redhat-cop
   #    type: helm
   #    url: https://redhat-cop.github.io/helm-charts
 
   # configure your repo credential template (override this)
-  repositoryCredentials: null
-  # EXAMPLE
-  # repositoryCredentials: |
-  #   - url: https://gitlab-ce.apps.openshift-498-bd8hw.do500.redhatlabs.dev
+repositoryCredentials: []
+  # repositoryCredentials:
+  #   - name: private-repo-creds
+  #     url: https://gitlab-ce.apps.openshift-498-bd8hw.do500.redhatlabs.dev
   #     type: git
-  #     passwordSecret:
-  #       key: password
-  #       name: git-auth
-  #     usernameSecret:
-  #       key: username
-  #       name: git-auth
+  #     password: password
+  #     username: username
+initialApps: []
+  # initialApps:
+  #   - name: init-app
+  #     path: argocd/
+  #     repoURL: https://gitlab-ce.apps.openshift-498-bd8hw.do500.redhatlabs.dev
+  #     targetRevision: HEAD

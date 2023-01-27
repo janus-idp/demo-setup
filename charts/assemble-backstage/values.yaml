@@ -93,7 +93,7 @@ serviceAccount:
 
 ## There is a secret created via the template/
 backstage:
-  companyname: "My Company"
+  companyName: "My Company"
   port: 7007
   # The base URL for the frontend application e.g. https://<hostname>
   baseUrl: ""

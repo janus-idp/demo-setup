@@ -3,4 +3,4 @@
 
 env:
 - namespace: "backstage"
-  companyname: "ACME Inc"
+  companyName: "ACME Inc"

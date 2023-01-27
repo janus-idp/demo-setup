@@ -51,7 +51,7 @@ The 'catalog:' section will define the sources for configuring the catalog secti
 ```yaml
 # backstage configuration
 backstage:
-  companyname: "My Company"
+  companyName: "My Company"
   baseUrl: 'https://<BACKSTAGE_HOST>'
 
   ## Override Catalog with here

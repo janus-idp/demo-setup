@@ -1,0 +1,10 @@
+rhsso:
+  # Generate this through the command line using
+  # echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth"
+  baseUrl: https://<KEYCLOAK_ROUTE_HOST>/auth
+  # The pre-set clientId set by the RHSSO Chart
+  clientId: backstage
+  # Found in Keycloak admin console, see above
+  clientSecret: <KEYCLOAK_CLIENT_SECRET>
+  # Enable the backstage plugin
+  backstagePluginEnabled: true

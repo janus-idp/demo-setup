@@ -4,7 +4,10 @@ This repository contains automation to install the `assemble platform`, as well 
 
 ## Getting Started
 
-Step-by-step instructions on getting Assemble running with RHSSO authentication using the included helm charts or by running an ansible playbook found [here](./ansible/README.md).
+Step-by-step instructions on getting Assemble running with RHSSO authentication using the included helm charts
+
+
+> **_NOTE:_** For an even faster start try running the ansible playbook found [here](./ansible/README.md).
 
 ### Prerequisites
 
@@ -16,7 +19,7 @@ Step-by-step instructions on getting Assemble running with RHSSO authentication 
 This section will go over how to:
 
 1. Install the RHSSO Operator
-2. Deploy Keycloak, configured with a GitHub App
+2. Deploy Keycloak using a GitHub Client
 
 #### Install RHSSO Operator
 
@@ -26,20 +29,20 @@ Log into your Openshift Cluster and run the following:
 helm upgrade --install rhsso-operator charts/operator -f charts/operator/values-rhsso-operator.yaml -n backstage --create-namespace
 ```
 
-#### Create GitHub App
+#### Create GitHub Client App
 
 Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app) within the desired organization.  Use the following commands to generate the sample values used for this demo.
 
 Homepage URL:
 
 ```sh
-echo "https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+HOMEPAGE_URL="https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
 ```
 
 Authorization callback URL:
 
 ```sh
-echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
+AUTHORIZATION_URL="https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
 ```
 
 Capture the Github Client ID:
@@ -54,7 +57,7 @@ GITHUB_OAUTH_CLIENT_SECRET=<GITHUB_OAUTH_CLIENT_SECRET>
 Use the following command to deploy the Helm Chart:
 
 ```sh
-helm upgrade -i rhsso-backstage charts/rhsso-backstage -n backstage --set keycloak.realm.identityProvider.clientId=$GITHUB_OAUTH_CLIENT_ID --set keycloak.realm.identityProvider.clientSecret=$GITHUB_OAUTH_CLIENT_SECRET --set backstage.host="assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+helm upgrade -i rhsso-backstage charts/rhsso-backstage -n keycloak --set keycloak.realm.identityProvider.clientId=$GITHUB_OAUTH_CLIENT_ID --set keycloak.realm.identityProvider.clientSecret=$GITHUB_OAUTH_CLIENT_SECRET --set backstage.host="assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
 ```
 
 Keycloak is now configured and deployed in the `backstage` namespace in OpenShift.
@@ -67,7 +70,7 @@ Keycloak Admin Console URL:
 echo $(oc get route keycloak --namespace backstage -o json | jq -r '.spec.host')/auth/admin/
 ```
 
-Log in to Keycloak's Admin Console using the credentials stored in the `credential-rhsso-backstage` secret.  And navigate to `credentials` tab of the `backstage` client, taking note of the newly generated secret associated with the client.
+Log in to Keycloak's Admin Console using the credentials stored in the `credential-rhsso-backstage` secret.  And navigate to `credentials` tab of the `backstage` client, taking note of the newly generated secret associated with the client (this will be used later).
 
 ### Backstage
 

@@ -94,10 +94,9 @@ rhsso:
   backstagePluginEnabled: true
 ```
 
-
 ### OAuth
 
-By default, access to Backstage is not protected by any authentication or authorization. A OAuth proxy can be used to restrict access. An OAuth client must be created within an identity provider and made available to Helm during installation. 
+By default, access to Backstage is not protected by any authentication or authorization. A OAuth proxy can be used to restrict access. An OAuth client must be created within an identity provider and made available to Helm during installation.
 
 The following values can be used to enable OAuth for backstage:
 

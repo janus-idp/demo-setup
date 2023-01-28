@@ -81,20 +81,22 @@ Update the `values/rhsso-values.yaml` file with the following content:
 rhsso:
   # Generate this through the command line using
   # echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth"
-  baseUrl: https://keycloak-backstage.apps.cluster-77bph.77bph.sandbox1927.opentlc.com/auth/
+  baseUrl: <BASE_URL>
   # The pre-set clientId set by the RHSSO Chart
   clientId: backstage
-  # Found in Keycloak admin console, see above
+  # Found in Keycloak admin console, see note below
   clientSecret: <KEYCLOAK_CLIENT_SECRET>
   # Enable the backstage plugin
   backstagePluginEnabled: true
 ```
 
+> **_NOTE:_** `KEYCLOAK_CLIENT_SECRET` can be found in the KeyCloak UI by navigating to `Clients -> Backstage -> Credentials`
+
 #### Postgres Configuration
 
 Optionally uncomment the following line in the `postgres` section of `charts/assemble-backstage/values.yaml`.  
 
-> Note: If you choose to leave the password unset, a new password will be generated on every deployment. Which will cause issues on helm upgrades
+> **_NOTE:_** If you choose to leave the password unset, a new password will be generated on every deployment. Which will cause issues on helm upgrades
 
 ```yaml
 postgres:
@@ -136,38 +138,42 @@ backstage:
 
 For a list of additional templates and information on the Quarkus template referenced here, visit the [Janus-IDP](https://github.com/janus-idp/software-templates) organization.
 
-##### Update app-config.yaml
+##### Integrate Github
 
-In order for Backstage to push the newly templated application to the chosen repository, an Access Token must be added to `app-config.yaml`.  See the official [Backstage Documentation](https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration) for information on how to create one.  For the purposes of a demonstration, a Personal Access Token will do.
+A Git Token must be included in the `app-config.yaml` in order to login to the Assemble Platform.
 
-In `./templates/assemble-config-secret.yaml`:
+See the official [Backstage Documentation](https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration) for more information on how to create one.  For the purposes of a demonstration, a Personal Access Token will do.
+
+Add the following content to `values/rhsso-values.yaml` in order to include the git token to the config:
 
 ```yaml
-integrations:
-    github:
-    - host: github.com
-      token: <ACCESS_TOKEN>
+github:
+  enabled: true
+  token: <ACCESS_TOKEN>
 ```
 
 > **_NOTE:_**  The token must be wrapped in single quotes, even when applying the token through an environment variable.
->
+
 #### Deploy the Backstage Chart
 
 Use the following command to deploy the Helm Chart.
 
 ```sh
-helm upgrade --install assemble-dev . -n assemble --create-namespace
+helm upgrade -i assemble-dev charts/assemble-backstage -n assemble --create-namespace -f values/rhsso-values.yaml
 ```
 
-Backstage is now configured and deployed in the `assemble` namespace in OpenShift.  Access the UI through the newly deployed Route.  Log in using authentication through GitHub.
+Backstage is now configured and deployed in the `assemble` namespace in OpenShift.  Access the UI through the newly deployed Route.  Log in using authentication through GitHub:
+
+```sh
+echo $(oc get route assemble-dev --namespace assemble -o json | jq -r '.spec.host')
+```
 
 ### GitOps
 
 For more advanced demos, GitOps can be used to sync templated applications to OpenShift.
 
 ```sh
-# from the charts/gitops-operator directory
-helm upgrade --install argocd . -f values.yaml -n assemble-argocd --create-namespace
+helm upgrade --install charts/gitops-operator/argocd . -n assemble-argocd --create-namespace
 ```
 
 ### Tekton
@@ -175,6 +181,5 @@ helm upgrade --install argocd . -f values.yaml -n assemble-argocd --create-names
 For more advanced demos, OpenShift Pipelines can be used for CI/CD operations.
 
 ```sh
-# from the charts/pipelines-operator directory
-helm upgrade --install pipelines . -f values.yaml -n assemble-pipelines --create-namespace
+helm upgrade --install pipelines charts/pipelines-operator -n assemble-pipelines --create-namespace
 ```

@@ -1,20 +1,22 @@
 rhsso:
   # Generate this through the command line using
-  # echo "$(oc get route keycloak --namespace backstage -o json | jq -r '.spec.host')/auth"
-  baseUrl: https://<KEYCLOAK_ROUTE_HOST>/auth
+  # echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth"
+  baseUrl: <BASE_URL>
   # The pre-set clientId set by the RHSSO Chart
   clientId: backstage
-  # Found in Keycloak admin console, see above
+  # Found in Keycloak admin console, see note below
   clientSecret: <KEYCLOAK_CLIENT_SECRET>
   # Enable the backstage plugin
   backstagePluginEnabled: true
+oauth:
+  enabled: true
 
 ## There is a secret created via the template/
 backstage:
   companyName: "UPDATE_ME"
   port: 7007
-  # The base URL for the frontend application e.g. https://<hostname>
-  baseUrl: ""
+  # echo "https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+  baseUrl: "<BASE_URL>"
 
   # Ignore NodeJS insecure certificate warnings
   tlsInsecure: false
@@ -29,54 +31,15 @@ backstage:
 
   ## Override Catalog with here
   catalog:
-    #import:
-    #  entityFilename: /examples/catalog-info.yaml
-    #  pullRequestBranchName: backstage-integration
-    rules:
-      - allow: [Component, System, API, Resource, Location]
-    locations:
-      # Local example data, file locations are relative to the backend process, typically `packages/backend`
-      #- type: file
-      #  target: /examples/entities.yaml
+      #  Add Template to the allowed types
+      rules:
+nt, System, API, Resource, Loca        - allow: [Componetion, Template]
+      locations:
+        # Add reference to sample template
+        - type: url
+          target: https://github.com/janus-idp/software-templates/blob/main/scaffolder-templates/quarkus-web-template/template.yaml
+  
 
-      # Local example template
-      #- type: file
-      #  target: /examples/template/template.yaml
-      #  rules:
-      #    - allow: [Template]
-
-      # Local example organizational data
-      #- type: file
-      #  target: /examples/org.yaml
-      #  rules:
-      #    - allow: [User, Group]
-
-      - type: url
-        target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-components.yaml
-
-      # JanusIDP Quarkus Template
-      - type: url
-        target: https://github.com/janus-idp/software-templates/blob/main/scaffolder-templates/quarkus-web-template/template.yaml
-        rules:
-          - allow: [Template]
-      # Backstage example systems
-      #- type: url
-      #  target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-systems.yaml
-
-      # Backstage example APIs
-      #- type: url
-      #  target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-apis.yaml
-
-      # Backstage example resources
-      #- type: url
-      #  target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-resources.yaml
-
-      # Backstage example organization groups
-      #- type: url
-      #  target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme/org.yaml
-
-      # Backstage example templates
-      #- type: url
-      #  target: https://github.com/backstage/software-templates/blob/main/scaffolder-templates/react-ssr-template/template.yaml
-      #  rules:
-      #    - allow: [Template]
+github:
+  enabled: true
+  token: "<ACCESS_TOKEN>"

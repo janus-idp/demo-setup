@@ -1,11 +1,11 @@
 rhsso:
   # Generate this through the command line using
-  # echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth"
-  baseUrl: <BASE_URL>
+  # echo "$(oc get route keycloak --namespace backstage -o json | jq -r '.spec.host')/auth"
+  baseUrl: https://keycloak-backstage.apps.cluster-77bph.77bph.sandbox1927.opentlc.com/auth
   # The pre-set clientId set by the RHSSO Chart
   clientId: backstage
-  # Found in Keycloak admin console, see note below
-  clientSecret: <KEYCLOAK_CLIENT_SECRET>
+  # Found in Keycloak admin console, see above
+  clientSecret: 1Ti3YH3pqadiVxpXD0cru2UZb4wJQisn
   # Enable the backstage plugin
   backstagePluginEnabled: true
 oauth:
@@ -13,10 +13,10 @@ oauth:
 
 ## There is a secret created via the template/
 backstage:
-  companyName: "UPDATE_ME"
+  companyName: "JLand LLC"
   port: 7007
-  # echo "https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
-  baseUrl: "<BASE_URL>"
+  # The base URL for the frontend application e.g. https://<hostname>
+  baseUrl: "https://assemble-demo.apps.cluster-77bph.77bph.sandbox1927.opentlc.com"
 
   # Ignore NodeJS insecure certificate warnings
   tlsInsecure: false
@@ -33,7 +33,7 @@ backstage:
   catalog:
       #  Add Template to the allowed types
       rules:
-nt, System, API, Resource, Loca        - allow: [Componetion, Template]
+        - allow: [Component, System, API, Resource, Location, Template]
       locations:
         # Add reference to sample template
         - type: url
@@ -42,4 +42,4 @@ nt, System, API, Resource, Loca        - allow: [Componetion, Template]
 
 github:
   enabled: true
-  token: "<ACCESS_TOKEN>"
+  token: "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"

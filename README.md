@@ -36,13 +36,13 @@ Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/b
 Homepage URL:
 
 ```sh
-HOMEPAGE_URL="https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+HOMEPAGE_URL="assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
 ```
 
 Authorization callback URL:
 
 ```sh
-AUTHORIZATION_URL="https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
+AUTHORIZATION_URL="keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
 ```
 
 Capture the Github Client ID:
@@ -58,7 +58,7 @@ GITHUB_OAUTH_CLIENT_SECRET=<GITHUB_OAUTH_CLIENT_SECRET>
 Use the following command to deploy the Helm Chart:
 
 ```sh
-helm upgrade -i rhsso-backstage charts/rhsso-backstage -n keycloak --set keycloak.realm.identityProvider.clientId=$GITHUB_OAUTH_CLIENT_ID --set keycloak.realm.identityProvider.clientSecret=$GITHUB_OAUTH_CLIENT_SECRET --set backstage.host="$HOMEPAGE_URL"
+helm upgrade -i rhsso-backstage charts/rhsso-backstage -n backstage --set keycloak.realm.identityProvider.clientId=$GITHUB_OAUTH_CLIENT_ID --set keycloak.realm.identityProvider.clientSecret=$GITHUB_OAUTH_CLIENT_SECRET --set backstage.host="$HOMEPAGE_URL"
 ```
 
 Keycloak is now configured and deployed in the `backstage` namespace in OpenShift.
@@ -98,14 +98,7 @@ rhsso:
 
 #### Postgres Configuration
 
-Optionally uncomment the following line in the `postgres` section of `charts/assemble-backstage/values.yaml`.  
-
-> **_NOTE:_** If you choose to leave the password unset, a new password will be generated on every deployment. Which will cause issues on helm upgrades
-
-```yaml
-postgres:
-  database_password: "somepassword"
-```
+Postgres will work as is, but it can optionally be modified if required, view the `charts/assemble-backstage/values.yaml` file for more info.
 
 #### General Backstage Configuration
 
@@ -144,7 +137,7 @@ For a list of additional templates and information on the Quarkus template refer
 
 ##### Integrate Github
 
-A Git Token must be included in the `app-config.yaml` in order to login to the Assemble Platform.
+A Git Token must be included in the `app-config.yaml` in push changes into a Github Repository.
 
 See the official [Backstage Documentation](https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration) for more information on how to create one.  For the purposes of a demonstration, a Personal Access Token will do.
 
@@ -187,3 +180,7 @@ For more advanced demos, OpenShift Pipelines can be used for CI/CD operations.
 ```sh
 helm upgrade --install pipelines charts/pipelines-operator -n assemble-pipelines --create-namespace
 ```
+
+### TBD
+
+More information about some stuff the user can do once the Backstage UI is up.

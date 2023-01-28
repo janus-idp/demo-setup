@@ -49,6 +49,7 @@ Capture the Github Client ID:
 
 ```sh
 GITHUB_OAUTH_CLIENT_ID=<GITHUB_OAUTH_CLIENTID>
+
 GITHUB_OAUTH_CLIENT_SECRET=<GITHUB_OAUTH_CLIENT_SECRET>
 ```
 
@@ -57,7 +58,7 @@ GITHUB_OAUTH_CLIENT_SECRET=<GITHUB_OAUTH_CLIENT_SECRET>
 Use the following command to deploy the Helm Chart:
 
 ```sh
-helm upgrade -i rhsso-backstage charts/rhsso-backstage -n keycloak --set keycloak.realm.identityProvider.clientId=$GITHUB_OAUTH_CLIENT_ID --set keycloak.realm.identityProvider.clientSecret=$GITHUB_OAUTH_CLIENT_SECRET --set backstage.host="assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+helm upgrade -i rhsso-backstage charts/rhsso-backstage -n keycloak --set keycloak.realm.identityProvider.clientId=$GITHUB_OAUTH_CLIENT_ID --set keycloak.realm.identityProvider.clientSecret=$GITHUB_OAUTH_CLIENT_SECRET --set backstage.host="$HOMEPAGE_URL"
 ```
 
 Keycloak is now configured and deployed in the `backstage` namespace in OpenShift.

@@ -1,0 +1,45 @@
+rhsso:
+  # Generate this through the command line using
+  # echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth"
+  baseUrl: <BASE_URL>
+  # The pre-set clientId set by the RHSSO Chart
+  clientId: backstage
+  # Found in Keycloak admin console, see note below
+  clientSecret: <KEYCLOAK_CLIENT_SECRET>
+  # Enable the backstage plugin
+  backstagePluginEnabled: true
+oauth:
+  enabled: true
+
+## There is a secret created via the template/
+backstage:
+  companyName: "UPDATE_ME"
+  port: 7007
+  # echo "https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+  baseUrl: "<BASE_URL>"
+
+  # Ignore NodeJS insecure certificate warnings
+  tlsInsecure: false
+
+  database:
+    client: pg
+    connection:
+      host: "${POSTGRES_HOST}"
+      port: "${POSTGRES_PORT}"
+      user: "${POSTGRES_USER}"
+      password: "${POSTGRES_ADMIN_PASSWORD}"
+
+  ## Override Catalog with here
+  catalog:
+      #  Add Template to the allowed types
+      rules:
+nt, System, API, Resource, Loca        - allow: [Componetion, Template]
+      locations:
+        # Add reference to sample template
+        - type: url
+          target: https://github.com/janus-idp/software-templates/blob/main/scaffolder-templates/quarkus-web-template/template.yaml
+  
+
+github:
+  enabled: true
+  token: "<ACCESS_TOKEN>"

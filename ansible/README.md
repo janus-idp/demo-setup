@@ -4,10 +4,9 @@ This guide walks you though how to install Assemble with Ansible
 ## Prereqs
 1. Ensure `ansible`, `helm`, and `pip3` are installed.
 
-2. The Ansible `kubernetes.core` and `community.general` collections needs to be installed before using this playbook.
+2. The Ansible `kubernetes.core` collections needs to be installed before using this playbook.
  ```
  ansible-galaxy collection install kubernetes.core
- ansible-galaxy collection install community.general
 ```
 
 3. The `kubernetes`, `openshift`, and `PyYAML` python packages need to be installed before using this playbook.
@@ -36,7 +35,7 @@ helm plugin install https://github.com/databus23/helm-diff
   ```
   echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
   ```
-8. Create a Github Organization and set the `GITHUB_ORGANIZATION` environment variable to the name of the Organization.  You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
+8. OPTIONAL: If you would like setup to include GitOps configuration, create a Github Organization and set the `GITHUB_ORGANIZATION` environment variable to the name of the Organization.  You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
 
 ## Create the enviroment
 

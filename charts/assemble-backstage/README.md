@@ -51,7 +51,7 @@ The 'catalog:' section will define the sources for configuring the catalog secti
 ```yaml
 # backstage configuration
 backstage:
-  companyname: "My Company"
+  companyName: "My Company"
   baseUrl: 'https://<BACKSTAGE_HOST>'
 
   ## Override Catalog with here
@@ -94,10 +94,9 @@ rhsso:
   backstagePluginEnabled: true
 ```
 
-
 ### OAuth
 
-By default, access to Backstage is not protected by any authentication or authorization. A OAuth proxy can be used to restrict access. An OAuth client must be created within an identity provider and made available to Helm during installation. 
+By default, access to Backstage is not protected by any authentication or authorization. A OAuth proxy can be used to restrict access. An OAuth client must be created within an identity provider and made available to Helm during installation.
 
 The following values can be used to enable OAuth for backstage:
 

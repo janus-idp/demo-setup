@@ -14,7 +14,7 @@ operator:
   name: openshift-pipelines-operator-rh
   sourceName: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: openshift-pipelines-operator-rh.v1.8.0
+  startingCSV: openshift-pipelines-operator-rh.v1.8.2
 
 # When not using helm set this to true
 ignoreHelmHooks: false

@@ -4,16 +4,14 @@ This guide walks you though how to install Assemble with Ansible
 ## Prereqs
 1. Ensure `ansible`, `helm`, and `pip3` are installed.
 
-2. The Ansible `kubernetes.core` and `community.general` collections needs to be installed before using this playbook.
+2. The Ansible `kubernetes.core` collections needs to be installed before using this playbook.
  ```
  ansible-galaxy collection install kubernetes.core
- ansible-galaxy collection install community.general
 ```
 
-3. The `kubernetes`, `openshift`, `PyYAML`, and `PyGitub` python packages need to be installed before using this playbook.
+3. The `kubernetes`, `openshift`, and `PyYAML` python packages need to be installed before using this playbook.
  ```
  pip3 install --user kubernetes openshift PyYAML
- pip3 install PyGithub
  ```
 
 4. The `helm diff` plugin needs to be installed before using this playbook.

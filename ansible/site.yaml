@@ -21,6 +21,18 @@
       chart_ref: ../charts/operator
       values_files: ["../charts/operator/values-rhsso-operator.yaml"]
       create_namespace: true
+- name: Install OpenShift Pipelines Operator Chart.
+  hosts: 'localhost'
+  tasks:
+  - name: Run Pipelines Operator Helm Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: pipelines
+      namespace: "{{ item.pipelinesnamespace }}"
+      chart_ref: ../charts/pipelines-operator
+      values_files: ["../charts/pipelines-operator/values.yaml"]
+      create_namespace: true
 - name: Install RHSSO Backstage Chart.
   hosts: 'localhost'
   tasks:

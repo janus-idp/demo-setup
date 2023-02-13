@@ -16,21 +16,21 @@ A guide to installing `Assemble with Ansible`
 
 1. The Ansible `kubernetes.core` collections needs to be installed before using this playbook.
 
-  ``` sh
-  ansible-galaxy collection install kubernetes.core
-  ```
+    ``` sh
+    ansible-galaxy collection install kubernetes.core
+    ```
 
 1. The `kubernetes`, `openshift`, and `PyYAML` python packages need to be installed before using this playbook.
 
-  ``` sh
-  pip3 install --user kubernetes openshift PyYAML
-  ```
+    ``` sh
+    pip3 install --user kubernetes openshift PyYAML
+    ```
 
 1. The `helm diff` plugin should to be installed before using this playbook.
 
-  ``` sh
-  helm plugin install https://github.com/databus23/helm-diff
-  ```
+    ``` sh
+    helm plugin install https://github.com/databus23/helm-diff
+    ```
 
 1. Login to OpenShift
 1. If you want to use the GitHub integration, generate a Personal Access Token for GitHub and set the `GITHUB_TOKEN` environment variable.
@@ -38,19 +38,20 @@ A guide to installing `Assemble with Ansible`
 1. If you want to use GitHub as an IDP for backstage then create an GitHub app and set the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` environment variables.
    - Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app) within the desired organization.  
    - Use the following commands to generate the sample values used for this demo and fill them in using the GitHub UI:
-    **Homepage URL:**
 
-    ```sh
-    echo "https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
-    ```
+      **Homepage URL:**
 
-    **Authorization Callback URL:**
+        ```sh
+          echo "https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+        ```
 
-    ```sh
-    echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
-    ```
+      **Authorization Callback URL:**
 
-1. OPTIONAL: If you would like setup to include GitOps configuration, create a [Github Organization](https://github.com/settings/organizations) and set the `GITHUB_ORGANIZATION` environment variable to the name of the Organization. You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
+        ```sh
+          echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
+        ```
+
+2. OPTIONAL: If you would like setup to include GitOps configuration, create a [Github Organization](https://github.com/settings/organizations) and set the `GITHUB_ORGANIZATION` environment variable to the name of the Organization. You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
 
 ## Install
 
@@ -74,6 +75,6 @@ Most likely an environment variable is not set, or not set correctly. Validate, 
 
 > Note: If there is an issue post the Postgres database creation please delete the database (or the entire namespace) before attempting to rerun the ansible playbook.
 
-### Login to Argo Cluster
+#### Unable to login to Argo Cluster
 
-Admin password can be found on "argocd-cluster" secret. And the username is `admin`
+Admin password can be found on `argocd-cluster` secret. And the username is `admin`

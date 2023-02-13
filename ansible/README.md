@@ -73,3 +73,7 @@ The RHSSO operator may not have completed installation, try rerunning the Ansibl
 Most likely an environment variable is not set, or not set correctly. Validate, delete the Postgres Database Deployment and re-try the playbook.
 
 > Note: If there is an issue post the Postgres database creation please delete the database (or the entire namespace) before attempting to rerun the ansible playbook.
+
+### Login to Argo Cluster
+
+Admin password can be found on "argocd-cluster" secret. And the username is `admin`

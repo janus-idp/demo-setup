@@ -171,42 +171,4 @@
           url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}"
       values_files: ["../charts/assemble-backstage/values.yaml"]
       create_namespace: true
-- name: Install and Configure GitOps.
-  hosts: 'localhost'
-  tasks:
-  - name: Create Git Repository for Manifest
-    with_items: "{{ env }}"
-    community.general.github_repo:
-      access_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
-      organization: "{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
-      name: manifests
-      description: "Repository for ArgoCD Applications"
-      private: true
-      state: present
-      force_defaults: false
-  - name: Install GitOps Helm Chart
-    with_items: "{{ env }}"
-    kubernetes.core.helm:
-      state: present
-      name: argocd
-      namespace: assemble-argocd
-      chart_ref: ../charts/gitops-operator
-      values:
-        repositoryCredentials:
-          - name: "private-repo-creds"
-            username: "token"
-            password: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
-            url: "https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
-            type: "git"
-        initialRepositories:
-          - name: "manifests-repo"
-            url: "https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/manifests.git"
-            type: "git"
-        initialApps:
-          - name: "app-of-apps"
-            path: "argocd/"
-            repoURL: "https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/manifests.git"
-            targetRevision: "HEAD"
-      values_files: ["../charts/gitops-operator/values.yaml"]
-      create_namespace: true
 

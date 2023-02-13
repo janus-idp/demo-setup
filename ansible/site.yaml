@@ -130,7 +130,7 @@
 - name: Install and Configure GitOps.
   hosts: 'localhost'
   tasks:
-  - name: Create Manifests Repo
+  - name: Create Git Repository for Manifest
     with_items: "{{ env }}"
     community.general.github_repo:
       access_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"

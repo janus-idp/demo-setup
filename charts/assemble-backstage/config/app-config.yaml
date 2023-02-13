@@ -64,7 +64,19 @@
         runIn: 'docker' # Alternatives - 'local'
       publisher:
         type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
-
+    {{- with .Values.argocd }}
+    {{- if .enabled | default false }}
+    argocd:
+      username: "{{ .username }}"
+      password: "{{ .password }}"
+      waitCycles: {{ .waitCycles }}
+      appLocatorMethods:
+        - type: 'config'
+          instances:
+            - name: main
+              url: "{{ .url }}"
+    {{- end }}
+    {{- end }}
     auth:
       # see https://backstage.io/docs/auth/ to learn about auth providers
 {{- if not .Values.oauth.enabled }}

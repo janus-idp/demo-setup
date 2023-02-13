@@ -1,3 +1,5 @@
 env:
 - namespace: "backstage"
-  companyName: "ACME Inc"
+  companyname: "ACME Inc"
+  gitopsnamespace: "assemble-argocd"
+  pipelinesnamespace: "assemble-pipelines"

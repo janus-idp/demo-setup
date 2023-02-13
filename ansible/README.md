@@ -11,29 +11,33 @@ A guide to installing `Assemble with Ansible`
     - Please use the version included with your Openshift Deployment
   - [pip3](https://pypi.org/project/pip/)
 - Install ansible's `kubernetes.core` and `community.general` collections:
-  
-  ```sh
+
+## Setup
+
+1. The Ansible `kubernetes.core` collections needs to be installed before using this playbook.
+
+  ``` sh
   ansible-galaxy collection install kubernetes.core
-  ansible-galaxy collection install community.general
   ```
 
-- Install python packages `kubernetes`, `openshift`, `PyYAML`, and `PyGitub`:
+1. The `kubernetes`, `openshift`, and `PyYAML` python packages need to be installed before using this playbook.
 
-    ```sh
-    pip3 install --user kubernetes openshift PyYAML
-    pip3 install PyGithub
-    ```
+  ``` sh
+  pip3 install --user kubernetes openshift PyYAML
+  ```
 
-### Setup
+1. The `helm diff` plugin should to be installed before using this playbook.
 
-> Tip: Make sure to `export` the environment variables so Ansible picks them up.
+  ``` sh
+  helm plugin install https://github.com/databus23/helm-diff
+  ```
 
-- To enable GitHub integration, generate a Personal Access Token for GitHub and set the `GITHUB_TOKEN` environment variable.
-  - See the official [Backstage Documentation](https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration) for creation instructions
-- To enable GitHub as an IDP for backstage then create an GitHub app and set the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` environment variables.
-  - Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app) within the desired organization.  
-  - Use the following commands to generate the sample values used for this demo and fill them in using the GitHub UI:
-
+1. Login to OpenShift
+1. If you want to use the GitHub integration, generate a Personal Access Token for GitHub and set the `GITHUB_TOKEN` environment variable.
+   See the official [Backstage Documentation](https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration) for information on how to create one.  For the purposes of a demonstration, a Personal Access Token will do.
+1. If you want to use GitHub as an IDP for backstage then create an GitHub app and set the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` environment variables.
+   - Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app) within the desired organization.  
+   - Use the following commands to generate the sample values used for this demo and fill them in using the GitHub UI:
     **Homepage URL:**
 
     ```sh
@@ -46,8 +50,7 @@ A guide to installing `Assemble with Ansible`
     echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
     ```
 
-- To enable GitOps configuration, create a Github Organization and set the `GITHUB_ORGANIZATION` environment variable to the name of your [GitOp's Organization](https://github.com/settings/organizations).
-  - Or use an organization you are already a member of (ability to create new repositories required)
+1. OPTIONAL: If you would like setup to include GitOps configuration, create a [Github Organization](https://github.com/settings/organizations) and set the `GITHUB_ORGANIZATION` environment variable to the name of the Organization. You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
 
 ## Install
 

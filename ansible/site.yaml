@@ -21,6 +21,18 @@
       chart_ref: ../charts/operator
       values_files: ["../charts/operator/values-rhsso-operator.yaml"]
       create_namespace: true
+- name: Install OpenShift Pipelines Operator Chart.
+  hosts: 'localhost'
+  tasks:
+  - name: Run Pipelines Operator Helm Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: pipelines
+      namespace: "{{ item.pipelinesnamespace }}"
+      chart_ref: ../charts/pipelines-operator
+      values_files: ["../charts/pipelines-operator/values.yaml"]
+      create_namespace: true
 - name: Install RHSSO Backstage Chart.
   hosts: 'localhost'
   tasks:
@@ -100,9 +112,35 @@
   - name: Extract Client Secret
     set_fact:
       client_secret: "{{ client_secret_rsp.json.value }}"
+- name: Install and Configure GitOps.
+  hosts: 'localhost'
+  tasks:
+  - name: Install GitOps Helm Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: argocd
+      namespace: "{{ item.gitopsnamespace }}"
+      chart_ref: ../charts/gitops-operator
+      values:
+        repositoryCredentials:
+          - name: "private-repo-creds"
+            username: "token"
+            password: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
+            url: "https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
+            type: "git"
+      values_files: ["../charts/gitops-operator/values.yaml"]
+      create_namespace: true
 - name: Install Backstage Chart.
   hosts: 'localhost'
   tasks:
+  - name: Fetching ArgoCD Admin Credentials
+    with_items: "{{ env }}"
+    shell: "oc -n {{ item.gitopsnamespace }} get secret argocd-cluster --template='{{ '{{' }}index .data \"admin.password\"{{ '}}' }}' | base64 -d"
+    register: argocd_admin_pwd_rsp
+  - name: Extract Password
+    set_fact:
+      argocd_admin_pwd: "{{ argocd_admin_pwd_rsp.results[0].stdout }}"
   - name: Run Backstage Helm Chart
     with_items: "{{ env }}"
     kubernetes.core.helm:
@@ -125,6 +163,12 @@
         github:
           enabled: "{{ false if lookup('ansible.builtin.env', 'GITHUB_TOKEN') == '' else true }}"
           token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
+        argocd:
+          enabled: true
+          username: "admin"
+          password: "{{ argocd_admin_pwd }}"
+          waitCycles: 25
+          url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}"
       values_files: ["../charts/assemble-backstage/values.yaml"]
       create_namespace: true
 - name: Install and Configure GitOps.

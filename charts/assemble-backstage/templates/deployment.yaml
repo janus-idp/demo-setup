@@ -26,20 +26,20 @@ spec:
             - name: OAUTH2_PROXY_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "assemble-backstage.fullname" . }}
-                  key: rhsso.clientId
+                  name: {{ include "assemble-backstage.oauthProxy.name" . }}
+                  key: clientId
             - name: OAUTH2_PROXY_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "assemble-backstage.fullname" . }}
-                  key: rhsso.clientSecret
+                  name: {{ include "assemble-backstage.oauthProxy.name" . }}
+                  key: clientSecret
             - name: OAUTH2_PROXY_COOKIE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "assemble-backstage.fullname" . }}
-                  key: oauth.cookieSecret
+                  name: {{ include "assemble-backstage.oauthProxy.name" . }}
+                  key: cookieSecret
             - name: OAUTH2_PROXY_OIDC_ISSUER_URL
-              value: {{ include "assemble-backstage.rhsso.issuerUrl" . }}
+              value: "{{ .Values.oauth.issuerUrl }}"
 {{- if .Values.oauth.insecure }}
             - name: OAUTH2_PROXY_SSL_INSECURE_SKIP_VERIFY
               value: "true"
@@ -94,28 +94,6 @@ spec:
               secretKeyRef:
                 name: {{ include "assemble-backstage.fullname" . }}-postgresql
                 key: databasePort
-{{- end }}
-{{- if .Values.rhsso.backstagePluginEnabled }}
-          - name: "APP_CONFIG_catalog_providers_keycloakOrg_default_baseUrl"
-            value: {{ required "RHSSO BaseUrl is Required" .Values.rhsso.baseUrl }}
-          - name: "APP_CONFIG_catalog_providers_keycloakOrg_default_loginRealm"
-            value: {{ required "RHSSO Realm is Required" .Values.rhsso.realm }}
-          - name: "APP_CONFIG_catalog_providers_keycloakOrg_default_realm"
-            value: {{ required "RHSSO Realm is Required" .Values.rhsso.realm }}
-          - name: "APP_CONFIG_catalog_providers_keycloakOrg_default_clientId"
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "assemble-backstage.fullname" . }}
-                key: rhsso.clientId
-          - name: "APP_CONFIG_catalog_providers_keycloakOrg_default_clientSecret"
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "assemble-backstage.fullname" . }}
-                key: rhsso.clientSecret
-{{- end }}
-{{- if .Values.backstage.tlsInsecure }}
-          - name: "NODE_TLS_REJECT_UNAUTHORIZED"
-            value: "0"
 {{- end }}
           ports:
             - name: http

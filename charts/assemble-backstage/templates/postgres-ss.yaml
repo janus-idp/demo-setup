@@ -36,6 +36,15 @@ spec:
 {{- end }}
           terminationMessagePolicy: File
           image: "{{ .Values.postgres.image }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
       serviceAccount: {{ include "assemble-backstage.serviceAccountName" . }}
 {{- if .Values.postgres.storage.enabled }}
       volumes:

@@ -2,96 +2,121 @@ global:
   openshift: true
   tlsDisable: false
 
-# To the use the cert manager operator to generate a certificate for the route set to true and set the base_domain variable
-# --set base_domain="example.com"
 route:
-  useCertManager: false
+  useCertManager: true
+  createCertIssuer: true
+
+dns:
+  zone: ''
 
 vault:
-  ui:
-    enabled: true
-
+  csi:
+    enabled: false
+    extraArgs:
+      - "--vault-mount=driver"
+      - "--vault-addr=http://vault-active.vault:8200"
+  fullnameOverride: "vault"
+  injector:
+    enabled: false
   server:
-    extraEnvironmentVars:
-      VAULT_CACERT: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+    affinity: ''
+    auditStorage:
+      enabled: true
+      size: 15Gi
+    image:
+      repository: docker.io/hashicorp/vault
+      tag: "1.12.2"
 
-   
-    route: # This chart handles the route to enable the use of cert-manager-operator
-      enabled: false
-      host: 'example.com'
+    extraArgs: "-config /raft/config/raft-storage.hcl"
+    extraSecretEnvironmentVars:
+      - envName: VAULT_TLS_SERVER_NAME
+        secretName: vault-env-vars
+        secretKey: VAULT_TLS_SERVER_NAME
+      - envName: VAULT_CACERT
+        secretName: vault-env-vars
+        secretKey: VAULT_CACERT
 
-    extraVolumes:
-      - type: secret
-        name: vault-server-tls # Matches the ${SECRET_NAME} from above
-
-    volumes:    
+    volumes:
+      - name: vault-cert
+        secret:
+          secretName: vault-cert
+      - name: vault-raft-config
+        configMap:
+          name: vault-raft-config
       - name: plugins
         emptyDir: {}
       - name: vault-root-token
         secret:
           secretName: vault-init
-          optional: true  
+          optional: true 
 
     volumeMounts:
-      - mountPath: /usr/local/libexec/vault
-        name: plugins
-        readOnly: false 
+      - mountPath: "/etc/vault-tls/vault-cert"
+        name: "vault-cert"
+      - mountPath: "/raft/config"
+        name: "vault-raft-config"
 
-    standalone:
+    statefulSet:
+      securityContext:
+        container:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+    ha:
       enabled: true
-      config: |
-        ui = true
-        listener "tcp" {
-          address = "[::]:8200"
-          cluster_address = "[::]:8201"
-          tls_cert_file = "/vault/userconfig/vault-server-tls/tls.crt"
-          tls_key_file  = "/vault/userconfig/vault-server-tls/tls.key"
-          tls_client_ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
-        }
+      raft:
+        enabled: true
+        setNodeId: true
+        config: |
+          ui = true
 
-        storage "file" {
-          path = "/vault/data"
-        }
-
-        plugin_directory = "/usr/local/libexec/vault"
-
-    service: 
-      annotations:
-        service.beta.openshift.io/serving-cert-secret-name: vault-server-tls
+          service_registration "kubernetes" {}
+      replicas: 3
+    ingress:
+      enabled: false
+    logFormat: json
+    networkPolicy:
+      enabled: true
+    resources:
+      limits:
+        cpu: 750m
+        memory: 768Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi
 
     extraInitContainers:
       # # This example installs a plugin pulled from github into the /usr/local/libexec/vault/oauthapp folder,
       # # which is defined in the volumes value.
-      #- name: github-module-downloader
-      #  image: registry.access.redhat.com/ubi8/ubi:8.5
-      #  command: 
-      #  - /bin/bash
-      #  - -c
-      #  - | 
-      #      #export PLUGIN_VERSION=v2.0.0-rc.1
-      #      export PLUGIN_VERSION=v1.3.0
-      #      cd /usr/local/libexec/vault
-      #      curl -L -o vault-plugin-secrets-github-linux-amd64 https://github.com/martinbaillie/vault-plugin-secrets-github/releases/download/${PLUGIN_VERSION}/vault-plugin-secrets-github-linux-amd64 
-      #      chmod +x vault-plugin-secrets-github-linux-amd64
-      #      curl -L -o SHA256SUMS https://github.com/martinbaillie/vault-plugin-secrets-github/releases/download/${PLUGIN_VERSION}/SHA256SUMS
-      #  volumeMounts:
-      #    - name: plugins
-      #      mountPath: /usr/local/libexec/vault
-
-      #- name: quay-module-downloader
-      #  image: registry.access.redhat.com/ubi8/ubi:8.5
-      #  command: 
-      #  - /bin/bash
-      #  - -c
-      #  - | 
-      #      export PLUGIN_VERSION=v0.0.1-rc4
-      #      cd /usr/local/libexec/vault
-      #      curl -L -o vault-plugin-secrets-quay-linux-amd64 https://github.com/redhat-cop/vault-plugin-secrets-quay/releases/download/${PLUGIN_VERSION}/vault-plugin-secrets-quay-linux-amd64 
-      #      chmod +x vault-plugin-secrets-quay-linux-amd64
-      #      curl -L -o quay_SHA256SUMS https://github.com/redhat-cop/vault-plugin-secrets-quay/releases/download/${PLUGIN_VERSION}/checksums.txt
-      #  volumeMounts:
-      #    - name: plugins
-      #      mountPath: /usr/local/libexec/vault            
+      - name: github-module-downloader
+        image: registry.access.redhat.com/ubi8/ubi:8.5
+        command: 
+        - /bin/bash
+        - -c
+        - | 
+            export PLUGIN_VERSION=v2.0.0
+            #export PLUGIN_VERSION=v1.3.0
+            cd /usr/local/libexec/vault
+            curl -L -o vault-plugin-secrets-github-linux-amd64 https://github.com/martinbaillie/vault-plugin-secrets-github/releases/download/${PLUGIN_VERSION}/vault-plugin-secrets-github-linux-amd64 
+            chmod +x vault-plugin-secrets-github-linux-amd64
+            curl -L -o SHA256SUMS https://github.com/martinbaillie/vault-plugin-secrets-github/releases/download/${PLUGIN_VERSION}/SHA256SUMS
+        volumeMounts:
+          - name: plugins
+            mountPath: /usr/local/libexec/vault
+        securityContext:
+         allowPrivilegeEscalation: false
+         capabilities:
+           drop:
+           - ALL
+         privileged: false
+         runAsNonRoot: true
+         seccompProfile:
+           type: RuntimeDefault
 
       - name: utility-downloader
         image: registry.access.redhat.com/ubi8/ubi:8.5
@@ -106,47 +131,105 @@ vault:
             chmod +x jq
         volumeMounts:
           - name: plugins
-            mountPath: /usr/local/libexec/vault          
+            mountPath: /usr/local/libexec/vault  
+        securityContext:
+         allowPrivilegeEscalation: false
+         capabilities:
+           drop:
+           - ALL
+         privileged: false
+         runAsNonRoot: true
+         seccompProfile:
+           type: RuntimeDefault
+        
+      - name: quay-module-downloader
+        image: registry.access.redhat.com/ubi8/ubi:8.5
+        command: 
+        - /bin/bash
+        - -c
+        - | 
+            export PLUGIN_VERSION=v0.0.1-rc4
+            cd /usr/local/libexec/vault
+            curl -L -o vault-plugin-secrets-quay-linux-amd64 https://github.com/redhat-cop/vault-plugin-secrets-quay/releases/download/${PLUGIN_VERSION}/vault-plugin-secrets-quay-linux-amd64 
+            chmod +x vault-plugin-secrets-quay-linux-amd64
+            curl -L -o quay_SHA256SUMS https://github.com/redhat-cop/vault-plugin-secrets-quay/releases/download/${PLUGIN_VERSION}/checksums.txt
+        volumeMounts:
+          - name: plugins
+            mountPath: /usr/local/libexec/vault            
+        securityContext:
+         allowPrivilegeEscalation: false
+         capabilities:
+           drop:
+           - ALL
+         privileged: false
+         runAsNonRoot: true
+         seccompProfile:
+           type: RuntimeDefault
 
     extraContainers:
-      # you should not do this in production
       - name: auto-initializer
-        image: registry.connect.redhat.com/hashicorp/vault:1.9.2-ubi
+        image: registry.connect.redhat.com/hashicorp/vault:1.12.0-ubi
         env: 
-        - name: VAULT_ADDR
-          value: https://vault.<namespace_replace>.svc:8200
-        - name: VAULT_CACERT
-          value: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt  
+          - name: VAULT_TLS_SERVER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: vault-env-vars
+                key: VAULT_TLS_SERVER_NAME
+          - name: VAULT_CACERT
+            valueFrom:
+              secretKeyRef:
+                name: vault-env-vars
+                key: VAULT_CACERT  
         command: 
         - /bin/bash
         - -c
         - | 
             while true; do
-              sleep 5
-              if [[ $(vault status | grep "Initialized" | grep "false") ]]; then
-                export INIT_RESPONSE=$(vault operator init -format=json -key-shares 1 -key-threshold 1)
-                echo "$INIT_RESPONSE"
-                export UNSEAL_KEY=$(echo "$INIT_RESPONSE" | /usr/local/libexec/vault/jq -r .unseal_keys_b64[0])
-                export ROOT_TOKEN=$(echo "$INIT_RESPONSE" | /usr/local/libexec/vault/jq -r .root_token)
-                echo "$UNSEAL_KEY"
-                echo "$ROOT_TOKEN"
-                /usr/local/libexec/vault/kubectl delete secret vault-init 
-                /usr/local/libexec/vault/kubectl create secret generic vault-init --from-literal=unseal_key=${UNSEAL_KEY} --from-literal=root_token=${ROOT_TOKEN} 
-              else
+              while [ -z $UNSEAL_KEY ]; do
                 sleep 5
-              fi    
+                if [[ $HOSTNAME == 'vault-0' ]] && [[ $(vault status | grep "Initialized" | grep "false") ]]; then
+                  export INIT_RESPONSE=$(vault operator init -format=json -key-shares=1 -key-threshold=1)
+                  echo "$INIT_RESPONSE"
+                  export UNSEAL_KEY=$(echo "$INIT_RESPONSE" | /usr/local/libexec/vault/jq -r .unseal_keys_b64[0])
+                  export ROOT_TOKEN=$(echo "$INIT_RESPONSE" | /usr/local/libexec/vault/jq -r .root_token)
+                  echo "$UNSEAL_KEY"
+                  echo "$ROOT_TOKEN"
+                  /usr/local/libexec/vault/kubectl delete secret vault-init -n vault
+                  /usr/local/libexec/vault/kubectl create secret generic vault-init -n vault --from-literal=unseal_key=${UNSEAL_KEY} --from-literal=root_token=${ROOT_TOKEN} 
+                else
+                  echo "Vault Initialized"
+                  sleep 5
+                fi 
+              done   
             done
         volumeMounts:
+          - mountPath: "/etc/vault-tls/vault-cert"
+            name: "vault-cert"
           - name: plugins
-            mountPath: /usr/local/libexec/vault          
-      # you should not do this in production      
+            mountPath: /usr/local/libexec/vault
+        securityContext:
+         allowPrivilegeEscalation: false
+         capabilities:
+           drop:
+           - ALL
+         privileged: false
+         runAsNonRoot: true
+         seccompProfile:
+           type: RuntimeDefault
+  
       - name: auto-unsealer
-        image: registry.connect.redhat.com/hashicorp/vault:1.9.2-ubi
-        env: 
-        - name: VAULT_ADDR
-          value: https://vault.<namespace_replace>.svc:8200
-        - name: VAULT_CACERT
-          value: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt  
+        image: registry.connect.redhat.com/hashicorp/vault:1.12.0-ubi
+        env:
+          - name: VAULT_TLS_SERVER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: vault-env-vars
+                key: VAULT_TLS_SERVER_NAME
+          - name: VAULT_CACERT
+            valueFrom:
+              secretKeyRef:
+                name: vault-env-vars
+                key: VAULT_CACERT
         command: 
         - /bin/bash
         - -c
@@ -158,6 +241,11 @@ vault:
                   if [[ -f /vault-root-token/unseal_key ]]; then
                     #vault operator unseal -reset $(cat /vault-root-token/unseal_key)
                     vault operator unseal $(cat /vault-root-token/unseal_key)
+                    sleep 5
+                    if [[ $HOSTNAME != 'vault-0' ]]; then
+                      echo joining raft cluster
+                      vault operator raft join http://vault-0.vault-internal:8200
+                    fi
                   else
                     echo unseal key not initialized yet  
                   fi
@@ -171,83 +259,31 @@ vault:
         volumeMounts:
           - name: vault-root-token
             mountPath: /vault-root-token  
-      #- name: github-module-loader
-      #  image: registry.connect.redhat.com/hashicorp/vault:1.9.2-ubi
-      #  env: 
-      #  - name: VAULT_ADDR
-      #    value: https://vault.<namespace_replace>.svc:8200
-      #  - name: VAULT_CACERT
-      #    value: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt  
-      #  command: 
-      #  - /bin/bash
-      #  - -c
-      #  - | 
-      #      while true; do
-      #        sleep 5
-      #        if [[ -f /vault-root-token/root_token ]]; then
-      #          export VAULT_TOKEN=$(cat /vault-root-token/root_token)
-      #          if [[ $(vault status | grep "Sealed" | grep "false") ]]; then
-      #            if [[ $(vault plugin list secret | grep vault-plugin-secrets-github) ]]; then
-      #              echo vault-plugin-secrets-github plugin already installed
-      #              sleep 5
-      #            else
-      #              echo SHA256SUM $(grep vault-plugin-secrets-github-linux-amd64 /usr/local/libexec/vault/SHA256SUMS | cut -d' ' -f1)
-      #              vault plugin register -sha256=$(grep vault-plugin-secrets-github-linux-amd64 /usr/local/libexec/vault/SHA256SUMS | cut -d' ' -f1) -command=vault-plugin-secrets-github-linux-amd64 -args="--tls-skip-verify=true" secret vault-plugin-secrets-github
-      #            fi
-      #          else
-      #            echo vault still sealed
-      #          fi    
-      #        else 
-      #          echo root token not initialized yet    
-      #        fi    
-      #      done
-      #  volumeMounts:
-      #    - name: plugins
-      #      mountPath: /usr/local/libexec/vault
-      #    - name: vault-root-token
-      #      mountPath: /vault-root-token
-      #- name: quay-module-loader
-      #  image: registry.connect.redhat.com/hashicorp/vault:1.9.2-ubi
-      #  env: 
-      #  - name: VAULT_ADDR
-      #    value: https://vault.<namespace_replace>.svc:8200
-      #  - name: VAULT_CACERT
-      #    value: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt  
-      #  command: 
-      #  - /bin/bash
-      #  - -c
-      #  - | 
-      #      while true; do
-      #        sleep 5
-      #        if [[ -f /vault-root-token/root_token ]]; then
-      #          export VAULT_TOKEN=$(cat /vault-root-token/root_token)
-      #          if [[ $(vault status | grep "Sealed" | grep "false") ]]; then
-      #            if [[ $(vault plugin list secret | grep vault-plugin-secrets-quay) ]]; then
-      #              echo vault-plugin-secrets-quay plugin already installed
-      #              sleep 5
-      #            else
-      #              echo quay_SHA256SUM $(grep -w vault-plugin-secrets-quay-linux-amd64 /usr/local/libexec/vault/quay_SHA256SUMS | cut -d' ' -f1)
-      #              vault plugin register -sha256=$(grep -w vault-plugin-secrets-quay-linux-amd64 /usr/local/libexec/vault/quay_SHA256SUMS | cut -d' ' -f1) -command=vault-plugin-secrets-quay-linux-amd64 -args="--tls-skip-verify=true" secret vault-plugin-secrets-quay
-      #            fi
-      #          else
-      #            echo vault still sealed
-      #          fi    
-      #        else 
-      #          echo root token not initialized yet    
-      #        fi    
-      #      done
-      #  volumeMounts:
-      #    - name: plugins
-      #      mountPath: /usr/local/libexec/vault
-      #    - name: vault-root-token
-      #      mountPath: /vault-root-token                     
+          - mountPath: "/etc/vault-tls/vault-cert"
+            name: "vault-cert"
+        securityContext:
+         allowPrivilegeEscalation: false
+         capabilities:
+           drop:
+           - ALL
+         privileged: false
+         runAsNonRoot: true
+         seccompProfile:
+           type: RuntimeDefault
+
       - name: vault-admin-initializer
-        image: registry.connect.redhat.com/hashicorp/vault:1.9.2-ubi
+        image: registry.connect.redhat.com/hashicorp/vault:1.12.0-ubi
         env: 
-        - name: VAULT_ADDR
-          value: https://vault.<namespace_replace>.svc:8200
-        - name: VAULT_CACERT
-          value: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt  
+          - name: VAULT_TLS_SERVER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: vault-env-vars
+                key: VAULT_TLS_SERVER_NAME
+          - name: VAULT_CACERT
+            valueFrom:
+              secretKeyRef:
+                name: vault-env-vars
+                key: VAULT_CACERT
         command: 
         - /bin/bash
         - -c
@@ -259,7 +295,7 @@ vault:
               if [[ $(vault status | grep "Sealed" | grep "false") ]]; then
                 if [[ ! $(vault policy list | grep vault-admin) ]]; then
                   vault auth enable kubernetes
-                  vault write auth/kubernetes/config token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token kubernetes_host=https://kubernetes.default.svc:443 kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt 
+                  vault write auth/kubernetes/config kubernetes_host=https://kubernetes.default.svc:443 
                   vault write auth/kubernetes/role/policy-admin bound_service_account_names=default bound_service_account_namespaces=vault-admin policies=vault-admin ttl=1h
                   cat << EOF | vault policy write vault-admin -
                     path "/*" {
@@ -271,10 +307,10 @@ vault:
                   vault write auth/kubernetes/config token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token kubernetes_host=https://kubernetes.default.svc:443 kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt 
                   echo creating accessor configmap
                   accessor=$(vault auth list -detailed | grep kubernetes | awk '{print $3}')
-                  if /usr/local/libexec/vault/kubectl get configmap kubeauth-accessor; then
-                    /usr/local/libexec/vault/kubectl patch configmap kubeauth-accessor -p '{"data":{"accessor": "'"${accessor}"'"}}'
+                  if /usr/local/libexec/vault/kubectl get configmap kubeauth-accessor -n vault; then
+                    /usr/local/libexec/vault/kubectl patch configmap kubeauth-accessor -n vault -p '{"data":{"accessor": "'"${accessor}"'"}}'
                   else  
-                    /usr/local/libexec/vault/kubectl create configmap kubeauth-accessor --from-literal=accessor=${accessor}
+                    /usr/local/libexec/vault/kubectl create configmap kubeauth-accessor -n vault --from-literal=accessor=${accessor}
                   fi  
                   sleep 5
                 fi      
@@ -284,9 +320,24 @@ vault:
             else 
               echo root token not initialized yet    
             fi    
-          done      
+          done  
         volumeMounts:
           - name: vault-root-token
             mountPath: /vault-root-token
+          - mountPath: "/etc/vault-tls/vault-cert"
+            name: "vault-cert"
           - name: plugins
-            mountPath: /usr/local/libexec/vault                            
+            mountPath: /usr/local/libexec/vault
+        securityContext:
+         allowPrivilegeEscalation: false
+         capabilities:
+           drop:
+           - ALL
+         privileged: false
+         runAsNonRoot: true
+         seccompProfile:
+           type: RuntimeDefault
+
+certificate:
+  clusterIssuer: letsencrypt-staging-cluster-issuer
+  ca: false

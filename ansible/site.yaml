@@ -171,3 +171,4 @@
           url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}"
       values_files: ["../charts/assemble-backstage/values.yaml"]
       create_namespace: true
+

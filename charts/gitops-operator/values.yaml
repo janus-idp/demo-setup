@@ -10,7 +10,7 @@ namespaces:
 - assemble-argocd
 
 # operator manages upgrades
-operator:
+operator: 
   channel: latest
   installPlanApproval: Automatic
   name: openshift-gitops-operator

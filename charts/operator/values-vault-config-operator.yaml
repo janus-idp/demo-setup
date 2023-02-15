@@ -1,0 +1,17 @@
+---
+operator:
+  channel: alpha
+  installPlanApproval: Automatic
+  name: vault-config-operator
+  source: community-operators
+  sourceNamespace: openshift-marketplace
+operatorgroup:
+  create: true
+  allNamespaces: true
+config:
+  env:
+  - name: VAULT_ADDR
+    value: https://vault-active.vault.svc:8200
+  - name: VAULT_SKIP_VERIFY
+    value: "true"
+

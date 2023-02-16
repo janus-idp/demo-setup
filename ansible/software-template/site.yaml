@@ -1,0 +1,25 @@
+---
+- name: Gather Cluster Info.
+  gather_facts: false
+  hosts: 'localhost'
+  tasks:
+  - name: Determine Host
+    shell: "oc cluster-info | grep -Eo '.cluster(.*?).com'"
+    register: cluster_response
+  - name: Set Dev Spaces Instance
+    set_fact:
+      dev_spaces_instance: "devspaces.apps{{ cluster_response.stdout }}"
+  - debug: var=cluster_response.stdout_lines
+- name: Customize Software Template
+  gather_facts: false
+  hosts: 'localhost'
+  tasks:
+  - name: Insert Dev Spaces Instance Information
+    shell: |
+      cd ../../../
+      git clone https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/software-templates.git
+      cd software-templates
+      find . -type f -not -path '*/\.git/*' -exec sed -i '' -e "s/devspaces.apps.example-cluster.com/{{ dev_spaces_instance }}/g" {} +
+      git add -A
+      git commit -m "initial customization"
+      git push

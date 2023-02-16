@@ -17,9 +17,10 @@ rules:
   resources:
   - '*'
   verbs:
-  - delete  # supports deletion a live object in UI
-  - get     # supports viewing live object manifest in UI
-  - patch   # supports `argocd app patch`
+  - '*'
+  # - delete  # supports deletion a live object in UI
+  # - get     # supports viewing live object manifest in UI
+  # - patch   # supports `argocd app patch`
 - apiGroups:
   - ""
   resources:

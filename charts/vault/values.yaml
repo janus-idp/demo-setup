@@ -56,7 +56,8 @@ vault:
       - mountPath: "/raft/config"
         name: "vault-raft-config"
 
-    statefulSet:
+    
+    statefulSet: 
       securityContext:
         container:
           allowPrivilegeEscalation: false
@@ -65,6 +66,7 @@ vault:
             - ALL
           privileged: false
           runAsNonRoot: true
+          ## For OCP 4.10 and earlier comment out the next 2 lines
           seccompProfile:
             type: RuntimeDefault
     ha:
@@ -115,6 +117,7 @@ vault:
            - ALL
          privileged: false
          runAsNonRoot: true
+         ## For OCP 4.10 and earlier comment out the next 2 lines
          seccompProfile:
            type: RuntimeDefault
 
@@ -139,6 +142,7 @@ vault:
            - ALL
          privileged: false
          runAsNonRoot: true
+         ## For OCP 4.10 and earlier comment out the next 2 lines
          seccompProfile:
            type: RuntimeDefault
         
@@ -163,6 +167,7 @@ vault:
            - ALL
          privileged: false
          runAsNonRoot: true
+         ## For OCP 4.10 and earlier comment out the next 2 lines
          seccompProfile:
            type: RuntimeDefault
 
@@ -214,6 +219,7 @@ vault:
            - ALL
          privileged: false
          runAsNonRoot: true
+         ## For OCP 4.10 and earlier comment out the next 2 lines
          seccompProfile:
            type: RuntimeDefault
   
@@ -268,6 +274,7 @@ vault:
            - ALL
          privileged: false
          runAsNonRoot: true
+         ## For OCP 4.10 and earlier comment out the next 2 lines
          seccompProfile:
            type: RuntimeDefault
 
@@ -335,6 +342,7 @@ vault:
            - ALL
          privileged: false
          runAsNonRoot: true
+         ## For OCP 4.10 and earlier comment out the next 2 lines
          seccompProfile:
            type: RuntimeDefault
 

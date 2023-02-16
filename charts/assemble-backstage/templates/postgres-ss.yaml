@@ -43,6 +43,7 @@ spec:
               - ALL
             privileged: false
             runAsNonRoot: true
+            ## For OCP 4.10 and earlier comment out the next 2 lines
             seccompProfile:
               type: RuntimeDefault
       serviceAccount: {{ include "assemble-backstage.serviceAccountName" . }}

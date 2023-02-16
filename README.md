@@ -14,6 +14,8 @@ Step-by-step instructions on getting Assemble running with RHSSO authentication 
 1. Openshift 4.9+
 1. Helm 3+
 
+> **_NOTE:_**  The install has been upgraded for OCP version 4.12 and above. For earlier versions there will need be some changes to the SCC settings to enable the install to work.  See the notes in the respective sesions.
+
 ### Vault
 Install the vault operator which will be used for the postresql password and other secrets related to Backstage. In addition applications will make use of the vault for any sensitive data.
 
@@ -35,10 +37,20 @@ helm upgrade --install vault-config-operator . -f ./values-vault-config-operator
 
 #### Install the Vault operator
 
+> **_NOTE:_**  For OCP version 4.10 and below you must modify the file 'values.yaml' as shown below. There are seven occurances of this in the file.
+```
+  privileged: false
+  runAsNonRoot: true
+  ## For OCP 4.10 and earlier comment out the next 2 lines
+  #seccompProfile:
+  #  type: RuntimeDefault
+```
+
 ```
 # From the charts/vault directory
 # Get cluster DNS for the certificate
 echo "$(oc cluster-info | grep -Eo 'cluster(.*?).com')"
+helm dependency build
 helm upgrade --install vault . -f ./values.yaml -n vault --create-namespace --set dns.zone='<cluster dns>'
 ```
 
@@ -128,6 +140,16 @@ rhsso:
 
 Postgres will work as is, but it can optionally be modified if required, view the `charts/assemble-backstage/values.yaml` file for more info.
 
+> **_NOTE:_**  For OCP version 4.10 and below you must modify the file 'templates/postgres-ss.yaml' as shown below.
+```
+            privileged: false
+            runAsNonRoot: true
+            ## For OCP 4.10 and earlier comment out the next 2 lines
+            #seccompProfile:
+            #  type: RuntimeDefault
+```
+
+
 #### General Backstage Configuration
 
 Fill in the companyName and baseUrl in the `backstage` section of `values/rhsso-values.yaml` updating the following:
@@ -178,6 +200,15 @@ github:
 ```
 
 > **_NOTE:_**  The token must be wrapped in single quotes, even when applying the token through an environment variable.
+
+> **_NOTE:_**  For OCP version 4.10 and below you must modify the file 'values.yaml' as shown below.
+```
+  privileged: false
+  runAsNonRoot: true
+  ## For OCP 4.10 and earlier comment out the next 2 lines
+  #seccompProfile:
+  #  type: RuntimeDefault
+```
 
 #### Deploy the Backstage Chart
 

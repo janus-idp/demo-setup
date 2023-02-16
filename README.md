@@ -14,7 +14,7 @@ Step-by-step instructions on getting Assemble running with RHSSO authentication 
 1. Openshift 4.9+
 1. Helm 3+
 
-> **_NOTE:_**  The install has been upgraded for OCP version 4.12 and above. For earlier versions there will need be some changes to the SCC settings to enable the install to work.  See the notes in the respective sesions.
+> **_NOTE:_**  The install has been upgraded for OCP version 4.12 and above. For earlier versions there will need be some changes to the SCC settings to enable the install to work.  See the notes in the respective sections.
 
 ### Vault
 Install the vault operator which will be used for the postresql password and other secrets related to Backstage. In addition applications will make use of the vault for any sensitive data.

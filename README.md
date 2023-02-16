@@ -37,7 +37,7 @@ helm upgrade --install vault-config-operator . -f ./values-vault-config-operator
 
 #### Install the Vault operator
 
-> **_NOTE:_**  For OCP version 4.10 and below you must modify the file 'values.yaml' as shown below. There are seven occurances of this in the file.
+> **_NOTE:_**  For OCP version 4.10 and below you must modify the file 'values.yaml' as shown below. There are seven occurrences of this in the file.
 ```
   privileged: false
   runAsNonRoot: true

@@ -138,7 +138,7 @@ backstage:
 
       # JanusIDP Quarkus Template
       - type: url
-        target: https://github.com/mattheh/software-templates/blob/main/scaffolder-templates/quarkus-web-template/template.yaml
+        target: https://github.com/janus-idp/software-templates/blob/main/scaffolder-templates/quarkus-web-template/template.yaml
         rules:
           - allow: [Template]
       # Backstage example systems

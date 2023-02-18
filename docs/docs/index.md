@@ -1,17 +1,7 @@
-# Welcome to MkDocs
+# :wrench: Assemble :wrench:
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Assemble is a platform built on the back of [Janus IDP](https://github.com/janus-idp/redhat-backstage-build) and [Backstage](https://backstage.io/docs/overview/what-is-backstage), with the goal of helping application teams get started quicker.
 
-## Commands
+## Why Should I use Assemble?
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+TBD

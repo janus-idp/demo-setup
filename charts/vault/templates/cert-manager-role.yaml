@@ -3,7 +3,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: cert-manager-scc-role 
-  namespace: openshift-operators
 rules:
 - apiGroups:
   - security.openshift.io 
@@ -18,14 +17,9 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: cert-manager-restricted-scc
-  namespace: openshift-operators
 subjects:
   - kind: ServiceAccount
-    name: cert-manager
-  - kind: ServiceAccount
-    name: cert-manager-cainjector
-  - kind: ServiceAccount
-    name: cert-manager-webhook
+    name: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

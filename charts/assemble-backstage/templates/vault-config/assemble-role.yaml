@@ -12,6 +12,8 @@ spec:
   path: kubernetes
   policies:
     - {{ .Release.Name }}-kv-policy
+  targetServiceAccounts:
+    - default
   targetNamespaces:
     targetNamespaces:
     - {{ .Release.Namespace }}

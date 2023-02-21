@@ -9,6 +9,44 @@
   - name: Extract Cluster
     set_fact:
       cluster_host: "{{ cluster_response.stdout }}"
+- name: Install Cert Manager Operator Chart.
+  hosts: 'localhost'
+  tasks:
+  - name: Run Cert Manager Helm Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: cert-manager
+      namespace: "openshift-operators"
+      chart_ref: ../charts/operator
+      values_files: ["../charts/operator/values-certmanager-operator.yaml"]
+- name: Install Vault Config Operator Chart.
+  hosts: 'localhost'
+  tasks:
+  - name: Run Vault Config Helm Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: vault-config-operator
+      namespace: "{{ item.vaultconfignamespace }}"
+      chart_ref: ../charts/operator
+      values_files: ["../charts/operator/values-vault-config-operator.yaml"]
+      create_namespace: true
+- name: Install Vault Operator Chart.
+  hosts: 'localhost'
+  tasks:
+  - name: Run Vault Helm Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: vault
+      namespace: "{{ item.vaultnamespace }}"
+      chart_ref: ../charts/vault
+      values:
+        dns:
+          zone: "{{ cluster_host[1:] }}"
+      values_files: ["../charts/vault/values.yaml"]
+      create_namespace: true
 - name: Install RHSSO Operator Chart.
   hosts: 'localhost'
   tasks:
@@ -158,6 +196,10 @@
           baseUrl: "https://assemble-demo.apps{{ cluster_host }}"
         oauth:
           enabled: true
+          clientId: "backstage"
+          clientSecret: "{{ client_secret }}"
+          cookieSecret: "c_vqFV7nYwLOnc4lB7Ec7e95wFDRkOWlpq_30uWn2zM="
+          issuerUrl: "https://keycloak-{{ item.namespace }}.apps{{ cluster_host }}/auth/realms/backstage"
         postgres:
           database_password: "postgres"
         github:

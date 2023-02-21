@@ -91,7 +91,10 @@ Check for existing secret
 {{- if .Values.postgres.database_password }}
 databasePassword: {{ .Values.postgres.database_password | quote }}
 {{- else -}}
-{{- $secret := lookup "v1" "Secret" .Release.Namespace  (include "assemble-backstage.fullname" . ) -}}
+{{/*
+This will NOT work with ArgoCD, it currently does not support lookup functions
+*/}}
+{{- $secret := lookup "v1" "Secret" .Release.Namespace  (printf "%s-%s" (include "assemble-backstage.fullname" . ) "postgresql") -}}
 {{- if $secret -}}
 {{/*
    Reusing existing secret data
@@ -119,4 +122,11 @@ Create the postgresql name
 */}}
 {{- define "assemble-backstage.postgresql.name" -}}
 {{- printf "%s-postgresql" (include "assemble-backstage.fullname" . ) }}
+{{- end }}
+
+{{/*
+Create the rhsso issuerUrl
+*/}}
+{{- define "assemble-backstage.rhsso.issuerUrl" -}}
+{{- printf "%s/realms/%s" .Values.rhsso.baseUrl .Values.rhsso.realm }}
 {{- end }}

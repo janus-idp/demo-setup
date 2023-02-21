@@ -18,7 +18,7 @@
       state: present
       name: cert-manager
       namespace: "openshift-operators"
-      chart_ref: ../charts/operator
+      chart_ref: ../../charts/operator
       values_files: ["../../charts/operator/values-certmanager-operator.yaml"]
 - name: Install Vault Config Operator Chart.
   hosts: 'localhost'
@@ -29,19 +29,24 @@
       state: present
       name: vault-config-operator
       namespace: "{{ item.vaultconfignamespace }}"
-      chart_ref: ../charts/operator
+      chart_ref: ../../charts/operator
       values_files: ["../../charts/operator/values-vault-config-operator.yaml"]
       create_namespace: true
 - name: Install Vault Operator Chart.
   hosts: 'localhost'
   tasks:
+  - name: Helm Dependency Update
+    shell: "helm dep update"
+    args:
+      chdir: ../../charts/vault
+    register: sso_admin_pwd_rsp
   - name: Run Vault Helm Chart
     with_items: "{{ env }}"
     kubernetes.core.helm:
       state: present
       name: vault
       namespace: "{{ item.vaultnamespace }}"
-      chart_ref: ../charts/vault
+      chart_ref: ../../charts/vault
       values:
         dns:
           zone: "{{ cluster_host[1:] }}"

@@ -19,7 +19,7 @@
       name: cert-manager
       namespace: "openshift-operators"
       chart_ref: ../charts/operator
-      values_files: ["../charts/operator/values-certmanager-operator.yaml"]
+      values_files: ["../../charts/operator/values-certmanager-operator.yaml"]
 - name: Install Vault Config Operator Chart.
   hosts: 'localhost'
   tasks:
@@ -30,7 +30,7 @@
       name: vault-config-operator
       namespace: "{{ item.vaultconfignamespace }}"
       chart_ref: ../charts/operator
-      values_files: ["../charts/operator/values-vault-config-operator.yaml"]
+      values_files: ["../../charts/operator/values-vault-config-operator.yaml"]
       create_namespace: true
 - name: Install Vault Operator Chart.
   hosts: 'localhost'
@@ -45,7 +45,7 @@
       values:
         dns:
           zone: "{{ cluster_host[1:] }}"
-      values_files: ["../charts/vault/values.yaml"]
+      values_files: ["../../charts/vault/values.yaml"]
       create_namespace: true
 - name: Install RHSSO Operator Chart.
   hosts: 'localhost'
@@ -56,8 +56,8 @@
       state: present
       name: rhsso-operator
       namespace: "{{ item.namespace }}"
-      chart_ref: ../charts/operator
-      values_files: ["../charts/operator/values-rhsso-operator.yaml"]
+      chart_ref: ../../charts/operator
+      values_files: ["../../charts/operator/values-rhsso-operator.yaml"]
       create_namespace: true
 - name: Install OpenShift Pipelines Operator Chart.
   hosts: 'localhost'
@@ -68,8 +68,8 @@
       state: present
       name: pipelines
       namespace: "{{ item.pipelinesnamespace }}"
-      chart_ref: ../charts/pipelines-operator
-      values_files: ["../charts/pipelines-operator/values.yaml"]
+      chart_ref: ../../charts/pipelines-operator
+      values_files: ["../../charts/pipelines-operator/values.yaml"]
       create_namespace: true
 - name: Install RHSSO Backstage Chart.
   hosts: 'localhost'
@@ -80,7 +80,7 @@
       state: present
       name: rhsso-backstage
       namespace: "{{ item.namespace }}"
-      chart_ref: ../charts/rhsso-backstage
+      chart_ref: ../../charts/rhsso-backstage
       values:
         keycloak:
           realm:
@@ -90,7 +90,7 @@
               enabled: "{{ false if lookup('ansible.builtin.env', 'GITHUB_CLIENT_SECRET') == '' else true }}"
         backstage:
           host: "assemble-demo.apps{{ cluster_host }}"
-      values_files: ["../charts/rhsso-backstage/values.yaml"]
+      values_files: ["../../charts/rhsso-backstage/values.yaml"]
       create_namespace: true
   - name: Wait for Keycloak to be Ready
     with_items: "{{ env }}"
@@ -159,16 +159,29 @@
       state: present
       name: argocd
       namespace: "{{ item.gitopsnamespace }}"
-      chart_ref: ../charts/gitops-operator
+      chart_ref: ../../charts/gitops-operator
       values:
+        namespaces:
+          - assemble-argocd
+          - infra-argocd
         repositoryCredentials:
           - name: "private-repo-creds"
             username: "token"
             password: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
             url: "https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
             type: "git"
-      values_files: ["../charts/gitops-operator/values.yaml"]
+      values_files: ["../../charts/gitops-operator/values.yaml"]
       create_namespace: true
+  - name: Install Dev Spaces Operator
+    with_items: "{{ env }}"
+    kubernetes.core.k8s:
+      state: present
+      src: ../../infra/argocd-applications/devspaces/devspaces-operator.yaml
+  - name: Install Dev Spaces Instance
+    with_items: "{{ env }}"
+    kubernetes.core.k8s:
+      state: present
+      src: ../../infra/argocd-applications/devspaces/devspaces-instance.yaml
 - name: Install Backstage Chart.
   hosts: 'localhost'
   tasks:
@@ -185,7 +198,7 @@
       state: present
       name: assemble-dev
       namespace: "{{ item.namespace }}"
-      chart_ref: ../charts/assemble-backstage
+      chart_ref: ../../charts/assemble-backstage
       values:
         rhsso:
           baseUrl: "https://keycloak-{{ item.namespace }}.apps{{ cluster_host }}/auth"
@@ -194,12 +207,14 @@
           backstagePluginEnabled: true
         backstage:
           baseUrl: "https://assemble-demo.apps{{ cluster_host }}"
+          catalog:
+            locations:
+              - type: url
+                target: https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/software-templates/blob/main/scaffolder-templates/quarkus-web-template/template.yaml
+                rules:
+                  - allow: [Template]
         oauth:
           enabled: true
-          clientId: "backstage"
-          clientSecret: "{{ client_secret }}"
-          cookieSecret: "c_vqFV7nYwLOnc4lB7Ec7e95wFDRkOWlpq_30uWn2zM="
-          issuerUrl: "https://keycloak-{{ item.namespace }}.apps{{ cluster_host }}/auth/realms/backstage"
         postgres:
           database_password: "postgres"
         github:
@@ -211,5 +226,6 @@
           password: "{{ argocd_admin_pwd }}"
           waitCycles: 25
           url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}"
-      values_files: ["../charts/assemble-backstage/values.yaml"]
+      values_files: ["../../charts/assemble-backstage/values.yaml"]
       create_namespace: true
+

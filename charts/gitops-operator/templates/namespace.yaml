@@ -6,8 +6,9 @@ apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    openshift.io/description: ""
-    openshift.io/display-name: ""
+    "openshift.io/description": ""
+    "openshift.io/display-name": ""
+    "helm.sh/hook": pre-install,pre-upgrade
   labels:
     kubernetes.io/metadata.name: {{ $ns }}
     openshift.io/cluster-monitoring: "true"

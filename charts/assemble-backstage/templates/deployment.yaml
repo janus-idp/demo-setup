@@ -140,4 +140,3 @@ spec:
           secret:
             secretName: assemble-config
             defaultMode: 420
-

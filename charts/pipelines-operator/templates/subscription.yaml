@@ -10,4 +10,6 @@ spec:
   name: {{ .Values.operator.name }}
   source: {{ .Values.operator.sourceName | default "redhat-operators"  }}
   sourceNamespace: {{ .Values.operator.sourceNamespace | default "openshift-marketplace" }}
+{{- if .Values.operator.startingCSV }}
   startingCSV: {{ .Values.operator.startingCSV }}
+{{- end }}

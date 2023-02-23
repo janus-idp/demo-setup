@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: infra
+  namespace: infra-argocd
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/janus-idp/assemble-platforms.git
+      revision: argo-deploy
+      directories:
+      - path: infra/*
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      project: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/janus-idp/assemble-platforms.git
+        targetRevision: argo-deploy
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: infra-argocd

@@ -1,0 +1,20 @@
+{{- if .Values.vault.enabled }}
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: KubernetesAuthEngineRole
+metadata:
+  name: {{ .Release.Name }}-reader
+  namespace: "{{ .Values.vaultconfig.namespace }}"
+spec:
+  # Add fields here
+  authentication:
+    path: kubernetes
+    role: policy-admin
+  path: kubernetes
+  policies:
+    - {{ .Release.Name }}-kv-policy
+  targetServiceAccounts:
+    - default
+  targetNamespaces:
+    targetNamespaces:
+    - {{ .Release.Namespace }}
+{{- end }}

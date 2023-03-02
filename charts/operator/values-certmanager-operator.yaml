@@ -1,0 +1,9 @@
+---
+operator:
+  channel: stable
+  installPlanApproval: Automatic
+  name: cert-manager
+  source: community-operators
+  sourceNamespace: openshift-marketplace
+operatorgroup:
+  create: false

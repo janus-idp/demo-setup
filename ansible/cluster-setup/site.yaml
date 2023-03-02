@@ -52,6 +52,24 @@
           zone: "{{ cluster_host[1:] }}"
       values_files: ["../../charts/vault/values.yaml"]
       create_namespace: true
+- name: Install Vault Config Chart.
+  hosts: 'localhost'
+  tasks:
+  - name: Create sshKey Secret
+    with_items: "{{ env }}"
+    shell: "printf \"apiVersion: v1\nkind: Secret\nmetadata:\n  name: vault-github-plugin-creds\ntype: kubernetes.io/ssh-auth\nstringData:\n  github_app_id: \"$GITHUB_APP_ID\"\n  github_org: \"$GITHUB_ORGANIZATION\"\n  ssh-privatekey: |\n$(cat $GITHUB_KEY_FILE | sed 's/^/    /')\" | oc apply -f - -n vault-admin"
+    ignore_errors: true
+  - name: Run Vault Config Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: vault-config
+      namespace: "vault-admin"
+      chart_ref: ../../charts/vault-config
+      values:
+        git:
+          organization: "{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
+          applicationId: "{{ lookup('ansible.builtin.env', 'GITHUB_APP_ID') }}"
 - name: Install RHSSO Operator Chart.
   hosts: 'localhost'
   tasks:
@@ -63,6 +81,18 @@
       namespace: "{{ item.namespace }}"
       chart_ref: ../../charts/operator
       values_files: ["../../charts/operator/values-rhsso-operator.yaml"]
+      create_namespace: true
+- name: Install Git Webhook Operator
+  hosts: 'localhost'
+  tasks:
+  - name: Run Git Webhook Operator Helm Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: gitwebhook-operator
+      namespace: "{{ item.gitwebhooknamespace }}"
+      chart_ref: ../../charts/operator
+      values_files: ["../../charts/operator/values-gitwebhook-operator.yaml"]
       create_namespace: true
 - name: Install OpenShift Pipelines Operator Chart.
   hosts: 'localhost'
@@ -233,4 +263,3 @@
           url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}"
       values_files: ["../../charts/assemble-backstage/values.yaml"]
       create_namespace: true
-

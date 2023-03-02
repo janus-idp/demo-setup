@@ -1,0 +1,5 @@
+apiVersion: v2
+name: vault-config
+description: Deploys vault configuration resources to support backstage
+type: application
+version: 0.0.1

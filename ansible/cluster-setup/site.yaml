@@ -55,6 +55,7 @@
 - name: Install Vault Config Chart.
   hosts: 'localhost'
   tasks:
+  # TODO revisit this to see if there is a better way to create this secret
   - name: Create sshKey Secret
     with_items: "{{ env }}"
     shell: "printf \"apiVersion: v1\nkind: Secret\nmetadata:\n  name: vault-github-plugin-creds\ntype: kubernetes.io/ssh-auth\nstringData:\n  github_app_id: $(echo \"\\\"\"$GITHUB_APP_ID\"\\\"\")\n  github_org: $(echo \"\\\"\"$GITHUB_ORGANIZATION\"\\\"\")\n  ssh-privatekey: |\n$(cat $GITHUB_KEY_FILE | sed 's/^/    /')\" | oc apply -f - -n vault-admin"

@@ -36,11 +36,20 @@ A guide to installing `Assemble with Ansible`
 1. If you want to use the GitHub integration, generate a Personal Access Token for GitHub and set the `GITHUB_TOKEN` environment variable.
    See the official [Backstage Documentation](https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration) for information on how to create one.  For the purposes of a demonstration, a Personal Access Token will do.
 1. Create a [Github Organization](https://github.com/settings/organizations) and set the `GITHUB_ORGANIZATION` environment variable to the name of the Organization. You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
-1. In order to create a webhook you'll need to Create a new GitHub Application.  You can do so by using the following:
+1. In order to create a webhook you'll need to Create a new GitHub Application.  You can do so by running the following command:
+### Linux
+```bash
+xdg-open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&code=read&commit_statuses=write&dependabot_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&reopository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
+```
+### macOS
+```bash
+open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&code=read&commit_statuses=write&dependabot_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&reopository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
+```
+
+Or by copying the following text and replacing `<ORGANIZATION>` with your organization name and pasting into your browser.
 ```
 https://github.com/organizations/<ORGANIZATION>/settings/apps/new?url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&code=read&commit_statuses=write&dependabot_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&reopository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write
-``` 
-and replacing `<ORGANIZATION>` with your organization name and pasting into your browser.
+```
    - Enter a unique name in the `GitHub App name` field
    - Set the `GITHUB_APP_ID` environment variable to the App ID of the App you just created.
    - Generate a Private Key for this app and download the private key file.  Set the fully qualified path to the `GITHUB_KEY_FILE` environment variable.

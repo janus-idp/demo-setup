@@ -1,0 +1,10 @@
+---
+operator:
+  channel: alpha
+  installPlanApproval: Automatic
+  name: gitwebhook-operator
+  source: community-operators
+  sourceNamespace: openshift-marketplace
+operatorgroup:
+  create: true
+  allNamespaces: true

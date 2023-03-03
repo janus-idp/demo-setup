@@ -5,3 +5,4 @@ env:
   pipelinesnamespace: "assemble-pipelines"
   vaultconfignamespace: "vault-config-operator"
   vaultnamespace: "vault"
+  gitwebhooknamespace: "gitwebhook-operator"

@@ -1,6 +1,6 @@
-# Assemble Platforms
+# Janus IDP Demo
 
-This repository contains automation to install the `assemble platform`, as well as supporting components.
+This repository contains automation to install the `Janus IDP Demo`, as well as supporting components.
 
 ## Getting Started
 

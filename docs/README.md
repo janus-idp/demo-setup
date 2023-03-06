@@ -1,4 +1,4 @@
-# Assemble Docs
+# Janus IDP Demo Docs
 
 This folder contains the repository docs using `mkdocs` and `markdown`.
 

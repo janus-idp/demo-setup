@@ -1,30 +1,30 @@
-# :wrench: Assemble :wrench:
+# :wrench: Janus IDP Demo :wrench:
 
-The Assemble platform is built on the back of [Janus IDP](https://github.com/janus-idp/redhat-backstage-build) and [Backstage](https://backstage.io/docs/overview/what-is-backstage), with the goal of helping application teams get started quicker.
+The Janus IDP Demo is built on the back of [Janus IDP](https://github.com/janus-idp/redhat-backstage-build) and [Backstage](https://backstage.io/docs/overview/what-is-backstage), with the goal of helping application teams get started quicker.
 
-## Why Should I use Assemble?
+## Why Should I use Janus IDP Demo?
 
-Assemble combines all of the required technologies used for creating a "golden path" for application deployment. It allows teams to very quickly get up and running with all the necessary items required in DevSecOps, while creating a tight inner development loop.
+Janus IDP Demo combines all of the required technologies used for creating a "golden path" for application deployment. It allows teams to very quickly get up and running with all the necessary items required in DevSecOps, while creating a tight inner development loop.
 
-## Assemble Components
+## Janus IDP Demo Components
 
 ### Development
 
 #### Janus IDP
 
-The [Janus IDP](https://github.com/janus-idp/redhat-backstage-build)(i.e. Backstage) is the front end of our assemble platform. It gives insight into the components installed in our Clusters and how those components connect to one another.
+The [Janus IDP](https://github.com/janus-idp/redhat-backstage-build)(i.e. Backstage) is the front end of our Janus IDP Demo. It gives insight into the components installed in our Clusters and how those components connect to one another.
 
-Assemble also uses Janus plugins to allow for the rapid deployment of new components. With the click of a button application teams can create a new code base including repo, pipelines, security, Kubernetes objects and everything required for development and deployment into Openshift.
+Janus IDP Demo also uses Janus plugins to allow for the rapid deployment of new components. With the click of a button application teams can create a new code base including repo, pipelines, security, Kubernetes objects and everything required for development and deployment into Openshift.
 
 #### Developer Workspaces
 
-The Assemble deployment includes integration with [CodeReady Worksapace](https://www.redhat.com/en/technologies/jboss-middleware/codeready-workspaces) allowing development teams to have instant access to an IDE preloaded with their new code and ready for development.
+The Janus IDP Demo deployment includes integration with [CodeReady Worksapace](https://www.redhat.com/en/technologies/jboss-middleware/codeready-workspaces) allowing development teams to have instant access to an IDE preloaded with their new code and ready for development.
 
 ### Deployment
 
 #### Openshift Pipelines(Tekton)
 
-Assemble deploys a pipeline using [Openshift Pipelines](https://docs.openshift.com/container-platform/4.12/cicd/pipelines/understanding-openshift-pipelines.html)(Tekton) that run test and security scans on the code, as well as packaging the application and building/deploying the container image into a specified registry.
+Janus IDP Demo deploys a pipeline using [Openshift Pipelines](https://docs.openshift.com/container-platform/4.12/cicd/pipelines/understanding-openshift-pipelines.html)(Tekton) that run test and security scans on the code, as well as packaging the application and building/deploying the container image into a specified registry.
 
 ### Security
 

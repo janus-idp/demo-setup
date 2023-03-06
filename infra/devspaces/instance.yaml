@@ -2,7 +2,7 @@ apiVersion: org.eclipse.che/v2
 kind: CheCluster
 metadata:
   name: devspaces
-  namespace: openshift-devspaces
+  namespace: openshift-operators
 spec:
   devEnvironments:
     defaultEditor: che-incubator/che-code/insiders

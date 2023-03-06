@@ -1,0 +1,34 @@
+---
+- name: Gather Cluster Info.
+  gather_facts: false
+  hosts: 'localhost'
+  vars:
+    ansible_python_interpreter: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3
+  tasks:
+    - name: Determine Host
+      shell: "oc cluster-info | grep -Eo '.cluster(.*?).com'"
+      register: cluster_response
+    - name: Extract Cluster
+      set_fact:
+        cluster_host: "{{ cluster_response.stdout }}"
+    - name: Fetching Vault Token
+      with_items: "{{ env }}"
+      shell: "oc -n {{ item.vaultnamespace }} get secret vault-init --template='{{ '{{' }}index .data \"root_token\"{{ '}}' }}' | base64 -d"
+      register: vault_token_rsp
+    - name: Extract Password
+      set_fact:
+        vault_token: "{{ vault_token_rsp.results[0].stdout }}"
+    - name: Write a value to kv via the remote host with userpass auth
+      community.hashi_vault.vault_write:
+        url: "https://vault-vault.apps{{ cluster_host }}"
+        path: kv/assemble-dev/dev-spaces
+        validate_certs: false
+        data:
+          id: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_ID') }}"
+          secret: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_SECRET') }}"
+        token: "{{ vault_token }}"
+      register: result
+
+    - name: Display the result of the write (this can be empty)
+      ansible.builtin.debug:
+        msg: "{{ result.data }}"

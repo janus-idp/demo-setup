@@ -15,6 +15,10 @@
   gather_facts: false
   hosts: 'localhost'
   tasks:
+  - name: Reset Local
+    ansible.builtin.file:
+      path: ../../../software-templates
+      state: absent
   - name: Insert Dev Spaces Instance Information
     shell: |
       cd ../../../

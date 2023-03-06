@@ -7,7 +7,7 @@ spec:
   generators:
   - git:
       repoURL: https://github.com/janus-idp/assemble-platforms.git
-      revision: main
+      revision: argo-deploy
       directories:
       - path: infra/*
   template:
@@ -21,7 +21,7 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/janus-idp/assemble-platforms.git
-        targetRevision: main
+        targetRevision: argo-deploy
         path: '{{path}}'
       destination:
         server: https://kubernetes.default.svc

@@ -11,17 +11,13 @@ spec:
         - path: "clusters/**/config.json"
   template:
     metadata:
-      name: '{{ cluster.name }}'
+      name: '{{"{{"}}cluster.name{{"}}"}}'
     spec:
       project: default
       source:
         path: charts/apps
         repoURL: https://github.com/janus-idp/assemble-platforms.git
         targetRevision: argo-deploy
-        # TODO: Revisit when going multi-cluster
-        # helm:
-        #   valueFiles:
-        #     - "{{ printf 'values-cluster-{{env}}.yaml' }}"
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{ .Values.destination.namespace }}"

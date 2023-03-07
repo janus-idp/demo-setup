@@ -8,7 +8,7 @@ spec:
         repoURL: https://github.com/janus-idp/assemble-platforms.git
         revision: argo-deploy
         files:
-        - path: "clusters/**/config.yaml"
+        - path: "clusters/**/config.json"
   template:
     metadata:
       name: '{{ cluster.name }}'

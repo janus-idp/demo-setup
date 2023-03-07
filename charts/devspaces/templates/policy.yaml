@@ -10,6 +10,6 @@ spec:
     role: policy-admin
   policy: |
     # create tokens
-    path "kv/assemble-dev/dev-spaces" {
+    path "cubbyhole/assemble-dev/dev-spaces" {
       capabilities = ["read"]
     }

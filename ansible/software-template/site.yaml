@@ -29,3 +29,5 @@
       git add -A
       git commit -m "initial customization"
       git push
+    register: result
+  - debug: var=result.stdout_lines

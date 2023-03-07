@@ -18,14 +18,28 @@
     - name: Extract Password
       set_fact:
         vault_token: "{{ vault_token_rsp.results[0].stdout }}"
+    - name: Base64 Encode Dev Spaces Client ID
+      with_items: "{{ env }}"
+      shell: "echo {{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_ID') | b64encode }}"
+      register: client_id_rsp
+    - name: Extract Dev Spaces Client ID
+      set_fact:
+        client_id: "{{ client_id_rsp.results[0].stdout }}"
+    - name: Base64 Encode Dev Spaces Client Secret
+      with_items: "{{ env }}"
+      shell: "echo {{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_SECRET') | b64encode }}"
+      register: client_secret_rsp
+    - name: Extract Dev Spaces Client Secret
+      set_fact:
+        client_secret: "{{ client_secret_rsp.results[0].stdout }}"
     - name: Write a value to kv via the remote host with userpass auth
       community.hashi_vault.vault_write:
         url: "https://vault-vault.apps{{ cluster_host }}"
         path: kv/assemble-dev/dev-spaces
         validate_certs: false
         data:
-          id: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_ID') }}"
-          secret: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_SECRET') }}"
+          id: "{{ client_id }}"
+          secret: "{{ client_secret }}"
         token: "{{ vault_token }}"
       register: result
 

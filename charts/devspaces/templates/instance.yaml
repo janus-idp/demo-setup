@@ -3,6 +3,8 @@ kind: CheCluster
 metadata:
   name: devspaces
   namespace: openshift-operators
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
 spec:
   devEnvironments:
     defaultEditor: che-incubator/che-code/insiders

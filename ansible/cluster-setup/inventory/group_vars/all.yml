@@ -2,6 +2,7 @@ env:
 - namespace: "backstage"
   companyname: "ACME Inc"
   gitopsnamespace: "assemble-argocd"
+  gitopsinfranamespace: "infra-argocd"
   pipelinesnamespace: "assemble-pipelines"
   vaultconfignamespace: "vault-config-operator"
   vaultnamespace: "vault"

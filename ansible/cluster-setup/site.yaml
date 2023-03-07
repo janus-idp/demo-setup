@@ -209,9 +209,11 @@
       create_namespace: true
   - name: Apply ApplicationSet for Infra Deployment
     with_items: "{{ env }}"
-    kubernetes.core.k8s:
+    kubernetes.core.helm:
       state: present
-      src: ../../infra/infra-applicationset.yaml
+      name: infra-argocd
+      namespace: "{{ item.gitopsinfranamespace }}"
+      chart_ref: ../../charts/applicationset
 - name: Install Backstage Chart.
   hosts: 'localhost'
   tasks:

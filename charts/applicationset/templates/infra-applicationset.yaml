@@ -8,24 +8,23 @@ spec:
         repoURL: https://github.com/janus-idp/assemble-platforms.git
         revision: argo-deploy
         files:
-        - path: clusters/*.yaml
+        - path: "clusters/**/config.yaml"
   template:
     metadata:
-      name: "{{ printf 'infra-argocd-{{ env }}' }}"
+      name: '{{ cluster.name }}'
     spec:
       project: default
       source:
         path: charts/apps
         repoURL: https://github.com/janus-idp/assemble-platforms.git
-        targetRevision: >-
-          {{ printf "{{targetRevision}}" }}
+        targetRevision: argo-deploy
         # TODO: Revisit when going multi-cluster
         # helm:
         #   valueFiles:
         #     - "{{ printf 'values-cluster-{{env}}.yaml' }}"
       destination:
         server: https://kubernetes.default.svc
-        namespace: infra-argocd
+        namespace: "{{ .Values.destination.namespace }}"
         syncPolicy:
           automated:
             prune: true

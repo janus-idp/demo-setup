@@ -21,7 +21,7 @@
     - name: Write a value to kv via the remote host with userpass auth
       community.hashi_vault.vault_write:
         url: "https://vault-vault.apps{{ cluster_host }}"
-        path: cubbyhole/assemble-dev/dev-spaces
+        path: kv/assemble-dev/dev-spaces
         validate_certs: false
         data:
           id: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_ID') }}"

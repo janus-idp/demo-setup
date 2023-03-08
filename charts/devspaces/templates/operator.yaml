@@ -3,8 +3,6 @@ kind: Subscription
 metadata:
   name: devspaces
   namespace: openshift-operators
-  annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
 spec:
   channel: stable
   installPlanApproval: Automatic

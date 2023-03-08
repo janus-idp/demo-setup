@@ -2,7 +2,7 @@ apiVersion: org.eclipse.che/v2
 kind: CheCluster
 metadata:
   name: devspaces
-  namespace: openshift-operators
+  namespace: openshift-devspaces
   annotations:
     "helm.sh/hook": post-install,post-upgrade
 spec:

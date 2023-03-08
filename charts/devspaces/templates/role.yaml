@@ -18,4 +18,4 @@ spec:
       matchExpressions:
         - key: kubernetes.io/metadata.name
           operator: In
-          values: ["openshift-operators"]
+          values: ["openshift-devspaces"]

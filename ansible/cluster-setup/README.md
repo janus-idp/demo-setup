@@ -17,13 +17,13 @@ A guide to installing `Assemble with Ansible`
 1. The Ansible `kubernetes.core` collections needs to be installed before using this playbook.
 
     ``` sh
-    ansible-galaxy collection install kubernetes.core
+    ansible-galaxy collection install kubernetes.core community.hashi_vault
     ```
 
-1. The `kubernetes`, `openshift`, and `PyYAML` python packages need to be installed before using this playbook.
+1. The `kubernetes`, `openshift`, `hvac`, and `PyYAML` python packages need to be installed before using this playbook.
 
     ``` sh
-    pip3 install --user kubernetes openshift PyYAML
+    pip3 install --user kubernetes openshift hvac PyYAML
     ```
 
 1. The `helm diff` plugin should to be installed before using this playbook.
@@ -33,7 +33,7 @@ A guide to installing `Assemble with Ansible`
     ```
 
 1. Login to OpenShift
-1. If you want to use the GitHub integration, generate a Personal Access Token for GitHub and set the `GITHUB_TOKEN` environment variable.
+1. If you want to use the GitHub integration, generate a [Personal Access Token](https://github.com/settings/tokens) for GitHub and set the `GITHUB_TOKEN` environment variable.
    See the official [Backstage Documentation](https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration) for information on how to create one.  For the purposes of a demonstration, a Personal Access Token will do.
 1. Create a [Github Organization](https://github.com/settings/organizations) and set the `GITHUB_ORGANIZATION` environment variable to the name of the Organization. You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
 1. In order to create a webhook you'll need to Create a new GitHub Application.  You can do so by running the following command:
@@ -75,6 +75,22 @@ https://github.com/organizations/<ORGANIZATION>/settings/apps/new?url=https://ja
 
         ```sh
           echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
+        ```
+
+1. Create a second GitHub OAuth app and set the `GITHUB_DEV_SPACES_CLIENT_ID` and `GITHUB_DEV_SPACES_CLIENT_SECRET` environment variables.
+   - Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app) within the desired organization.  
+   - Use the following commands to generate the sample values used for this demo and fill them in using the GitHub UI:
+
+      **Homepage URL:**
+
+        ```sh
+          echo "https://devspaces.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/"
+        ```
+
+      **Authorization Callback URL:**
+
+        ```sh
+          echo "https://devspaces.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/api/oauth/callback"
         ```
 
 ## Install

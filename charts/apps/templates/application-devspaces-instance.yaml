@@ -12,7 +12,7 @@ spec:
     path: charts/devspaces
   destination:
     server: https://kubernetes.default.svc
-    namespace: infra-argocd
+    namespace: openshift-devspaces
   syncPolicy:
     automated:
       prune: true

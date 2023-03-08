@@ -25,7 +25,7 @@
       git clone https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/software-templates.git
       cd software-templates
       find . -type f -not -path '*/\.git/*' -exec sed -i '' -e "s/devspaces.apps.example-cluster.com/{{ dev_spaces_instance }}/g" {} +
-      find . -type f -not -path '*/\.git/*' -exec sed -i '' -e "s/baseurl.cluster-example.com/{{ cluster_base_url }}/g" {} +
+      find . -type f -not -path '*/\.git/*' -exec sed -i '' -e "s/baseurl.cluster-example.com/baseurl.cluster-example.com/.apps{{ cluster_base_url }}/g" {} +
       git add -A
       git commit -m "initial customization"
       git push

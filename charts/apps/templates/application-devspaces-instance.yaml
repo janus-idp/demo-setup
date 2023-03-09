@@ -1,21 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: devspaces-operator
-  namespace: infra-argocd
+  name: devspaces
   finalizers:
   - resources-finalizer.argocd.argoproj.io  
 spec:
   project: default
   source:
     repoURL: https://github.com/janus-idp/assemble-platforms.git
-    targetRevision: HEAD
-    path: infra/object-definitions/devspaces
-    directory:
-      include: operator.yaml
+    targetRevision: main
+    path: charts/devspaces
   destination:
     server: https://kubernetes.default.svc
-    namespace: openshift-operators
+    namespace: openshift-devspaces
   syncPolicy:
     automated:
       prune: true
@@ -29,3 +26,9 @@ spec:
         duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
         factor: 2 # a factor to multiply the base duration after each failed retry
         maxDuration: 10m # the maximum amount of time allowed for the backoff strategy
+  ignoreDifferences:
+  - group: org.eclipse.che
+    kind: CheCluster
+    name: devspaces
+    jsonPointers:
+    - /spec

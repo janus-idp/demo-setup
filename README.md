@@ -4,10 +4,10 @@ This repository contains automation to install the `Janus IDP Demo`, as well as 
 
 ## Getting Started
 
-Step-by-step instructions on getting Assemble running with RHSSO authentication using the included helm charts
+Step-by-step instructions on getting Janus IDP Demo running with RHSSO authentication using the included helm charts
 
 
-> **_NOTE:_** For an even faster start try running the ansible playbook found [here](./ansible/README.md).
+> **_NOTE:_** For an even faster start try running the ansible playbook found [here](./ansible/cluster-setup/README.md).
 
 ### Prerequisites
 

@@ -207,16 +207,13 @@
             type: "git"
       values_files: ["../../charts/gitops-operator/values.yaml"]
       create_namespace: true
-  - name: Install Dev Spaces Operator
+  - name: Apply ApplicationSet for Infra Deployment
     with_items: "{{ env }}"
-    kubernetes.core.k8s:
+    kubernetes.core.helm:
       state: present
-      src: ../../infra/argocd-applications/devspaces/devspaces-operator.yaml
-  - name: Install Dev Spaces Instance
-    with_items: "{{ env }}"
-    kubernetes.core.k8s:
-      state: present
-      src: ../../infra/argocd-applications/devspaces/devspaces-instance.yaml
+      name: infra-argocd
+      namespace: "{{ item.gitopsinfranamespace }}"
+      chart_ref: ../../charts/applicationset
 - name: Install Backstage Chart.
   hosts: 'localhost'
   tasks:
@@ -263,3 +260,22 @@
           url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}"
       values_files: ["../../charts/assemble-backstage/values.yaml"]
       create_namespace: true
+- name: Populate Vault with Secrets.
+  hosts: 'localhost'
+  tasks:
+  - name: Fetching Vault Token
+    with_items: "{{ env }}"
+    shell: "oc -n {{ item.vaultnamespace }} get secret vault-init --template='{{ '{{' }}index .data \"root_token\"{{ '}}' }}' | base64 -d"
+    register: vault_token_rsp
+  - name: Extract Vault Token
+    set_fact:
+      vault_token: "{{ vault_token_rsp.results[0].stdout }}"
+  - name: Populate Vault with Dev Spaces Secrets
+    community.hashi_vault.vault_write:
+      url: "https://vault-vault.apps{{ cluster_host }}"
+      path: kv/assemble-dev/dev-spaces
+      validate_certs: false
+      data:
+        id: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_ID') }}"
+        secret: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_SECRET') }}"
+      token: "{{ vault_token }}"

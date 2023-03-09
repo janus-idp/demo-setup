@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: infra-argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/janus-idp/assemble-platforms.git
+        revision: main
+        files:
+        - path: "clusters/**/config.json"
+  template:
+    metadata:
+      name: '{{"{{"}}cluster.name{{"}}"}}'
+    spec:
+      project: default
+      source:
+        path: charts/apps
+        repoURL: https://github.com/janus-idp/assemble-platforms.git
+        targetRevision: main
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{ .Values.destination.namespace }}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

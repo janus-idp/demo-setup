@@ -45,13 +45,13 @@
     **Linux**
 
     ```bash
-    xdg-open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&code=read&commit_statuses=write&dependabot_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&reopository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
+    xdg-open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
     ```
 
     **MacOS**
 
     ```bash
-    open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&code=read&commit_statuses=write&dependabot_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&reopository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
+    open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=writee"
     ```
 
     **Manually**
@@ -59,7 +59,7 @@
     Or by copying the following text and replacing `<ORGANIZATION>` with your organization name and pasting into your browser.
 
     ```bash
-    https://github.com/organizations/<ORGANIZATION>/settings/apps/new?url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&code=read&commit_statuses=write&dependabot_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&reopository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write
+    https://github.com/organizations/<ORGANIZATION>/settings/apps/new?url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write
     ```
 
 ## Installation

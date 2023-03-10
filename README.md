@@ -6,8 +6,7 @@ This repository contains automation to install the `Janus IDP Demo`, as well as 
 
 Step-by-step instructions on getting Janus IDP Demo running with RHSSO authentication using the included helm charts
 
-
-> **_NOTE:_** For an even faster start try running the ansible playbook found [here](./ansible/cluster-setup/README.md).
+> **_NOTE:_** For fast setup on a newly provisioned OpenShift environment, use the [cluster setup ansible playbook](./ansible/cluster-setup/README.md).
 
 ### Prerequisites
 

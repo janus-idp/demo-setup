@@ -64,10 +64,7 @@ export GITHUB_ORGANIZATION=
 Create a new GitHub Application to enable the creation of Git WebHooks by the demo.  The required field will be populated, and correct permissions set.
 
 ``` sh
-open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?name=$GITHUB_ORGANIZATION-tekton-webook&url=https://janus-idp.io/blog&webhook_active=false&public=false&administratio
-n=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environ
-ments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=wr
-ite&security_events=write&workflows=write&webhooks=write"
+open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?name=$GITHUB_ORGANIZATION-tekton-webook&url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
 ```
 
 Set the `GITHUB_APP_ID` environment variable to the App ID of the App you just created. Generate a Private Key for this app and download the private key file.  Set the fully qualified path to the `GITHUB_KEY_FILE` environment variable.

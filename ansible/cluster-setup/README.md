@@ -10,11 +10,9 @@ A guide to installing `Assemble with Ansible`
   - [helm](https://helm.sh/)
     - Please use the version included with your Openshift Deployment
   - [pip3](https://pypi.org/project/pip/)
-- Install ansible's `kubernetes.core` and `community.general` collections:
+## Install Packages
 
-## Setup
-
-1. The Ansible `kubernetes.core` collections needs to be installed before using this playbook.
+1. The Ansible `kubernetes.core` and `community.hashi_vault` collections need to be installed before using this playbook.
 
     ``` sh
     ansible-galaxy collection install kubernetes.core community.hashi_vault
@@ -32,67 +30,95 @@ A guide to installing `Assemble with Ansible`
     helm plugin install https://github.com/databus23/helm-diff
     ```
 
-1. Login to OpenShift
-1. If you want to use the GitHub integration, generate a [Personal Access Token](https://github.com/settings/tokens) for GitHub and set the `GITHUB_TOKEN` environment variable.
-   See the official [Backstage Documentation](https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration) for information on how to create one.  For the purposes of a demonstration, a Personal Access Token will do.
-1. Create a [Github Organization](https://github.com/settings/organizations) and set the `GITHUB_ORGANIZATION` environment variable to the name of the Organization. You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
-1. In order to create a webhook you'll need to Create a new GitHub Application.  You can do so by running the following command:
+## Configuration
 
-### Linux
+For ease of setup, set the `OPENSHIFT_CLUSTER_INFO` variable for use later.
 
-```bash
-xdg-open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
+``` sh
+export OPENSHIFT_CLUSTER_INFO=$(echo "$(oc cluster-info | grep -Eo '.cluster(.*?).com')")
 ```
 
-### macOS
+If you are using Linux environment, set the alias for the following commands to work:
 
-```bash
-open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
+``` sh
+alias open="xdg-open"
+```
+### Set Personal Access Token
+Generate a [Personal Access Token](https://github.com/settings/tokens) for GitHub and set the `GITHUB_TOKEN` environment variable. See the official [Backstage Documentation](https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration) for information on how to create one.
+``` sh
+export GITHUB_TOKEN=
 ```
 
-Or by copying the following text and replacing `<ORGANIZATION>` with your organization name and pasting into your browser.
+### Create GitHub Organization
 
-```text
-https://github.com/organizations/<ORGANIZATION>/settings/apps/new?url=https://janus-idp.io/blog&wwebhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write
+Create a new [Github Organization](https://github.com/account/organizations/new?plan=free). This organization will be where the code repositories for the Components created in Backstage will go.
+
+The `GITHUB_ORGANIZATION` environment variable will be set to the name of the Organization. You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
+
+``` sh
+export GITHUB_ORGANIZATION=
 ```
 
-- Enter a unique name in the `GitHub App name` field
-- Set the `GITHUB_APP_ID` environment variable to the App ID of the App you just created.
-- Generate a Private Key for this app and download the private key file.  Set the fully qualified path to the `GITHUB_KEY_FILE` environment variable.
-- Go to the `Install App` table on the left side of the page and install the GitHub App that you create for your organization
+### Set Up GitHub Application
 
-1. If you want to use GitHub as an IDP for backstage then create an GitHub OAuth app and set the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` environment variables.
-   - Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app) within the desired organization.  
-   - Use the following commands to generate the sample values used for this demo and fill them in using the GitHub UI:
+Create a new GitHub Application to enable the creation of Git WebHooks by the demo.  The required field will be populated, and correct permissions set.
 
-      **Homepage URL:**
+``` sh
+open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?name=$GITHUB_ORGANIZATION-tekton-webook&url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
+```
 
-        ```sh
-          echo "https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
-        ```
+Set the `GITHUB_APP_ID` environment variable to the App ID of the App you just created. Generate a Private Key for this app and download the private key file.  Set the fully qualified path to the `GITHUB_KEY_FILE` environment variable.
 
-      **Authorization Callback URL:**
+``` sh
+export GITHUB_APP_ID=
+```
+``` sh
+export GITHUB_KEY_FILE=
+```
 
-        ```sh
-          echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
-        ```
+Go to the `Install App` table on the left side of the page and install the GitHub App that you create for your organization.
 
-1. Create a second GitHub OAuth app and set the `GITHUB_DEV_SPACES_CLIENT_ID` and `GITHUB_DEV_SPACES_CLIENT_SECRET` environment variables.
-   - Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app) within the desired organization.  
-   - Use the following commands to generate the sample values used for this demo and fill them in using the GitHub UI:
+### Create Github OAuth Applications
 
-      **Homepage URL:**
+Create an GitHub OAuth application in order to use GitHub as an Identity Provider for Backstage.
 
-        ```sh
-          echo "https://devspaces.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/"
-        ```
+``` sh
+open "https://github.com/settings/applications/new?oauth_application[name]=$JANUS_IDP_BOOTSRAP-identity-provider&oauth_application[url]=https://assemble-demo.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://keycloak-backstage.apps$OPENSHIFT_CLUSTER_INFO/auth/realms/backstage/broker/github/endpoint"
+```
 
-      **Authorization Callback URL:**
+Set the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` environment variables with the values from the OAuth application.
 
-        ```sh
-          echo "https://devspaces.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/api/oauth/callback"
-        ```
+``` sh
+export GITHUB_CLIENT_ID=
+```
+``` sh
+export GITHUB_CLIENT_SECRET=<
+```
 
+Create a second GitHub OAuth application to enable Dev Spaces to seamlessly push code changes to the code repository for new Components created in Backstage.  
+
+``` sh
+open "https://github.com/settings/applications/new?oauth_application[name]=$JANUS_IDP_BOOTSRAP-dev-spaces&oauth_application[url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO/api/oauth/callback"
+```
+
+Set the `GITHUB_DEV_SPACES_CLIENT_ID` and `GITHUB_DEV_SPACES_CLIENT_SECRET` environment variables with the values from the OAuth application.
+
+``` sh
+export GITHUB_DEV_SPACES_CLIENT_ID=
+```
+``` sh
+export GITHUB_DEV_SPACES_CLIENT_SECRET=
+```
+
+### Run the Software Templates Setup Playbook
+
+Fork the [Software Templates](https://github.com/janus-idp/software-templates) repository to your organization. Ensure that the name of the forked repo remains as `software-templates`
+
+Execute the following command to complete setup of the fork. This playbook with customize your fork of the Software Templates repo with relevant information pertaining to your cluster, mimicking the structure of a custom template being used in an enterprise IT environment.
+
+```sh
+ansible-playbook ./template.yaml
+```
 ## Install
 
 [Inventory values](inventory/group_vars/all.yml) can be changed, but not required

@@ -1,6 +1,6 @@
 # Assemble with Ansible
 
-A guide to installing `Assemble with Ansible`
+A guide to installing `Assemble with Ansible`.
 
 ## Prerequisites
 
@@ -64,7 +64,7 @@ export GITHUB_ORGANIZATION=
 Create a new GitHub Application to enable the creation of Git WebHooks by the demo.  The required field will be populated, and correct permissions set.
 
 ``` sh
-open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?name=$GITHUB_ORGANIZATION-tekton-webook&url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
+open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?name=$GITHUB_ORGANIZATION-webook&url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
 ```
 
 Set the `GITHUB_APP_ID` environment variable to the App ID of the App you just created. Generate a Private Key for this app and download the private key file.  Set the fully qualified path to the `GITHUB_KEY_FILE` environment variable.
@@ -76,7 +76,7 @@ export GITHUB_APP_ID=
 export GITHUB_KEY_FILE=
 ```
 
-Go to the `Install App` table on the left side of the page and install the GitHub App that you create for your organization.
+> **_IMPORTANT:_** Go to the `Install App` table on the left side of the page and install the GitHub App that you create for your organization.
 
 ### Create Github OAuth Applications
 
@@ -92,7 +92,7 @@ Set the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` environment variables with
 export GITHUB_CLIENT_ID=
 ```
 ``` sh
-export GITHUB_CLIENT_SECRET=<
+export GITHUB_CLIENT_SECRET=
 ```
 
 Create a second GitHub OAuth application to enable Dev Spaces to seamlessly push code changes to the code repository for new Components created in Backstage.  
@@ -101,7 +101,7 @@ Create a second GitHub OAuth application to enable Dev Spaces to seamlessly push
 open "https://github.com/settings/applications/new?oauth_application[name]=$JANUS_IDP_BOOTSRAP-dev-spaces&oauth_application[url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO/api/oauth/callback"
 ```
 
-Set the `GITHUB_DEV_SPACES_CLIENT_ID` and `GITHUB_DEV_SPACES_CLIENT_SECRET` environment variables with the values from the OAuth application.
+Set the `GITHUB_DEV_SPACES_CLIENT_ID` and `GITHUB_DEV_SPACES_CLIENT_SECRET` environment variables will the values from the OAuth application.
 
 ``` sh
 export GITHUB_DEV_SPACES_CLIENT_ID=
@@ -129,6 +129,8 @@ Run Command:
 ansible-playbook site.yaml -i inventory
 ```
 
+> **_NOTE:_** The deployment of most infrastructure is delegated to ArgoCD.  Once the playbook successfully runs, it will take up to several minutes until the demo is fully operational.  To check on the status of the deployment in the ArgoCD console, see below.
+
 ### FAQ
 
 #### Failed on `Run RHSSO Backstage Helm Chart` during initial run `no matches for kind \"Keycloak\" in version...`
@@ -141,6 +143,10 @@ Most likely an environment variable is not set, or not set correctly. Validate, 
 
 > Note: If there is an issue post the Postgres database creation please delete the database (or the entire namespace) before attempting to rerun the ansible playbook.
 
-#### Unable to login to Argo Cluster
+#### Log in to Argo Cluster
 
-Admin password can be found on `argocd-cluster` secret. And the username is `admin`
+There are ArgoCD instances in the following namespaces:
+- `assemble-argocd`
+- `infra-argocd`
+
+To access the console, the password for the `admin` user can be found in the `argocd-cluster` secret.

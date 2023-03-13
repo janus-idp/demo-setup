@@ -1,4 +1,4 @@
-site_name: Assemble Platform
+site_name: Janus IDP Demo
 site_url: https://janus-idp.github.io/assemble-platforms/
 site_description: From Idea to Production Faster
 repo_name: janus-idp/assemble-platforms
@@ -30,6 +30,7 @@ theme:
     - navigation.tabs
     - navigation.top
     - navigation.instant
+    - content.code.copy
 extra_css:
   - stylesheets/extra.css
 markdown_extensions:
@@ -49,6 +50,7 @@ markdown_extensions:
   - tables
 nav:
   - Home: index.md
-  - Getting Started: getting-started.md
+  - Install:
+    - Getting Started: getting_started/getting-started.md
   - Architecture: architecture.md
   - Demo: demo.md

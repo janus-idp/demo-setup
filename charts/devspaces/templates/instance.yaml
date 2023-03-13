@@ -3,6 +3,8 @@ kind: CheCluster
 metadata:
   name: devspaces
   namespace: openshift-devspaces
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   devEnvironments:
     defaultEditor: che-incubator/che-code/insiders

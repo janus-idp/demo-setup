@@ -1,6 +1,4 @@
-# Assemble with Ansible
-
-A guide to installing `Assemble with Ansible`.
+# Getting Started
 
 ## Prerequisites
 
@@ -39,15 +37,19 @@ For ease of setup, set the `OPENSHIFT_CLUSTER_INFO` variable for use later.
 export OPENSHIFT_CLUSTER_INFO=$(echo "$(oc cluster-info | grep -Eo '.cluster(.*?).com')")
 ```
 
-If you are using Linux environment, set the alias for the following commands to work:
+!!! tip "Using Linux?"
+    If you are using a `Linux` environment, set the alias for the following commands to work:
 
-``` sh
-alias open="xdg-open"
-```
+    ``` sh
+    alias open="xdg-open"
+    ```
 
-### Set Personal Access Token
+### Personal Access Token
 
-Generate a [Personal Access Token](https://github.com/settings/tokens) for GitHub and set the `GITHUB_TOKEN` environment variable. See the official [Backstage Documentation](https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration) for information on how to create one.
+Generate a [Personal Access Token](https://github.com/settings/tokens) for GitHub and set the `GITHUB_TOKEN` environment variable. 
+
+!!! info
+    See the official [Backstage Documentation](https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration) for information on how to create one.
 
 ``` sh
 export GITHUB_TOKEN=
@@ -57,7 +59,10 @@ export GITHUB_TOKEN=
 
 Create a new [Github Organization](https://github.com/account/organizations/new?plan=free). This organization will contain the code repositories for the `components` created by Backstage.
 
-The `GITHUB_ORGANIZATION` environment variable will be set to the name of the Organization. You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
+The `GITHUB_ORGANIZATION` environment variable will be set to the name of the organization.
+
+!!! tip
+    You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.
 
 ``` sh
 export GITHUB_ORGANIZATION=
@@ -81,11 +86,11 @@ export GITHUB_ORGANIZATION=
     export GITHUB_KEY_FILE=
     ```
 
-    ![Organization Client Info](/docs/docs/getting_started/assets/org-client-info.png)
+    ![Organization Client Info](assets/org-client-info.png)
 
 1. Go to the `Install App` table on the left side of the page and install the GitHub App that you created for your organization.
 
-    ![Install App](/docs/docs/getting_started/assets/org-install-app.png)
+    ![Install App](assets/org-install-app.png)
 
 ### Create Github OAuth Applications
 
@@ -105,9 +110,9 @@ export GITHUB_CLIENT_ID=
 export GITHUB_CLIENT_SECRET=
 ```
 
-![Get Client ID](/docs/docs/getting_started/assets/client-info.png)
+![Get Client ID](assets/client-info.png)
 
-Create a **second** GitHub OAuth application to enable Dev Spaces to seamlessly push code changes to the repository for new components created in Backstage.
+Create a **second** GitHub OAuth application to enable Dev Spaces to seamlessly push code changes to the repository for new components created in Backstage.  
 
 ``` sh
 open "https://github.com/settings/applications/new?oauth_application[name]=$JANUS_IDP_BOOTSRAP-dev-spaces&oauth_application[url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO/api/oauth/callback"
@@ -135,7 +140,7 @@ ansible-playbook ./template.yaml
 
 ## Install
 
-[Inventory values](inventory/group_vars/all.yml) can be changed, but it is not required
+The Inventory values in `inventory/group_vars/all.yml` can be changed, but it is not required
 
 Run Command:
 
@@ -143,25 +148,13 @@ Run Command:
 ansible-playbook site.yaml -i inventory
 ```
 
-> **_NOTE:_** The deployment of most infrastructure is delegated to ArgoCD.  Once the playbook successfully runs, it may take several minutes until the demo is fully operational. The deployment can be monitored in the ArgoCD console.
+!!! note
+    The deployment of most infrastructure is delegated to ArgoCD.  Once the playbook successfully runs, it may take several minutes until the demo is fully operational. The deployment can be monitored in the ArgoCD console.
 
 ### FAQ
 
-#### Failed on `Run RHSSO Backstage Helm Chart` during initial run `no matches for kind \"Keycloak\" in version...`
+??? question "Failed on `Run RHSSO Backstage Helm Chart` during initial run `no matches for kind \"Keycloak\" in version...`"
+    The RHSSO operator may not have completed installation, try rerunning the Ansible Playbook.
 
-The RHSSO operator may not have completed installation, try rerunning the Ansible Playbook.
-
-#### Failed on `Create Manifests Repo`
-
-Most likely an environment variable is not set, or not set correctly. Validate, delete the Postgres Database Deployment and re-try the playbook.
-
-> Note: If there is an issue post the Postgres database creation please delete the database (or the entire namespace) before attempting to rerun the ansible playbook.
-
-#### Log in to Argo Cluster
-
-There are ArgoCD instances in the following namespaces:
-
-- `assemble-argocd`
-- `infra-argocd`
-
-To access the console, the password for the `admin` user can be found in the `argocd-cluster` secret.
+??? question "Failed on `Create Manifests Repo`"
+    Most likely an environment variable is not set, or not set correctly. Validate, delete the Postgres Database Deployment and re-try the playbook.

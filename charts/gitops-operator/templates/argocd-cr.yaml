@@ -18,26 +18,5 @@ spec:
   {{- if $.Values.argocd_cr }}
   {{- $.Values.argocd_cr | toYaml | trim | nindent 2 }}
   {{- end }}
----
-apiVersion: argoproj.io/v1alpha1
-kind: AppProject
-metadata:
-  name: default
-  {{- if not $.Values.ignoreHelmHooks }}
-  annotations:
-    "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-weight": "25"
-  {{- end }}
-  namespace: {{ $ns }}
-spec:
-  clusterResourceWhitelist:
-    - group: '*'
-      kind: '*'
-  destinations:
-    - namespace: '*'
-      server: '*'
-  sourceRepos:
-    - '*'
-status: {}
 {{- end }}
 {{- end }}

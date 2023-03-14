@@ -20,6 +20,18 @@
       namespace: "openshift-operators"
       chart_ref: ../../charts/operator
       values_files: ["../../charts/operator/values-certmanager-operator.yaml"]
+- name: Install Patch Operator Chart.
+  hosts: 'localhost'
+  tasks:
+  - name: Run Patch Helm Chart
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: patch-operator
+      namespace: "patch-operator"
+      chart_ref: ../../charts/operator
+      values_files: ["../../charts/operator/values-patch-operator.yaml"]
+      create_namespace: true
 - name: Install Vault Config Operator Chart.
   hosts: 'localhost'
   tasks:
@@ -149,6 +161,8 @@
               enabled: "{{ false if lookup('ansible.builtin.env', 'GITHUB_CLIENT_SECRET') == '' else true }}"
         backstage:
           host: "assemble-demo.apps{{ cluster_host }}"
+        openshift:
+          clusterDomain: "{{ cluster_host }}"
       values_files: ["../../charts/rhsso-backstage/values.yaml"]
       create_namespace: true
   - name: Wait for Keycloak to be Ready

@@ -13,9 +13,24 @@ keycloak:
   client:
     name: backstage
     secretName: openshift-client
+  ocpclient:
+    name: openshift-test
+    secretName: 
+  ocprealm:
+    name: openshift-test
+    enabled: true
+    displayName: Backstage Authentication Realm
+    identityProvider:
+      enabled: true
+      clientId: ""
+      clientSecret: ""
+
+
 
 assemble:
   group: assemble
 
+openshift:
+  clusterDomain: ""
 backstage:
   host: ""

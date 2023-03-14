@@ -1,0 +1,46 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: Patch
+metadata:
+  name: config-patches
+  namespace: openshift-config
+  labels:
+    {{- include "assemble-backstage.labels" . | nindent 4 }}
+spec:
+  serviceAccountRef:
+    name: default
+  patches:
+    rhsso-client-secret:
+      targetObjectRef:
+        apiVersion: v1
+        kind: Secret
+        name: rhsso-client-secret
+        namespace: openshift-config
+      sourceObjectRefs:
+      - apiVersion: v1
+        kind: Secret
+        namespace: backstage
+        name: keycloak-client-secret-backstage
+      patchTemplate: |
+        data:
+          clientSecret:  {{ "{{" }} (index . 1).data.CLIENT_SECRET {{ "}}" }}
+      patchType: application/merge-patch+json
+    rhsso-ocp-oauth-provider:
+      targetObjectRef:
+        apiVersion: config.openshift.io/v1
+        kind: OAuth
+        name: cluster
+      sourceObjectRefs:
+      - apiVersion: config.openshift.io/v1
+        kind: DNS
+        name: cluster  
+      patchTemplate: |
+        {{ "{{-" }} $backStageDemoIDP:= dict "name" "janus-rhsso" "mappingMethod" "claim" "type" "OpenID" "openID" (dict "clientID" "backstage" "clientSecret" (dict "name" "rhsso-client-secret" ) "extraScopes" (list) "claims" (dict "email" (list "email") "name" (list "name") "preferredUsername" (list "preferred_username") ) "issuer" (printf "https://keycloak-backstage.apps.%s/auth/realms/backstage" ((index . 1).spec.baseDomain)) ) {{ "-}}" }}       
+        spec:
+          identityProviders:
+          {{ "{{-" }} if (not (has $backStageDemoIDP (index . 0).spec.identityProviders)) {{ "}}" }}
+        {{ "{{" }} append (index . 0).spec.identityProviders $backStageDemoIDP | toYaml | indent 4 {{ "}}" }}
+          {{ "{{-" }} else {{ "}}" }}
+        {{ "{{" }} (index . 0).spec.identityProviders | toYaml | indent 4 {{ "}}" }}
+          {{- "{{" }} end {{ "}}" }}            
+      patchType: application/merge-patch+json
+             

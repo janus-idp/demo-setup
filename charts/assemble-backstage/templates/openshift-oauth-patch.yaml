@@ -1,3 +1,4 @@
+{{- if .Values.oauth.enabled }}
 apiVersion: redhatcop.redhat.io/v1alpha1
 kind: Patch
 metadata:
@@ -43,4 +44,4 @@ spec:
         {{ "{{" }} (index . 0).spec.identityProviders | toYaml | indent 4 {{ "}}" }}
           {{- "{{" }} end {{ "}}" }}            
       patchType: application/merge-patch+json
-             
+{{- end }}

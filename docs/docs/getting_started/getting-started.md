@@ -97,7 +97,7 @@ export GITHUB_ORGANIZATION=
 Create an GitHub OAuth application in order to use GitHub as an Identity Provider for Backstage.
 
 ``` sh
-open "https://github.com/settings/applications/new?oauth_application[name]=$JANUS_IDP_BOOTSRAP-identity-provider&oauth_application[url]=https://assemble-demo.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://keycloak-backstage.apps$OPENSHIFT_CLUSTER_INFO/auth/realms/backstage/broker/github/endpoint"
+open "https://github.com/settings/applications/new?oauth_application[name]=$GITHUB_ORGANIZATION-identity-provider&oauth_application[url]=https://assemble-demo.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://keycloak-backstage.apps$OPENSHIFT_CLUSTER_INFO/auth/realms/backstage/broker/github/endpoint"
 ```
 
 Set the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` environment variables with the values from the OAuth application.
@@ -115,7 +115,7 @@ export GITHUB_CLIENT_SECRET=
 Create a **second** GitHub OAuth application to enable Dev Spaces to seamlessly push code changes to the repository for new components created in Backstage.  
 
 ``` sh
-open "https://github.com/settings/applications/new?oauth_application[name]=$JANUS_IDP_BOOTSRAP-dev-spaces&oauth_application[url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO/api/oauth/callback"
+open "https://github.com/settings/applications/new?oauth_application[name]=$GITHUB_ORGANIZATION-dev-spaces&oauth_application[url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO/api/oauth/callback"
 ```
 
 Set the `GITHUB_DEV_SPACES_CLIENT_ID` and `GITHUB_DEV_SPACES_CLIENT_SECRET` environment variables will the values from the OAuth application.
@@ -153,8 +153,14 @@ ansible-playbook site.yaml -i inventory
 
 ### FAQ
 
+??? question "Stuck on `FAILED - RETRYING: [localhost]: Wait for Keycloak to be Ready (xxx retries left)` for over 2 minutes"
+    Bounce the pod deployed by the `keycloak` StatefulSet in the `backstage` namespace.  The playbook will pick up again once the new pod is up.
+
 ??? question "Failed on `Run RHSSO Backstage Helm Chart` during initial run `no matches for kind \"Keycloak\" in version...`"
     The RHSSO operator may not have completed installation, try rerunning the Ansible Playbook.
 
 ??? question "Failed on `Create Manifests Repo`"
     Most likely an environment variable is not set, or not set correctly. Validate, delete the Postgres Database Deployment and re-try the playbook.
+
+??? question "Log in to Argo Cluster"
+    To access the console, the password for the `admin` user can be found in the `argocd-cluster` secret.

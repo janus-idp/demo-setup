@@ -62,7 +62,6 @@
       values:
         dns:
           zone: "{{ cluster_host[1:] }}"
-      values_files: ["../../charts/vault/values.yaml"]
       create_namespace: true
 - name: Install Vault Config Chart.
   hosts: 'localhost'
@@ -116,7 +115,6 @@
       name: pipelines
       namespace: "{{ item.pipelinesnamespace }}"
       chart_ref: ../../charts/pipelines-operator
-      values_files: ["../../charts/pipelines-operator/values.yaml"]
       create_namespace: true
 - name: Install RHSSO Backstage Chart.
   hosts: 'localhost'
@@ -149,7 +147,6 @@
               enabled: "{{ false if lookup('ansible.builtin.env', 'GITHUB_CLIENT_SECRET') == '' else true }}"
         backstage:
           host: "assemble-demo.apps{{ cluster_host }}"
-      values_files: ["../../charts/rhsso-backstage/values.yaml"]
       create_namespace: true
   - name: Wait for Keycloak to be Ready
     with_items: "{{ env }}"
@@ -229,7 +226,6 @@
             password: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
             url: "https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
             type: "git"
-      values_files: ["../../charts/gitops-operator/values.yaml"]
       create_namespace: true
   - name: Apply ApplicationSet for Infra Deployment
     with_items: "{{ env }}"
@@ -282,7 +278,6 @@
           password: "{{ argocd_admin_pwd }}"
           waitCycles: 25
           url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}"
-      values_files: ["../../charts/assemble-backstage/values.yaml"]
       create_namespace: true
 - name: Populate Vault with Secrets.
   hosts: 'localhost'

@@ -27,3 +27,6 @@ spec:
     serviceAccountsEnabled: true
     redirectUris:
       - {{ required "Backstage host is required" (printf "https://%s/oauth2/callback" .Values.backstage.host) }}
+{{- if .Values.openshift.clusterDomain }}
+      - https://oauth-openshift.apps.{{ .Values.openshift.clusterDomain }}/*
+{{- end }}

@@ -17,5 +17,7 @@ keycloak:
 assemble:
   group: assemble
 
+openshift:
+  clusterDomain: ""
 backstage:
   host: ""

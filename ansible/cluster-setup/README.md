@@ -71,7 +71,7 @@ export GITHUB_ORGANIZATION=
     open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?name=$GITHUB_ORGANIZATION-webook&url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
     ```
 
-1. Set the `GITHUB_APP_ID` environment variable to the App ID of the App you just created. Generate a `Private Key` for this app and download the private key file.  Set the fully qualified path to the `GITHUB_KEY_FILE` environment variable.
+1. Set the `GITHUB_APP_ID` environment variable to the App ID of the App you just created. Then, generate a `Private Key` for this app and **download** the private key file.  Set the fully qualified path to the `GITHUB_KEY_FILE` environment variable.
 
     ``` sh
     export GITHUB_APP_ID=
@@ -92,7 +92,7 @@ export GITHUB_ORGANIZATION=
 Create an GitHub OAuth application in order to use GitHub as an Identity Provider for Backstage.
 
 ``` sh
-open "https://github.com/settings/applications/new?oauth_application[name]=$JANUS_IDP_BOOTSRAP-identity-provider&oauth_application[url]=https://assemble-demo.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://keycloak-backstage.apps$OPENSHIFT_CLUSTER_INFO/auth/realms/backstage/broker/github/endpoint"
+open "https://github.com/settings/applications/new?oauth_application[name]=$GITHUB_ORGANIZATION-identity-provider&oauth_application[url]=https://assemble-demo.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://keycloak-backstage.apps$OPENSHIFT_CLUSTER_INFO/auth/realms/backstage/broker/github/endpoint"
 ```
 
 Set the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` environment variables with the values from the OAuth application.
@@ -110,7 +110,7 @@ export GITHUB_CLIENT_SECRET=
 Create a **second** GitHub OAuth application to enable Dev Spaces to seamlessly push code changes to the repository for new components created in Backstage.
 
 ``` sh
-open "https://github.com/settings/applications/new?oauth_application[name]=$JANUS_IDP_BOOTSRAP-dev-spaces&oauth_application[url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO/api/oauth/callback"
+open "https://github.com/settings/applications/new?oauth_application[name]=$GITHUB_ORGANIZATION-dev-spaces&oauth_application[url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO/api/oauth/callback"
 ```
 
 Set the `GITHUB_DEV_SPACES_CLIENT_ID` and `GITHUB_DEV_SPACES_CLIENT_SECRET` environment variables will the values from the OAuth application.
@@ -123,6 +123,15 @@ export GITHUB_DEV_SPACES_CLIENT_ID=
 export GITHUB_DEV_SPACES_CLIENT_SECRET=
 ```
 
+## Install
+
+Clone the `assemble-platforms` repo and run the next commands from inside of the `ansible/cluster-setup` directory
+
+```sh
+git clone https://github.com/janus-idp/assemble-platforms.git
+cd assemble-platforms/ansible/cluster-setup
+```
+
 ### Run the Software Templates Setup Playbook
 
 Fork the [Software Templates](https://github.com/janus-idp/software-templates) repository to your organization. Ensure that the name of the forked repo remains as `software-templates`
@@ -133,7 +142,7 @@ Execute the following command to complete setup of the fork. This playbook will 
 ansible-playbook ./template.yaml
 ```
 
-## Install
+### Run Cluster Setup Playbook
 
 [Inventory values](inventory/group_vars/all.yml) can be changed, but it is not required
 
@@ -146,6 +155,10 @@ ansible-playbook site.yaml -i inventory
 > **_NOTE:_** The deployment of most infrastructure is delegated to ArgoCD.  Once the playbook successfully runs, it may take several minutes until the demo is fully operational. The deployment can be monitored in the ArgoCD console.
 
 ### FAQ
+
+#### Stuck on `FAILED - RETRYING: [localhost]: Wait for Keycloak to be Ready (xxx retries left)` for over 2 minutes
+
+Bounce the pod deployed by the `keycloak` StatefulSet in the `backstage` namespace.  The playbook will pick up again once the new pod is up.
 
 #### Failed on `Run RHSSO Backstage Helm Chart` during initial run `no matches for kind \"Keycloak\" in version...`
 

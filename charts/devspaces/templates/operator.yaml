@@ -3,6 +3,9 @@ kind: Subscription
 metadata:
   name: devspaces
   namespace: openshift-operators
+  annotations:
+    "helm.sh/hook": crd-install
+    "helm.sh/hook-weight": "-2"
 spec:
   channel: stable
   installPlanApproval: Automatic

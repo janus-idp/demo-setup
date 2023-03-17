@@ -6,7 +6,7 @@ spec:
   generators:
     - git:
         repoURL: https://github.com/janus-idp/assemble-platforms.git
-        revision: main
+        revision: argo-resource-cust
         files:
         - path: "clusters/**/config.json"
   template:
@@ -17,7 +17,7 @@ spec:
       source:
         path: charts/apps
         repoURL: https://github.com/janus-idp/assemble-platforms.git
-        targetRevision: main
+        targetRevision: argo-resource-cust
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{ .Values.destination.namespace }}"

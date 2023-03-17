@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/janus-idp/assemble-platforms.git
-    targetRevision: main
+    targetRevision: argo-resource-cust
     path: charts/devspaces
   destination:
     server: https://kubernetes.default.svc

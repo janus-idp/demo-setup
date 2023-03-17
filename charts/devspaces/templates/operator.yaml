@@ -4,8 +4,7 @@ metadata:
   name: devspaces
   namespace: openshift-operators
   annotations:
-    "helm.sh/hook": crd-install
-    "helm.sh/hook-weight": "-2"
+    "helm.sh/hook-weight": "-5"
 spec:
   channel: stable
   installPlanApproval: Automatic

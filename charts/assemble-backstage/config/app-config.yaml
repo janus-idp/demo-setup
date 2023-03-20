@@ -43,7 +43,13 @@
     {{- if .enabled | default false }}
       github:
         - host: {{ .host | default "github.com" }}
-          token: {{ required "GitHub PAT is required" .token | quote }}
+          apps:
+            - appId: {{ required "GitHub App ID is required" .appId | quote }}
+              clientId: {{ required "GitHub App Client ID is required" .clientId | quote }}
+              clientSecret: {{ required "GitHub App Client Secret is required" .clientSecret | quote }}
+              webhookSecret: {{ .webhookSecret | default "replaceme" }}
+              privateKey: |
+                {{- required "GitHub App Private Key is required" .privateKey | nindent 16 }}
     {{- else }}
       {}
     {{- end }}
@@ -79,11 +85,18 @@
     {{- end }}
     auth:
       # see https://backstage.io/docs/auth/ to learn about auth providers
-{{- if not .Values.oauth.enabled }}
-      providers: {}
-{{- else }}
+      environment: {{ .Values.environment | default "development" }}
       providers:
+{{- if .Values.oauth.enabled }}
         oauth2Proxy: {}
+{{- end }}
+{{- with .Values.auth.github }}
+{{- if .enabled }}
+        github:
+          {{ .environment | default "development" }}:
+            clientId: {{ .clientId | quote }}
+            clientSecret: {{ .clientSecret | quote }}
+{{- end }}
 {{- end }}
 
     scaffolder:
@@ -96,3 +109,25 @@
       {{- with .Values.backstage.catalog }}
         {{- toYaml . | nindent 6 }}
       {{- end }}
+
+{{- with .Values.kubernetes }}
+{{- if .enabled }}
+    kubernetes:
+      serviceLocatorMethod:
+        type: "multiTenant"
+      clusterLocatorMethods:
+        - type: "config"
+          clusters:
+            - name: {{ .name | default "dev-cluster-infra" }}
+              url: {{ .url }}
+              authProvider: "serviceAccount"
+              skipTLSVerify: true
+              serviceAccountToken: {{ .token | quote }}
+{{- end }}
+{{- end }}
+
+    ocm:
+      hub:
+        name: 'replace_me'
+        url: 'replace_me'
+        serviceAccountToken: 'replace_me'

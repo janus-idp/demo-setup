@@ -4,7 +4,7 @@ A guide to installing `Assemble with Ansible`.
 
 ## Prerequisites
 
-- Access to an Openshift 4+ deployment and logged in with the CLI
+- Access to an Openshift 4+ deployment and logged in with the CLI (version 4.11 or higher)
 - Install the Following CLIs
   - [ansible](https://www.ansible.com/)/[ansible-galaxy](https://galaxy.ansible.com/)
   - [helm](https://helm.sh/)
@@ -45,14 +45,6 @@ If you are using Linux environment, set the alias for the following commands to 
 alias open="xdg-open"
 ```
 
-### Set Personal Access Token
-
-Generate a [Personal Access Token](https://github.com/settings/tokens) for GitHub and set the `GITHUB_TOKEN` environment variable. See the official [Backstage Documentation](https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration) for information on how to create one.
-
-``` sh
-export GITHUB_TOKEN=
-```
-
 ### Create GitHub Organization
 
 Create a new [Github Organization](https://github.com/account/organizations/new?plan=free). This organization will contain the code repositories for the `components` created by Backstage.
@@ -71,10 +63,18 @@ export GITHUB_ORGANIZATION=
     open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?name=$GITHUB_ORGANIZATION-webhook&url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
     ```
 
-1. Set the `GITHUB_APP_ID` environment variable to the App ID of the App you just created. Then, generate a `Private Key` for this app and **download** the private key file.  Set the fully qualified path to the `GITHUB_KEY_FILE` environment variable.
+1. Set the `GITHUB_APP_ID` and `GITHUB_APP_CLIENT_ID` environment variables to the App ID  and App Client ID, respectively. Generate a new client secret and set the `GITHUB_APP_CLIENT_SECRET` environment variable.  Then, generate a `Private Key` for this app and **download** the private key file.  Set the fully qualified path to the `GITHUB_KEY_FILE` environment variable.
 
     ``` sh
     export GITHUB_APP_ID=
+    ```
+
+    ``` sh
+    export GITHUB_APP_CLIENT_ID=
+    ```
+
+    ``` sh
+    export GITHUB_APP_CLIENT_SECRET=
     ```
 
     ``` sh
@@ -95,14 +95,14 @@ Create an GitHub OAuth application in order to use GitHub as an Identity Provide
 open "https://github.com/settings/applications/new?oauth_application[name]=$GITHUB_ORGANIZATION-identity-provider&oauth_application[url]=https://assemble-demo.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://keycloak-backstage.apps$OPENSHIFT_CLUSTER_INFO/auth/realms/backstage/broker/github/endpoint"
 ```
 
-Set the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` environment variables with the values from the OAuth application.
+Set the `GITHUB_KEYCLOAK_CLIENT_ID` and `GITHUB_KEYCLOAK_CLIENT_SECRET` environment variables with the values from the OAuth application.
 
 ``` sh
-export GITHUB_CLIENT_ID=
+export GITHUB_KEYCLOAK_CLIENT_ID=
 ```
 
 ``` sh
-export GITHUB_CLIENT_SECRET=
+export GITHUB_KEYCLOAK_CLIENT_SECRET=
 ```
 
 ![Get Client ID](/docs/docs/getting_started/assets/client-info.png)
@@ -123,6 +123,21 @@ export GITHUB_DEV_SPACES_CLIENT_ID=
 export GITHUB_DEV_SPACES_CLIENT_SECRET=
 ```
 
+Create a **third** GitHub OAuth application to enable the numerous Backstage plugins utilizing GitHub to authenticate and access the relevant data.
+
+``` sh
+open "https://github.com/settings/applications/new?oauth_application[name]=$GITHUB_ORGANIZATION-backstage&oauth_application[url]=https://assemble-demo.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://assemble-demo.apps$OPENSHIFT_CLUSTER_INFO/api/auth/github/handler/frame"
+```
+
+Set the `GITHUB_BACKSTAGE_CLIENT_ID` and `GITHUB_BACKSTAGE_CLIENT_SECRET` environment variables will the values from the OAuth application.
+
+``` sh
+export GITHUB_BACKSTAGE_CLIENT_ID=
+```
+
+``` sh
+export GITHUB_BACKSTAGE_CLIENT_SECRET=
+```
 ## Install
 
 Clone the `assemble-platforms` repo and run the next commands from inside of the `ansible/cluster-setup` directory

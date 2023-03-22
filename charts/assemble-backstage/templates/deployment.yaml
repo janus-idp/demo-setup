@@ -117,6 +117,10 @@ spec:
           - name: "NODE_TLS_REJECT_UNAUTHORIZED"
             value: "0"
 {{- end }}
+{{- if .Values.argocd.enabled }}
+          - name: "ARGOCD_AUTH_TOKEN"
+            value: "argocd.token={{ .Values.argocd.token }}"
+{{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.backstage.port }}

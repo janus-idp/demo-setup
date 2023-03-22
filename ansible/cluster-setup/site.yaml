@@ -238,6 +238,18 @@
   - name: Extract Password
     set_fact:
       argocd_admin_pwd: "{{ argocd_admin_pwd_rsp.results[0].stdout }}"
+  - name: Generate ArgoCD Auth Token
+    with_items: "{{ env }}"
+    ansible.builtin.uri:
+      url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}/api/v1/session"
+      method: POST
+      body: '{"username":"admin","password":"{{ argocd_admin_pwd }}"}'
+      body_format: json
+    register: argocd_auth_token_rsp
+  - debug: var=argocd_auth_token_rsp
+  - name: Extract Token
+    set_fact:
+      argocd_auth_token: "{{ argocd_auth_token_rsp.results[0].json.token }}"
   - name: Fetching Default Service Account Token
     with_items: "{{ env }}"
     shell: "oc create token default -n default"
@@ -283,12 +295,12 @@
           clientId: "{{ lookup('ansible.builtin.env', 'GITHUB_APP_CLIENT_ID') }}"
           clientSecret: "{{ lookup('ansible.builtin.env', 'GITHUB_APP_CLIENT_SECRET') }}"
           privateKey: "{{ github_private_key }}"
+          organization: "{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
         argocd:
           enabled: true
-          username: "admin"
-          password: "{{ argocd_admin_pwd }}"
           waitCycles: 25
           url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}"
+          token: "{{ argocd_auth_token }}"
         auth:
           github:
             enabled: true
@@ -296,7 +308,7 @@
             clientSecret: "{{ lookup('ansible.builtin.env', 'GITHUB_BACKSTAGE_CLIENT_SECRET') }}"
         kubernetes:
           enabled: true
-          url: "https://api{{ cluster_host }}"
+          url: "https://api{{ cluster_host }}:6443"
           token: "{{ svc_account_token }}"
       create_namespace: true
 - name: Populate Vault with Secrets.

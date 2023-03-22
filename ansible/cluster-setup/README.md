@@ -149,7 +149,7 @@ cd assemble-platforms/ansible/cluster-setup
 
 ### Run the Software Templates Setup Playbook
 
-Fork the [Software Templates](https://github.com/janus-idp/software-templates) repository to your organization. Ensure that the name of the forked repo remains as `software-templates`
+Fork the [Software Templates](https://github.com/janus-idp/software-templates/fork) repository to your organization. Ensure that the name of the forked repo remains as `software-templates`
 
 Execute the following command to complete setup of the fork. This playbook will customize your fork of the Software Templates repo with relevant information pertaining to your cluster, and mimic the structure of a custom template being used in an enterprise IT environment.
 

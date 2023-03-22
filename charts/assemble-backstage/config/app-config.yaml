@@ -73,14 +73,13 @@
     {{- with .Values.argocd }}
     {{- if .enabled | default false }}
     argocd:
-      username: "{{ .username }}"
-      password: "{{ .password }}"
       waitCycles: {{ .waitCycles }}
       appLocatorMethods:
         - type: 'config'
           instances:
             - name: main
               url: "{{ .url }}"
+              token: "{{ .token }}"
     {{- end }}
     {{- end }}
     auth:
@@ -125,7 +124,9 @@
               serviceAccountToken: {{ .token | quote }}
 {{- end }}
 {{- end }}
-
+    github-org-provider:
+      id: "github-org-entity-provider"
+      orgUrl: "https://github.com/{{ .Values.github.organization }}"
     ocm:
       hub:
         name: 'replace_me'

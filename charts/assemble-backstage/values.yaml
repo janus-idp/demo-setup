@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: quay.io/janus-idp/backstage-showcase
   pullPolicy: Always
-  tag: "sha-398916b"
+  tag: "sha-b7dcc71"
 
 imagePullSecrets: []
 nameOverride: ""

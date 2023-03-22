@@ -142,9 +142,9 @@
         keycloak:
           realm:
             identityProvider:
-              clientId: "{{ lookup('ansible.builtin.env', 'GITHUB_CLIENT_ID') }}"
-              clientSecret: "{{ lookup('ansible.builtin.env', 'GITHUB_CLIENT_SECRET') }}"
-              enabled: "{{ false if lookup('ansible.builtin.env', 'GITHUB_CLIENT_SECRET') == '' else true }}"
+              clientId: "{{ lookup('ansible.builtin.env', 'GITHUB_KEYCLOAK_CLIENT_ID') }}"
+              clientSecret: "{{ lookup('ansible.builtin.env', 'GITHUB_KEYCLOAK_CLIENT_SECRET') }}"
+              enabled: "{{ false if lookup('ansible.builtin.env', 'GITHUB_KEYCLOAK_CLIENT_SECRET') == '' else true }}"
         backstage:
           host: "assemble-demo.apps{{ cluster_host }}"
       create_namespace: true
@@ -220,12 +220,6 @@
         namespaces:
           - assemble-argocd
           - infra-argocd
-        repositoryCredentials:
-          - name: "private-repo-creds"
-            username: "token"
-            password: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
-            url: "https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
-            type: "git"
       create_namespace: true
   - name: Apply ApplicationSet for Infra Deployment
     with_items: "{{ env }}"
@@ -244,6 +238,35 @@
   - name: Extract Password
     set_fact:
       argocd_admin_pwd: "{{ argocd_admin_pwd_rsp.results[0].stdout }}"
+  - name: Generate ArgoCD Auth Token
+    with_items: "{{ env }}"
+    uri:
+      url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}/api/v1/session"
+      method: POST
+      body: '{"username":"admin","password":"{{ argocd_admin_pwd }}"}'
+      body_format: json
+      status_code: 200
+    register: argocd_auth_token_rsp
+    until: argocd_auth_token_rsp.status == 200
+    retries: 10
+    delay: 5
+  - name: Extract Token
+    set_fact:
+      argocd_auth_token: "{{ argocd_auth_token_rsp.results[0].json.token }}"
+  - name: Fetching Default Service Account Token
+    with_items: "{{ env }}"
+    shell: "oc create token default -n default --duration 6h"
+    register: svc_account_token_rsp
+  - name: Extract Token
+    set_fact:
+      svc_account_token: "{{ svc_account_token_rsp.results[0].stdout }}"
+  - name: Fetching GitHub App Private Key
+    with_items: "{{ env }}"
+    shell: "cat $GITHUB_KEY_FILE"
+    register: github_private_key_rsp
+  - name: Extract Private Key
+    set_fact:
+      github_private_key: "{{ github_private_key_rsp.results[0].stdout }}"
   - name: Run Backstage Helm Chart
     with_items: "{{ env }}"
     kubernetes.core.helm:
@@ -270,14 +293,26 @@
         postgres:
           database_password: "postgres"
         github:
-          enabled: "{{ false if lookup('ansible.builtin.env', 'GITHUB_TOKEN') == '' else true }}"
-          token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
+          enabled: "{{ false if lookup('ansible.builtin.env', 'GITHUB_APP_ID') == '' else true }}"
+          appId: "{{ lookup('ansible.builtin.env', 'GITHUB_APP_ID') }}"
+          clientId: "{{ lookup('ansible.builtin.env', 'GITHUB_APP_CLIENT_ID') }}"
+          clientSecret: "{{ lookup('ansible.builtin.env', 'GITHUB_APP_CLIENT_SECRET') }}"
+          privateKey: "{{ github_private_key }}"
+          organization: "{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
         argocd:
           enabled: true
-          username: "admin"
-          password: "{{ argocd_admin_pwd }}"
           waitCycles: 25
           url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}"
+          token: "{{ argocd_auth_token }}"
+        auth:
+          github:
+            enabled: true
+            clientId: "{{ lookup('ansible.builtin.env', 'GITHUB_BACKSTAGE_CLIENT_ID') }}"
+            clientSecret: "{{ lookup('ansible.builtin.env', 'GITHUB_BACKSTAGE_CLIENT_SECRET') }}"
+        kubernetes:
+          enabled: true
+          url: "https://api{{ cluster_host }}:6443"
+          token: "{{ svc_account_token }}"
       create_namespace: true
 - name: Populate Vault with Secrets.
   hosts: 'localhost'

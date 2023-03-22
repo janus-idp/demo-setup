@@ -181,3 +181,13 @@ ansible-playbook site.yaml -i inventory
 
 ??? question "Log in to Argo Cluster"
     To access the console, the password for the `admin` user can be found in the `argocd-cluster` secret.
+
+??? question "Failed on `Fetching Default Service Account Token` with `unknown command \"token default\"`"
+    Ensure your `oc` client is 4.11 or above
+    ```sh
+    oc version --client
+    ```
+    The latest `oc` client can be downloaded here:
+    ```sh
+    open "https://console-openshift-console.apps$OPENSHIFT_CLUSTER_INFO/command-line-tools"
+    ```

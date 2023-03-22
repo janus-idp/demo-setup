@@ -240,19 +240,22 @@
       argocd_admin_pwd: "{{ argocd_admin_pwd_rsp.results[0].stdout }}"
   - name: Generate ArgoCD Auth Token
     with_items: "{{ env }}"
-    ansible.builtin.uri:
+    uri:
       url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}/api/v1/session"
       method: POST
       body: '{"username":"admin","password":"{{ argocd_admin_pwd }}"}'
       body_format: json
+      status_code: 200
     register: argocd_auth_token_rsp
-  - debug: var=argocd_auth_token_rsp
+    until: argocd_auth_token_rsp.status == 200
+    retries: 10
+    delay: 5
   - name: Extract Token
     set_fact:
       argocd_auth_token: "{{ argocd_auth_token_rsp.results[0].json.token }}"
   - name: Fetching Default Service Account Token
     with_items: "{{ env }}"
-    shell: "oc create token default -n default"
+    shell: "oc create token default -n default --duration 6h"
     register: svc_account_token_rsp
   - name: Extract Token
     set_fact:

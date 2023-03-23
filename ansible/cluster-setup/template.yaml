@@ -18,11 +18,15 @@
     ansible.builtin.file:
       path: ../../../software-templates
       state: absent
-  - name: Insert Dev Spaces Instance Information
+  - name: Clone the Fork of software-templates
+    ansible.builtin.git:
+      repo: git@github.com:{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/software-templates.git
+      dest: ../../../software-templates
+    environment:
+      GIT_TERMINAL_PROMPT: 0
+  - name: Insert Cluster Information
     shell: |
-      cd ../../../
-      git clone git@github.com:{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/software-templates.git
-      cd software-templates
+      cd ../../../software-templates
       sed "s/\.cluster-[a-zA-Z0-9]*\.[a-zA-Z0-9]*\.sandbox[a-zA-Z0-9]*\.opentlc\.com/{{ cluster_base_url }}/g" ./scaffolder-templates/quarkus-web-template/template.yaml > output.txt && mv output.txt ./scaffolder-templates/quarkus-web-template/template.yaml
       git add -A
       git commit -m "initial customization"

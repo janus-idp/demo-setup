@@ -8,7 +8,6 @@
     register: cluster_response
   - name: Set Dev Spaces Instance
     set_fact:
-      dev_spaces_instance: "devspaces.apps{{ cluster_response.stdout }}"
       cluster_base_url: "{{ cluster_response.stdout }}"
   - debug: var=cluster_response.stdout_lines
 - name: Customize Software Template
@@ -22,10 +21,9 @@
   - name: Insert Dev Spaces Instance Information
     shell: |
       cd ../../../
-      git clone https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/software-templates.git
+      git clone git@github.com:{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/software-templates.git
       cd software-templates
-      find . -type f -not -path '*/\.git/*' -exec sed -i '' -e "s/devspaces.apps.example-cluster.com/{{ dev_spaces_instance }}/g" {} +
-      find . -type f -not -path '*/\.git/*' -exec sed -i '' -e "s/baseurl.cluster-example.com/.apps{{ cluster_base_url }}/g" {} +
+      sed "s/\.cluster-[a-zA-Z0-9]*\.[a-zA-Z0-9]*\.sandbox[a-zA-Z0-9]*\.opentlc\.com/{{ cluster_base_url }}/g" ./scaffolder-templates/quarkus-web-template/template.yaml > output.txt && mv output.txt ./scaffolder-templates/quarkus-web-template/template.yaml
       git add -A
       git commit -m "initial customization"
       git push

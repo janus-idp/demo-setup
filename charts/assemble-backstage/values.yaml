@@ -1,9 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/assemble/backstage
+  repository: quay.io/janus-idp/backstage-showcase
   pullPolicy: Always
-  tag: "latest"
+  tag: "sha-6a95fd0"
 
 imagePullSecrets: []
 nameOverride: ""

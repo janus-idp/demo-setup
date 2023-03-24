@@ -248,7 +248,7 @@
       status_code: 200
     register: argocd_auth_token_rsp
     until: argocd_auth_token_rsp.status == 200
-    retries: 10
+    retries: 35
     delay: 5
   - name: Extract Token
     set_fact:

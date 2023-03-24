@@ -1,0 +1,5 @@
+git:
+  applicationId: bar
+  infraOrgName: janus-idp
+  infraRevision: main
+  

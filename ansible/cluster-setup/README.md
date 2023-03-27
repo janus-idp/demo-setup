@@ -45,6 +45,8 @@ If you are using Linux environment, set the alias for the following commands to 
 alias open="xdg-open"
 ```
 
+For the remaining environment variables, it may be preferable to make use of `./env.sh` file provided at the root of this project.  Fill in the listed env vars as you complete the setup configuration, then run `source ./env.sh`.
+
 ### Create GitHub Organization
 
 Create a new [Github Organization](https://github.com/account/organizations/new?plan=free). This organization will contain the code repositories for the `components` created by Backstage.
@@ -63,7 +65,7 @@ export GITHUB_ORGANIZATION=
     open "https://github.com/organizations/$GITHUB_ORGANIZATION/settings/apps/new?name=$GITHUB_ORGANIZATION-webhook&url=https://janus-idp.io/blog&webhook_active=false&public=false&administration=write&checks=write&actions=write&contents=write&statuses=write&vulnerability_alerts=write&dependabot_secrets=write&deployments=write&discussions=write&environments=write&issues=write&packages=write&pages=write&pull_requests=write&repository_hooks=write&repository_projects=write&secret_scanning_alerts=write&secrets=write&security_events=write&workflows=write&webhooks=write"
     ```
 
-1. Set the `GITHUB_APP_ID` and `GITHUB_APP_CLIENT_ID` environment variables to the App ID  and App Client ID, respectively. Generate a new client secret and set the `GITHUB_APP_CLIENT_SECRET` environment variable.  Then, generate a `Private Key` for this app and **download** the private key file.  Set the fully qualified path to the `GITHUB_KEY_FILE` environment variable.
+1. Set the `GITHUB_APP_ID` and `GITHUB_APP_CLIENT_ID` environment variables to the App ID  and App Client ID, respectively. Generate a new client secret and set the `GITHUB_APP_CLIENT_SECRET` environment variable.  Then, generate a `Private Key` for this app and **download** the private key file.  Set the `GITHUB_KEY_FILE` environment variable to the downloaded file, using either the absolute path or the path relative to the `ansible/cluster-setup` directory.
 
     ``` sh
     export GITHUB_APP_ID=
@@ -168,6 +170,26 @@ ansible-playbook site.yaml -i inventory
 ```
 
 > **_NOTE:_** The deployment of most infrastructure is delegated to ArgoCD.  Once the playbook successfully runs, it may take several minutes until the demo is fully operational. The deployment can be monitored in the ArgoCD console.
+
+The cluster is now set up to run the Janus IDP Demo.  To create a local copy of the requisite environment variables for future use, run the following command:
+
+```sh
+echo "export GITHUB_ORGANIZATION=$GITHUB_ORGANIZATION
+
+export GITHUB_APP_ID=$GITHUB_APP_ID
+export GITHUB_APP_CLIENT_ID=$GITHUB_APP_CLIENT_ID
+export GITHUB_APP_CLIENT_SECRET=$GITHUB_APP_CLIENT_SECRET
+export GITHUB_KEY_FILE=$GITHUB_KEY_FILE
+
+export GITHUB_KEYCLOAK_CLIENT_ID=$GITHUB_KEYCLOAK_CLIENT_ID
+export GITHUB_KEYCLOAK_CLIENT_SECRET=$GITHUB_KEYCLOAK_CLIENT_SECRET
+
+export GITHUB_DEV_SPACES_CLIENT_ID=$GITHUB_DEV_SPACES_CLIENT_ID
+export GITHUB_DEV_SPACES_CLIENT_SECRET=$GITHUB_DEV_SPACES_CLIENT_SECRET
+
+export GITHUB_BACKSTAGE_CLIENT_ID=$GITHUB_BACKSTAGE_CLIENT_ID
+export GITHUB_BACKSTAGE_CLIENT_SECRET=$GITHUB_BACKSTAGE_CLIENT_SECRET" > env.sh
+```
 
 ### FAQ
 

@@ -68,8 +68,6 @@
   - name: Extract Vault Token
     set_fact:
       vault_token: "{{ vault_init.results[0].resources[0].data.root_token | b64decode }}"
-  - debug:
-      msg: "Vault Init: {{ vault_token }}"
   - name: Populate Vault with Dev Spaces Secrets
     with_items: "{{ env }}"
     community.hashi_vault.vault_write:
@@ -135,13 +133,9 @@
           applicationId: "{{ lookup('ansible.builtin.env', 'GITHUB_APP_ID') }}"
           infraOrgName: "{{ item.githubinfraorganization }}"
           infraRevision: "{{ item.githubinfrarevision }}"
-
-  - name: Pause until mike is Ready
+  - name: Pause for operators to complete install
     pause:
-      seconds: 100
-
-
-
+      seconds: 90
 - name: Install RHSSO Backstage Chart.
   hosts: 'localhost'
   tasks:

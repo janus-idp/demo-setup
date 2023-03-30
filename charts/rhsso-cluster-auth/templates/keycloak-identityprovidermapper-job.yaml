@@ -53,7 +53,7 @@ spec:
 
               if [ "${IDENTITY_PROVIDER_MAPPING}" == "0" ]; then
                 curl -s -k -X POST -H "Authorization: Bearer $KEYCLOAK_TOKEN" -H "Content-Type: application/json" \
-                -d "{\"name\" : \"team-mapper\",\"identityProviderAlias\" : \"github\",\"identityProviderMapper\" : \"hardcoded-attribute-idp-mapper\",\"config\" : {\"attribute.value\" : \"{{ .Values.assemble.group }}\",\"attribute\" : \"teams\"}}" \
+                -d "{\"name\" : \"team-mapper\",\"identityProviderAlias\" : \"github\",\"identityProviderMapper\" : \"hardcoded-attribute-idp-mapper\",\"config\" : {\"attribute.value\" : \"{{ .Values.janus.group }}\",\"attribute\" : \"teams\"}}" \
                 "${KEYCLOAK_SERVER}/auth/admin/realms/$KEYCLOAK_REALM/identity-provider/instances/github/mappers"
               fi    
           imagePullPolicy: Always

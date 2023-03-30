@@ -1,6 +1,6 @@
-# ⚓️ Assemble Backstage Helm Deploy
+# ⚓️ Janus Backstage Helm Deploy
 
-The Assemble Backstage Helm Chart customizes and deploys the backstage backend application  written by Red Hat.
+The Janus Backstage Helm Chart customizes and deploys the backstage backend application  written by Red Hat.
 
 ## Installing the chart
 
@@ -8,7 +8,7 @@ To install the chart, execute the following command:
 
 ```bash
 # within this directory 
-helm upgrade --install assemble-dev . -n assemble --create-namespace
+helm upgrade --install janus-dev . -n janus --create-namespace
 ```
 
 ## Configuration
@@ -19,7 +19,7 @@ The operator version can be configuring by modifying the operator configuration 
 
 ### Postgres Database Configuration
 
-A container version of postgresql will be deployed along with the assemble-backstage application when the external flag is 'false'.  You can
+A container version of postgresql will be deployed along with the janus-backstage application when the external flag is 'false'.  You can
  supply a database password or a random value can be used and stored in the postgres secret.  
 
 Note: If you use the random password with tools like ArgoCd you could have passwords change due to re-generation of random values. In that case you should supply a password as part of setup.
@@ -110,5 +110,5 @@ oauth:
 To delete the chart:
 
 ```bash
-helm uninstall assemble-dev -n assemble
+helm uninstall janus-dev -n janus
 ```

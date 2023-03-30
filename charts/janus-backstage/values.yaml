@@ -42,7 +42,7 @@ service:
   port: 8080
 
 # name of instances
-name: assemble-backstage
+name: janus-backstage
 
 postgres:
   external: false

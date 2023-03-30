@@ -33,4 +33,4 @@ Janus IDP Demo deploys a pipeline using [Openshift Pipelines](https://docs.opens
 [Red Hat SSO](https://access.redhat.com/webassets/avalon/j/includes/session/scribe/?redirectTo=https%3A%2F%2Faccess.redhat.com%2Fproducts%2Fred-hat-single-sign-on)([Keycloak](https://www.keycloak.org/)) is an identity management platform that secures our services (such as backstage) using a range of Identity Providers
 
 !!! note "Default Setup"
-    By default assemble users GitHub as our Identity Provider
+    By default janus users GitHub as our Identity Provider

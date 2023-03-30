@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "assemble-backstage.name" -}}
+{{- define "janus-backstage.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "assemble-backstage.fullname" -}}
+{{- define "janus-backstage.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "assemble-backstage.chart" -}}
+{{- define "janus-backstage.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "assemble-backstage.labels" -}}
-helm.sh/chart: {{ include "assemble-backstage.chart" . }}
-{{ include "assemble-backstage.selectorLabels" . }}
+{{- define "janus-backstage.labels" -}}
+helm.sh/chart: {{ include "janus-backstage.chart" . }}
+{{ include "janus-backstage.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "assemble-backstage.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "assemble-backstage.name" . }}
+{{- define "janus-backstage.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "janus-backstage.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Postgresql Common labels
 */}}
-{{- define "assemble-backstage.postgresql.labels" -}}
-helm.sh/chart: {{ include "assemble-backstage.chart" . }}
-{{ include "assemble-backstage.postgresql.selectorLabels" . }}
+{{- define "janus-backstage.postgresql.labels" -}}
+helm.sh/chart: {{ include "janus-backstage.chart" . }}
+{{ include "janus-backstage.postgresql.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -68,17 +68,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Postresql Selector labels
 */}}
-{{- define "assemble-backstage.postgresql.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "assemble-backstage.name" . }}-{{ .Values.postgres.database_name }}
+{{- define "janus-backstage.postgresql.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "janus-backstage.name" . }}-{{ .Values.postgres.database_name }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "assemble-backstage.serviceAccountName" -}}
+{{- define "janus-backstage.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "assemble-backstage.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "janus-backstage.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
@@ -94,7 +94,7 @@ databasePassword: {{ .Values.postgres.database_password | quote }}
 {{/*
 This will NOT work with ArgoCD, it currently does not support lookup functions
 */}}
-{{- $secret := lookup "v1" "Secret" .Release.Namespace  (printf "%s-%s" (include "assemble-backstage.fullname" . ) "postgresql") -}}
+{{- $secret := lookup "v1" "Secret" .Release.Namespace  (printf "%s-%s" (include "janus-backstage.fullname" . ) "postgresql") -}}
 {{- if $secret -}}
 {{/*
    Reusing existing secret data
@@ -113,20 +113,20 @@ databasePassword: "{{ randAlphaNum 20 }}"
 {{/*
 Create the oauth proxy name
 */}}
-{{- define "assemble-backstage.oauthProxy.name" -}}
-{{- printf "%s-oauth-proxy" (include "assemble-backstage.fullname" . ) }}
+{{- define "janus-backstage.oauthProxy.name" -}}
+{{- printf "%s-oauth-proxy" (include "janus-backstage.fullname" . ) }}
 {{- end }}
 
 {{/*
 Create the postgresql name
 */}}
-{{- define "assemble-backstage.postgresql.name" -}}
-{{- printf "%s-postgresql" (include "assemble-backstage.fullname" . ) }}
+{{- define "janus-backstage.postgresql.name" -}}
+{{- printf "%s-postgresql" (include "janus-backstage.fullname" . ) }}
 {{- end }}
 
 {{/*
 Create the rhsso issuerUrl
 */}}
-{{- define "assemble-backstage.rhsso.issuerUrl" -}}
+{{- define "janus-backstage.rhsso.issuerUrl" -}}
 {{- printf "%s/realms/%s" .Values.rhsso.baseUrl .Values.rhsso.realm }}
 {{- end }}

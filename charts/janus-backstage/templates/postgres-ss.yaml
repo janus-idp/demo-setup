@@ -2,20 +2,20 @@
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-  name: {{ include "assemble-backstage.postgresql.name" . }}
+  name: {{ include "janus-backstage.postgresql.name" . }}
   labels:
-    {{- include "assemble-backstage.postgresql.labels" . | nindent 4 }}
+    {{- include "janus-backstage.postgresql.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-        {{- include "assemble-backstage.postgresql.selectorLabels" . | nindent 6 }}
+        {{- include "janus-backstage.postgresql.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      name: {{ include "assemble-backstage.postgresql.name" . }}
+      name: {{ include "janus-backstage.postgresql.name" . }}
       creationTimestamp: null
       labels:
-        {{- include "assemble-backstage.postgresql.selectorLabels" . | nindent 8 }}
+        {{- include "janus-backstage.postgresql.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: postgresql
@@ -23,7 +23,7 @@ spec:
             - name: POSTGRESQL_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "assemble-backstage.postgresql.name" . }}
+                  name: {{ include "janus-backstage.postgresql.name" . }}
                   key: databasePassword
           ports:
             - name: tcp-postgresql
@@ -46,12 +46,12 @@ spec:
             ## For OCP 4.10 and earlier comment out the next 2 lines
             seccompProfile:
               type: RuntimeDefault
-      serviceAccount: {{ include "assemble-backstage.serviceAccountName" . }}
+      serviceAccount: {{ include "janus-backstage.serviceAccountName" . }}
 {{- if .Values.postgres.storage.enabled }}
       volumes:
       - name: postgresdb
         persistentVolumeClaim:
-          claimName: {{ include "assemble-backstage.postgresql.name" . }}
+          claimName: {{ include "janus-backstage.postgresql.name" . }}
 {{- end }}
-  serviceName: {{ include "assemble-backstage.postgresql.name" . }}
+  serviceName: {{ include "janus-backstage.postgresql.name" . }}
 {{- end }}

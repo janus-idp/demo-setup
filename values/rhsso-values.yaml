@@ -15,7 +15,7 @@ oauth:
 backstage:
   companyName: "UPDATE_ME"
   port: 7007
-  # echo "https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+  # echo "https://janus-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
   baseUrl: "<BASE_URL>"
 
   # Ignore NodeJS insecure certificate warnings

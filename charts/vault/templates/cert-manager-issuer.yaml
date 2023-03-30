@@ -6,7 +6,7 @@ metadata:
   namespace: openshift-operators
 spec:
   acme:
-    email: assemble@redhat.com
+    email: janus@redhat.com
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-staging-cluster-issuer-account-key

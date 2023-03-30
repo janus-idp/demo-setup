@@ -1,8 +1,8 @@
 site_name: Janus IDP Demo
-site_url: https://janus-idp.github.io/assemble-platforms/
+site_url: https://janus-idp.github.io/janus-platforms/
 site_description: From Idea to Production Faster
-repo_name: janus-idp/assemble-platforms
-repo_url: https://github.com/janus-idp/assemble-platforms.git
+repo_name: janus-idp/janus-platforms
+repo_url: https://github.com/janus-idp/janus-platforms.git
 theme:
   name: material
   # logo: img/icon-white.png
@@ -14,7 +14,7 @@ theme:
 
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
-      scheme: assemble
+      scheme: janus
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode

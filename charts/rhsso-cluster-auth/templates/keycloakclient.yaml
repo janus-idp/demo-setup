@@ -32,4 +32,4 @@ spec:
           claim.name: "teams"
           jsonType.label: "String"
   roles:
-    - name: assemble
+    - name: janus

@@ -7,7 +7,7 @@ ignoreHelmHooks: false
 
 # add to this list to deploy team instances to these namespaces
 namespaces:
-- assemble-argocd
+- janus-argocd
 
 # operator manages upgrades
 operator: 

@@ -20,18 +20,6 @@
       namespace: "openshift-operators"
       chart_ref: ../../charts/operator
       values_files: ["../../charts/operator/values-certmanager-operator.yaml"]
-- name: Install Vault Config Operator Chart.
-  hosts: 'localhost'
-  tasks:
-  - name: Run Vault Config Helm Chart
-    with_items: "{{ env }}"
-    kubernetes.core.helm:
-      state: present
-      name: vault-config-operator
-      namespace: "{{ item.vaultconfignamespace }}"
-      chart_ref: ../../charts/operator
-      values_files: ["../../charts/operator/values-vault-config-operator.yaml"]
-      create_namespace: true
 - name: Install Vault Operator Chart.
   hosts: 'localhost'
   tasks:
@@ -63,59 +51,91 @@
         dns:
           zone: "{{ cluster_host[1:] }}"
       create_namespace: true
-- name: Install Vault Config Chart.
+- name: Populate Vault with Secrets.
   hosts: 'localhost'
   tasks:
-  # TODO revisit this to see if there is a better way to create this secret
-  - name: Create sshKey Secret
+  - name: Wait for Vault to Finish
     with_items: "{{ env }}"
-    shell: "printf \"apiVersion: v1\nkind: Secret\nmetadata:\n  name: vault-github-plugin-creds\ntype: kubernetes.io/ssh-auth\nstringData:\n  github_app_id: $(echo \"\\\"\"$GITHUB_APP_ID\"\\\"\")\n  github_org: $(echo \"\\\"\"$GITHUB_ORGANIZATION\"\\\"\")\n  ssh-privatekey: |\n$(cat $GITHUB_KEY_FILE | sed 's/^/    /')\" | oc apply -f - -n vault-admin"
-  - name: Run Vault Config Chart
+    shell: "kubectl wait --for=condition=Ready pod/vault-0 -n vault --timeout=300s"
+  - name: Pause for secret store to become available
+    pause:
+      seconds: 20
+  - name: Retrieve Vault Token
+    with_items: "{{ env }}"
+    kubernetes.core.k8s_info:
+      api_version: v1
+      kind: Secret
+      name: vault-init
+      namespace: vault
+    register: vault_init
+  - name: Extract Vault Token
+    set_fact:
+      vault_token: "{{ vault_init.results[0].resources[0].data.root_token | b64decode }}"
+  - name: Populate Vault with Dev Spaces Secrets
+    with_items: "{{ env }}"
+    community.hashi_vault.vault_write:
+      url: "https://vault-vault.apps{{ cluster_host }}"
+      path: kv/{{ item.janusinstancename }}/dev-spaces
+      validate_certs: false
+      data:
+        id: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_ID') }}"
+        secret: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_SECRET') }}"
+      token: "{{ vault_token }}"
+    register: vault_status
+  - name: Populate Vault with Github Credentials
+    with_items: "{{ env }}"
+    community.hashi_vault.vault_write:
+      url: "https://vault-vault.apps{{ cluster_host }}"
+      path: kv/{{ item.janusinstancename }}/github-plugin
+      validate_certs: false
+      data:
+        app_id: "{{ lookup('ansible.builtin.env', 'GITHUB_APP_ID') }}"
+        org: "{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
+        private_key: "{{ lookup('ansible.builtin.file', lookup('ansible.builtin.env', 'GITHUB_KEY_FILE')) }}"
+      token: "{{ vault_token }}"
+- name: Install and Configure GitOps.
+  hosts: 'localhost'
+  tasks:
+  - name: Install GitOps Helm Chart
     with_items: "{{ env }}"
     kubernetes.core.helm:
       state: present
-      name: vault-config
-      namespace: "vault-admin"
-      chart_ref: ../../charts/vault-config
+      name: argocd
+      namespace: "{{ item.gitopsnamespace }}"
+      chart_ref: ../../charts/gitops-operator
       values:
+        namespaces:
+          - assemble-argocd
+          - infra-argocd
+      create_namespace: true
+  - name: Wait for ArgoCD to be Ready
+    with_items: "{{ env }}"
+    kubernetes.core.k8s_info:
+      api_version: argoproj.io/v1alpha1
+      kind: ApplicationSet
+    register: cm_crd
+    until: cm_crd.api_found == true
+    retries: 40
+    delay: 5
+  - name: Pause for GitOps to be running
+    pause:
+      seconds: 20
+  - name: Apply ApplicationSet for Infra Deployment
+    with_items: "{{ env }}"
+    kubernetes.core.helm:
+      state: present
+      name: infra-argocd
+      namespace: "{{ item.gitopsinfranamespace }}"
+      chart_ref: ../../charts/applicationset
+      values:
+        janusInstanceName: "{{ item.janusinstancename }}"
         git:
-          organization: "{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
           applicationId: "{{ lookup('ansible.builtin.env', 'GITHUB_APP_ID') }}"
-- name: Install RHSSO Operator Chart.
-  hosts: 'localhost'
-  tasks:
-  - name: Run RHSSO Helm Chart
-    with_items: "{{ env }}"
-    kubernetes.core.helm:
-      state: present
-      name: rhsso-operator
-      namespace: "{{ item.namespace }}"
-      chart_ref: ../../charts/operator
-      values_files: ["../../charts/operator/values-rhsso-operator.yaml"]
-      create_namespace: true
-- name: Install Git Webhook Operator
-  hosts: 'localhost'
-  tasks:
-  - name: Run Git Webhook Operator Helm Chart
-    with_items: "{{ env }}"
-    kubernetes.core.helm:
-      state: present
-      name: gitwebhook-operator
-      namespace: "{{ item.gitwebhooknamespace }}"
-      chart_ref: ../../charts/operator
-      values_files: ["../../charts/operator/values-gitwebhook-operator.yaml"]
-      create_namespace: true
-- name: Install OpenShift Pipelines Operator Chart.
-  hosts: 'localhost'
-  tasks:
-  - name: Run Pipelines Operator Helm Chart
-    with_items: "{{ env }}"
-    kubernetes.core.helm:
-      state: present
-      name: pipelines
-      namespace: "{{ item.pipelinesnamespace }}"
-      chart_ref: ../../charts/pipelines-operator
-      create_namespace: true
+          infraOrgName: "{{ item.githubinfraorganization }}"
+          infraRevision: "{{ item.githubinfrarevision }}"
+  - name: Pause for operators to complete install
+    pause:
+      seconds: 90
 - name: Install RHSSO Backstage Chart.
   hosts: 'localhost'
   tasks:
@@ -126,7 +146,7 @@
       kind: Keycloak
     register: kc_crd
     until: kc_crd.api_found == true
-    retries: 40
+    retries: 60
     delay: 5
   - name: Pause until Keycloak is Ready
     pause:
@@ -206,28 +226,6 @@
   - name: Extract Client Secret
     set_fact:
       client_secret: "{{ client_secret_rsp.json.value }}"
-- name: Install and Configure GitOps.
-  hosts: 'localhost'
-  tasks:
-  - name: Install GitOps Helm Chart
-    with_items: "{{ env }}"
-    kubernetes.core.helm:
-      state: present
-      name: argocd
-      namespace: "{{ item.gitopsnamespace }}"
-      chart_ref: ../../charts/gitops-operator
-      values:
-        namespaces:
-          - assemble-argocd
-          - infra-argocd
-      create_namespace: true
-  - name: Apply ApplicationSet for Infra Deployment
-    with_items: "{{ env }}"
-    kubernetes.core.helm:
-      state: present
-      name: infra-argocd
-      namespace: "{{ item.gitopsinfranamespace }}"
-      chart_ref: ../../charts/applicationset
 - name: Install Backstage Chart.
   hosts: 'localhost'
   tasks:
@@ -271,7 +269,7 @@
     with_items: "{{ env }}"
     kubernetes.core.helm:
       state: present
-      name: assemble-dev
+      name: "{{ item.janusinstancename }}"
       namespace: "{{ item.namespace }}"
       chart_ref: ../../charts/assemble-backstage
       values:
@@ -314,22 +312,3 @@
           url: "https://api{{ cluster_host }}:6443"
           token: "{{ svc_account_token }}"
       create_namespace: true
-- name: Populate Vault with Secrets.
-  hosts: 'localhost'
-  tasks:
-  - name: Fetching Vault Token
-    with_items: "{{ env }}"
-    shell: "oc -n {{ item.vaultnamespace }} get secret vault-init --template='{{ '{{' }}index .data \"root_token\"{{ '}}' }}' | base64 -d"
-    register: vault_token_rsp
-  - name: Extract Vault Token
-    set_fact:
-      vault_token: "{{ vault_token_rsp.results[0].stdout }}"
-  - name: Populate Vault with Dev Spaces Secrets
-    community.hashi_vault.vault_write:
-      url: "https://vault-vault.apps{{ cluster_host }}"
-      path: kv/assemble-dev/dev-spaces
-      validate_certs: false
-      data:
-        id: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_ID') }}"
-        secret: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_SECRET') }}"
-      token: "{{ vault_token }}"

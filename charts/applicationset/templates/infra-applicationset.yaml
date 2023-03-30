@@ -5,8 +5,8 @@ metadata:
 spec:
   generators:
     - git:
-        repoURL: https://github.com/janus-idp/assemble-platforms.git
-        revision: main
+        repoURL: https://github.com/{{ .Values.git.infraOrgName }}/assemble-platforms.git
+        revision: {{ .Values.git.infraRevision }}
         files:
         - path: "clusters/**/config.json"
   template:
@@ -16,8 +16,16 @@ spec:
       project: default
       source:
         path: charts/apps
-        repoURL: https://github.com/janus-idp/assemble-platforms.git
-        targetRevision: main
+        repoURL: https://github.com/{{ .Values.git.infraOrgName }}/assemble-platforms.git
+        targetRevision: {{ .Values.git.infraRevision }}
+        helm:
+          parameters:
+            - name: git.applicaitonId
+              value: "{{ .Values.git.applicationId }}"
+            - name: git.infraOrgName
+              value: "{{ .Values.git.infraOrgName }}"
+            - name: git.infraRevision
+              value: "{{ .Values.git.infraRevision }}"
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{ .Values.destination.namespace }}"

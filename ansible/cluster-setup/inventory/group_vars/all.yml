@@ -7,3 +7,6 @@ env:
   vaultconfignamespace: "vault-config-operator"
   vaultnamespace: "vault"
   gitwebhooknamespace: "gitwebhook-operator"
+  janusinstancename: "assemble-dev"
+  githubinfraorganization: "janus-idp"
+  githubinfrarevision: "main"

@@ -314,6 +314,7 @@ vault:
                       capabilities = ["create", "read", "update", "delete", "list","sudo"]
                     }
           EOF
+                  vault secrets enable --path=kv kv
                 else 
                   echo vault admin already configured, just updating kubernetes config
                   vault write auth/kubernetes/config token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token kubernetes_host=https://kubernetes.default.svc:443 kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt 

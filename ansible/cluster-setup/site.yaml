@@ -57,6 +57,9 @@
   - name: Wait for Vault to Finish
     with_items: "{{ env }}"
     shell: "kubectl wait --for=condition=Ready pod/vault-0 -n vault --timeout=300s"
+  - name: Pause for secret store to become available
+    pause:
+      seconds: 20
   - name: Retrieve Vault Token
     with_items: "{{ env }}"
     kubernetes.core.k8s_info:
@@ -78,6 +81,7 @@
         id: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_ID') }}"
         secret: "{{ lookup('ansible.builtin.env', 'GITHUB_DEV_SPACES_CLIENT_SECRET') }}"
       token: "{{ vault_token }}"
+    register: vault_status
   - name: Populate Vault with Github Credentials
     with_items: "{{ env }}"
     community.hashi_vault.vault_write:
@@ -104,13 +108,6 @@
           - assemble-argocd
           - infra-argocd
       create_namespace: true
-  - name: Apply ApplicationSet for Infra Deployment
-    with_items: "{{ env }}"
-    kubernetes.core.helm:
-      state: present
-      name: infra-argocd
-      namespace: "{{ item.gitopsinfranamespace }}"
-      chart_ref: ../../charts/applicationset
   - name: Wait for ArgoCD to be Ready
     with_items: "{{ env }}"
     kubernetes.core.k8s_info:
@@ -120,6 +117,9 @@
     until: cm_crd.api_found == true
     retries: 40
     delay: 5
+  - name: Pause for GitOps to be running
+    pause:
+      seconds: 20
   - name: Apply ApplicationSet for Infra Deployment
     with_items: "{{ env }}"
     kubernetes.core.helm:
@@ -146,7 +146,7 @@
       kind: Keycloak
     register: kc_crd
     until: kc_crd.api_found == true
-    retries: 40
+    retries: 60
     delay: 5
   - name: Pause until Keycloak is Ready
     pause:

@@ -5,8 +5,8 @@ repo_name: janus-idp/janus-platforms
 repo_url: https://github.com/janus-idp/janus-platforms.git
 theme:
   name: material
-  # logo: img/icon-white.png
-  # favicon: img/favicon.png
+  logo: assets/janus_bg.svg
+  favicon: assets/favicon.ico
   font:
     text: Red Hat Text
     code: Red Hat Monospace

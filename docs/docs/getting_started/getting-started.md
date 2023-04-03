@@ -92,7 +92,7 @@ export GITHUB_ORGANIZATION=
 Create an GitHub OAuth application in order to use GitHub as an Identity Provider for Backstage.
 
 ``` sh
-open "https://github.com/settings/applications/new?oauth_application[name]=$GITHUB_ORGANIZATION-identity-provider&oauth_application[url]=https://assemble-demo.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://keycloak-backstage.apps$OPENSHIFT_CLUSTER_INFO/auth/realms/backstage/broker/github/endpoint"
+open "https://github.com/settings/applications/new?oauth_application[name]=$GITHUB_ORGANIZATION-identity-provider&oauth_application[url]=https://janus-demo.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://keycloak-backstage.apps$OPENSHIFT_CLUSTER_INFO/auth/realms/backstage/broker/github/endpoint"
 ```
 
 Set the `GITHUB_KEYCLOAK_CLIENT_ID` and `GITHUB_KEYCLOAK_CLIENT_SECRET` environment variables with the values from the OAuth application.
@@ -126,7 +126,7 @@ export GITHUB_DEV_SPACES_CLIENT_SECRET=
 Create a **third** GitHub OAuth application to enable the numerous Backstage plugins utilizing GitHub to authenticate and access the relevant data.
 
 ``` sh
-open "https://github.com/settings/applications/new?oauth_application[name]=$GITHUB_ORGANIZATION-backstage&oauth_application[url]=https://assemble-demo.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://assemble-demo.apps$OPENSHIFT_CLUSTER_INFO/api/auth/github/handler/frame"
+open "https://github.com/settings/applications/new?oauth_application[name]=$GITHUB_ORGANIZATION-backstage&oauth_application[url]=https://janus-demo.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://janus-demo.apps$OPENSHIFT_CLUSTER_INFO/api/auth/github/handler/frame"
 ```
 
 Set the `GITHUB_BACKSTAGE_CLIENT_ID` and `GITHUB_BACKSTAGE_CLIENT_SECRET` environment variables will the values from the OAuth application.
@@ -141,11 +141,11 @@ export GITHUB_BACKSTAGE_CLIENT_SECRET=
 
 ## Install
 
-Clone the `assemble-platforms` repo and run the next commands from inside of the `ansible/cluster-setup` directory
+Clone the `janus-platforms` repo and run the next commands from inside of the `ansible/cluster-setup` directory
 
 ```sh
-git clone https://github.com/janus-idp/assemble-platforms.git
-cd assemble-platforms/ansible/cluster-setup
+git clone https://github.com/janus-idp/janus-platforms.git
+cd janus-platforms/ansible/cluster-setup
 ```
 
 ### Run Cluster Setup Playbook

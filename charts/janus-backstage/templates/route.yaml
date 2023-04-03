@@ -1,9 +1,9 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{ include "assemble-backstage.fullname" . }}
+  name: {{ include "janus-backstage.fullname" . }}
   labels:
-    {{- include "assemble-backstage.labels" . | nindent 4 }}
+    {{- include "janus-backstage.labels" . | nindent 4 }}
 spec:
   host: {{ (trimPrefix  "https://" .Values.backstage.baseUrl) | trimPrefix  "http://" | trimSuffix "/"  }}
   port:
@@ -13,6 +13,6 @@ spec:
     termination: edge
   to:
     kind: Service
-    name: {{ include "assemble-backstage.fullname" . }}
+    name: {{ include "janus-backstage.fullname" . }}
     weight: 100
   wildcardPolicy: None

@@ -75,7 +75,7 @@ Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/b
 Homepage URL:
 
 ```sh
-HOMEPAGE_URL="assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+HOMEPAGE_URL="janus-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
 ```
 
 Authorization callback URL:
@@ -137,7 +137,7 @@ rhsso:
 
 #### Postgres Configuration
 
-Postgres will work as is, but it can optionally be modified if required, view the `charts/assemble-backstage/values.yaml` file for more info.
+Postgres will work as is, but it can optionally be modified if required, view the `charts/janus-backstage/values.yaml` file for more info.
 
 > **_NOTE:_**  For OCP version 4.10 and below you must modify the file 'templates/postgres-ss.yaml' as shown below.
 ```
@@ -158,7 +158,7 @@ backstage:
   companyName: "<UPDATE_ME>"
   port: 7007
   # Generate this through the command line using
-  # echo "https://assemble-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+  # echo "https://janus-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
   baseUrl: "<BASE_URL>"
 ```
 
@@ -214,13 +214,13 @@ github:
 Use the following command to deploy the Helm Chart.
 
 ```sh
-helm upgrade -i assemble-dev charts/assemble-backstage -n assemble --create-namespace -f values/rhsso-values.yaml
+helm upgrade -i janus-dev charts/janus-backstage -n janus --create-namespace -f values/rhsso-values.yaml
 ```
 
-Backstage is now configured and deployed in the `assemble` namespace in OpenShift.  Access the UI through the newly deployed Route.  Log in using authentication through GitHub:
+Backstage is now configured and deployed in the `janus` namespace in OpenShift.  Access the UI through the newly deployed Route.  Log in using authentication through GitHub:
 
 ```sh
-echo $(oc get route assemble-dev --namespace assemble -o json | jq -r '.spec.host')
+echo $(oc get route janus-dev --namespace janus -o json | jq -r '.spec.host')
 ```
 
 ### GitOps
@@ -228,7 +228,7 @@ echo $(oc get route assemble-dev --namespace assemble -o json | jq -r '.spec.hos
 For more advanced demos, GitOps can be used to sync templated applications to OpenShift.
 
 ```sh
-helm upgrade --install charts/gitops-operator/argocd . -n assemble-argocd --create-namespace
+helm upgrade --install charts/gitops-operator/argocd . -n janus-argocd --create-namespace
 ```
 
 ### Tekton
@@ -236,7 +236,7 @@ helm upgrade --install charts/gitops-operator/argocd . -n assemble-argocd --crea
 For more advanced demos, OpenShift Pipelines can be used for CI/CD operations.
 
 ```sh
-helm upgrade --install pipelines charts/pipelines-operator -n assemble-pipelines --create-namespace
+helm upgrade --install pipelines charts/pipelines-operator -n janus-pipelines --create-namespace
 ```
 
 ### TBD

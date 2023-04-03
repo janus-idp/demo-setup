@@ -1,45 +1,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "assemble-backstage.fullname" . }}
+  name: {{ include "janus-backstage.fullname" . }}
   labels:
-    {{- include "assemble-backstage.labels" . | nindent 4 }}
+    {{- include "janus-backstage.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "assemble-backstage.selectorLabels" . | nindent 6 }}
+      {{- include "janus-backstage.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "assemble-backstage.selectorLabels" . | nindent 8 }}
+        {{- include "janus-backstage.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "assemble-backstage.serviceAccountName" . }}
+      serviceAccountName: {{ include "janus-backstage.serviceAccountName" . }}
       containers:
 {{- if .Values.oauth.enabled }}
-        - name: {{ include "assemble-backstage.oauthProxy.name" . }}
+        - name: {{ include "janus-backstage.oauthProxy.name" . }}
           env:
             - name: OAUTH2_PROXY_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "assemble-backstage.fullname" . }}
+                  name: {{ include "janus-backstage.fullname" . }}
                   key: rhsso.clientId
             - name: OAUTH2_PROXY_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "assemble-backstage.fullname" . }}
+                  name: {{ include "janus-backstage.fullname" . }}
                   key: rhsso.clientSecret
             - name: OAUTH2_PROXY_COOKIE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "assemble-backstage.fullname" . }}
+                  name: {{ include "janus-backstage.fullname" . }}
                   key: oauth.cookieSecret
             - name: OAUTH2_PROXY_OIDC_ISSUER_URL
-              value: {{ include "assemble-backstage.rhsso.issuerUrl" . }}
+              value: {{ include "janus-backstage.rhsso.issuerUrl" . }}
 {{- if .Values.oauth.insecure }}
             - name: OAUTH2_PROXY_SSL_INSECURE_SKIP_VERIFY
               value: "true"
@@ -77,22 +77,22 @@ spec:
           - name: POSTGRES_ADMIN_PASSWORD  
             valueFrom:
               secretKeyRef:
-                name: {{ include "assemble-backstage.postgresql.name" . }}
+                name: {{ include "janus-backstage.postgresql.name" . }}
                 key: databasePassword 
           - name: POSTGRES_HOST
             valueFrom:
               secretKeyRef:
-                name: {{ include "assemble-backstage.fullname" . }}-postgresql
+                name: {{ include "janus-backstage.fullname" . }}-postgresql
                 key: databaseHost        
           - name: POSTGRES_USER
             valueFrom:
               secretKeyRef:
-                name: {{ include "assemble-backstage.fullname" . }}-postgresql
+                name: {{ include "janus-backstage.fullname" . }}-postgresql
                 key: databaseUser
           - name: POSTGRES_PORT
             valueFrom:
               secretKeyRef:
-                name: {{ include "assemble-backstage.fullname" . }}-postgresql
+                name: {{ include "janus-backstage.fullname" . }}-postgresql
                 key: databasePort
 {{- end }}
 {{- if .Values.rhsso.backstagePluginEnabled }}
@@ -105,12 +105,12 @@ spec:
           - name: "APP_CONFIG_catalog_providers_keycloakOrg_default_clientId"
             valueFrom:
               secretKeyRef:
-                name: {{ include "assemble-backstage.fullname" . }}
+                name: {{ include "janus-backstage.fullname" . }}
                 key: rhsso.clientId
           - name: "APP_CONFIG_catalog_providers_keycloakOrg_default_clientSecret"
             valueFrom:
               secretKeyRef:
-                name: {{ include "assemble-backstage.fullname" . }}
+                name: {{ include "janus-backstage.fullname" . }}
                 key: rhsso.clientSecret
 {{- end }}
 {{- if .Values.backstage.tlsInsecure }}
@@ -136,11 +136,11 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: assemble-config
+            - name: janus-config
               readOnly: true
               mountPath: /config
       volumes:
-        - name: assemble-config
+        - name: janus-config
           secret:
-            secretName: assemble-config
+            secretName: janus-config
             defaultMode: 420

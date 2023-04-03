@@ -31,7 +31,7 @@ subjects:
 - kind: ServiceAccount
   name: default
   #namespace: {{ .Release.Namespace  }}
-  namespace: assemble
+  namespace: janus
 ---
 apiVersion: v1
 kind: Pod

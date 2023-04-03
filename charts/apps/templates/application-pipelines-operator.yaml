@@ -7,7 +7,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/{{ .Values.git.infraOrgName }}/assemble-platforms.git
+    repoURL: https://github.com/{{ .Values.git.infraOrgName }}/janus-platforms.git
     targetRevision: {{ .Values.git.infraRevision }}
     path: charts/pipelines-operator
     helm:
@@ -15,7 +15,7 @@ spec:
         - values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: assemble-pipelines
+    namespace: janus-pipelines
   syncPolicy:
     automated:
       prune: true

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "assemble-backstage.fullname" . }}
+  name: {{ include "janus-backstage.fullname" . }}
   labels:
-    {{- include "assemble-backstage.labels" . | nindent 4 }}
+    {{- include "janus-backstage.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "assemble-backstage.selectorLabels" . | nindent 4 }}
+    {{- include "janus-backstage.selectorLabels" . | nindent 4 }}

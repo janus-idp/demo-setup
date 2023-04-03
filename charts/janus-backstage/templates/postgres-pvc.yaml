@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "assemble-backstage.postgresql.name" . }}
+  name: {{ include "janus-backstage.postgresql.name" . }}
   labels:
-    {{- include "assemble-backstage.postgresql.labels" . | nindent 4 }}
+    {{- include "janus-backstage.postgresql.labels" . | nindent 4 }}
   annotations:
     kubernetes.io/reclaimPolicy: Delete 
 spec:

@@ -105,7 +105,7 @@
       chart_ref: ../../charts/gitops-operator
       values:
         namespaces:
-          - assemble-argocd
+          - janus-argocd
           - infra-argocd
       create_namespace: true
   - name: Wait for ArgoCD to be Ready
@@ -166,7 +166,7 @@
               clientSecret: "{{ lookup('ansible.builtin.env', 'GITHUB_KEYCLOAK_CLIENT_SECRET') }}"
               enabled: "{{ false if lookup('ansible.builtin.env', 'GITHUB_KEYCLOAK_CLIENT_SECRET') == '' else true }}"
         backstage:
-          host: "assemble-demo.apps{{ cluster_host }}"
+          host: "janus-demo.apps{{ cluster_host }}"
       create_namespace: true
   - name: Wait for Keycloak to be Ready
     with_items: "{{ env }}"
@@ -271,7 +271,7 @@
       state: present
       name: "{{ item.janusinstancename }}"
       namespace: "{{ item.namespace }}"
-      chart_ref: ../../charts/assemble-backstage
+      chart_ref: ../../charts/janus-backstage
       values:
         rhsso:
           baseUrl: "https://keycloak-{{ item.namespace }}.apps{{ cluster_host }}/auth"
@@ -279,7 +279,7 @@
           clientSecret: "{{ client_secret }}"
           backstagePluginEnabled: true
         backstage:
-          baseUrl: "https://assemble-demo.apps{{ cluster_host }}"
+          baseUrl: "https://janus-demo.apps{{ cluster_host }}"
           catalog:
             locations:
               - type: url

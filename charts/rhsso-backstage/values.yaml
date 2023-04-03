@@ -14,8 +14,8 @@ keycloak:
     name: backstage
     secretName: openshift-client
 
-assemble:
-  group: assemble
+janus:
+  group: janus
 
 backstage:
   host: ""

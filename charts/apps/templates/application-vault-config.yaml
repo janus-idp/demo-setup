@@ -12,7 +12,7 @@ spec:
     path: charts/vault-config
     helm:
       parameters:
-        - name: git.applicaitonId
+        - name: git.applicationId
           value: "{{ .Values.git.applicationId }}"
   destination:
     server: https://kubernetes.default.svc

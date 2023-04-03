@@ -19,11 +19,20 @@
       path: ../../../software-templates
       state: absent
   - name: Clone the Fork of software-templates
-    ansible.builtin.git:
-      repo: git@github.com:{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/software-templates.git
-      dest: ../../../software-templates
-    environment:
-      GIT_TERMINAL_PROMPT: 0
+    block:
+      - name: Clone the Fork of software-templates using SSH
+        ansible.builtin.git:
+          repo: git@github.com:{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/software-templates.git
+          dest: ../../../software-templates
+        environment:
+          GIT_TERMINAL_PROMPT: 0
+    rescue:
+      - name: Retry Clone the Fork of software-templates using HTTPS
+        ansible.builtin.git:
+          repo: https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/software-templates.git
+          dest: ../../../software-templates
+        environment:
+          GIT_TERMINAL_PROMPT: 0
   - name: Insert Cluster Information
     shell: |
       cd ../../../software-templates

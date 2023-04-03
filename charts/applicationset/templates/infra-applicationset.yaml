@@ -20,7 +20,7 @@ spec:
         targetRevision: {{ .Values.git.infraRevision }}
         helm:
           parameters:
-            - name: git.applicaitonId
+            - name: git.applicationId
               value: "{{ .Values.git.applicationId }}"
             - name: git.infraOrgName
               value: "{{ .Values.git.infraOrgName }}"

@@ -56,7 +56,7 @@
   tasks:
   - name: Wait for Vault to Finish
     with_items: "{{ env }}"
-    shell: "kubectl wait --for=condition=Ready pod/vault-0 -n vault --timeout=300s"
+    shell: "oc wait --for=condition=Ready pod/vault-0 -n vault --timeout=300s"
   - name: Pause for secret store to become available
     pause:
       seconds: 20

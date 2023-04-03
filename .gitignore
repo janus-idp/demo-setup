@@ -1,2 +1,4 @@
 values
 env.sh
+charts/vault/Chart.lock
+charts/vault/charts/

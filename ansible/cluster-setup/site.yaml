@@ -281,6 +281,16 @@
         backstage:
           baseUrl: "https://janus-demo.apps{{ cluster_host }}"
           catalog:
+            providers:
+              github:
+                providerId:
+                  organization: "{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
+                  catalogPath: "/catalog-info.yaml"
+                  filters:
+                    branch: "main"
+                  schedule:
+                    frequency: { minutes: 1 }
+                    timeout: { minutes: 3 }
             locations:
               - type: url
                 target: https://github.com/{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}/software-templates/blob/main/scaffolder-templates/quarkus-web-template/template.yaml

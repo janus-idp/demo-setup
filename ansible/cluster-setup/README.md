@@ -171,7 +171,13 @@ ansible-playbook site.yaml -i inventory
 
 > **_NOTE:_** The deployment of most infrastructure is delegated to ArgoCD.  Once the playbook successfully runs, it may take several minutes until the demo is fully operational. The deployment can be monitored in the ArgoCD console.
 
-The cluster is now set up to run the Janus IDP Demo.  To create a local copy of the requisite environment variables for future use, run the following command:
+The cluster is now set up to run the Janus IDP Demo.  
+
+While running the demo, ensure that access is granted to the GitHub Organization when prompted.
+
+![Grant Access](/docs/docs/getting_started/assets/grant-access.png)
+
+To create a local copy of the requisite environment variables for future use, run the following command:
 
 ```sh
 echo "export GITHUB_ORGANIZATION=$GITHUB_ORGANIZATION

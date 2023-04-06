@@ -1,15 +1,14 @@
 # Janus with Ansible
 
-A guide to installing `Janus with Ansible`.
+A guide to installing `Janus with Ansible`. An [instructional video](https://drive.google.com/file/d/1TJZLEwKFJer5RMpKn3rh9w2ftYGChPtg/view) walking through the setup is available for reference.
 
 ## Prerequisites
 
-- Access to an Openshift 4+ deployment and logged in with the CLI (version 4.11 or higher)
-- Install the Following CLIs
-  - [ansible](https://www.ansible.com/)/[ansible-galaxy](https://galaxy.ansible.com/)
-  - [helm](https://helm.sh/)
-    - Please use the version included with your Openshift Deployment
-  - [pip3](https://pypi.org/project/pip/)
+- [oc](https://docs.openshift.com/container-platform/4.12/cli_reference/openshift_cli/getting-started-cli.html) (4.11+)
+- [ansible](https://www.ansible.com/)/[ansible-galaxy](https://galaxy.ansible.com/)
+- [helm](https://helm.sh/)
+  - Please use the version included with your Openshift Deployment
+- [pip3](https://pypi.org/project/pip/)
 
 ## Install Packages
 
@@ -33,7 +32,7 @@ A guide to installing `Janus with Ansible`.
 
 ## Configuration
 
-For ease of setup, set the `OPENSHIFT_CLUSTER_INFO` variable for use later.
+Log in to your OpenShift cluster via the `oc` client.  Set the `OPENSHIFT_CLUSTER_INFO` variable for use later.
 
 ``` sh
 export OPENSHIFT_CLUSTER_INFO=$(echo "$(oc cluster-info | grep -Eo '.cluster(.*?).com')")
@@ -172,6 +171,10 @@ ansible-playbook site.yaml -i inventory
 > **_NOTE:_** The deployment of most infrastructure is delegated to ArgoCD.  Once the playbook successfully runs, it may take several minutes until the demo is fully operational. The deployment can be monitored in the ArgoCD console.
 
 The cluster is now set up to run the Janus IDP Demo.  
+
+The following resources may be used as a reference for presentation:
+  - [Janus IDP Demo Guide](https://docs.google.com/document/d/1Q4hF9b5vBB-9LR-w3tnVCPb2-N7Lrcz72dPWfKAqm5s/edit?usp=sharing)
+  - [Janus IDP Demo Reference Video](https://drive.google.com/file/d/1U7CBtrXwfq-ruP9FEvsBaw5_QOsn_xTq/view?usp=share_link)
 
 While running the demo, ensure that access is granted to the GitHub Organization when prompted.
 

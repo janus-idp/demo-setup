@@ -1,6 +1,9 @@
 # Getting Started
 
-An [instructional video](https://drive.google.com/file/d/1TJZLEwKFJer5RMpKn3rh9w2ftYGChPtg/view) walking through the setup is available for reference.
+## Instructional Video
+
+<iframe src="https://drive.google.com/file/d/1TJZLEwKFJer5RMpKn3rh9w2ftYGChPtg/preview" width="640" height="480" allow="autoplay"></iframe>
+
 ## Prerequisites
 
 - [oc](https://docs.openshift.com/container-platform/4.12/cli_reference/openshift_cli/getting-started-cli.html) (4.11+)

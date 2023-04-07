@@ -158,7 +158,7 @@ Execute the following command to complete setup of the fork. This playbook will 
 ansible-playbook ./template.yaml
 ```
 
-### Run Cluster Setup Playbook
+### Run the Cluster Setup Playbook
 
 [Inventory values](inventory/group_vars/all.yml) can be changed, but it is not required
 
@@ -170,15 +170,8 @@ ansible-playbook site.yaml -i inventory
 
 > **_NOTE:_** The deployment of most infrastructure is delegated to ArgoCD.  Once the playbook successfully runs, it may take several minutes until the demo is fully operational. The deployment can be monitored in the ArgoCD console.
 
-The cluster is now set up to run the Janus IDP Demo.  
+The cluster is now set up to run the Janus IDP Demo.  Please refer to the [Architecture](https://janus-idp.io/janus-platforms/architecture/) and [Demo](https://janus-idp.io/janus-platforms/demo/) sections for further guidance. 
 
-The following resources may be used as a reference for presentation:
-  - [Janus IDP Demo Guide](https://docs.google.com/document/d/1Q4hF9b5vBB-9LR-w3tnVCPb2-N7Lrcz72dPWfKAqm5s/edit?usp=sharing)
-  - [Janus IDP Demo Reference Video](https://drive.google.com/file/d/1U7CBtrXwfq-ruP9FEvsBaw5_QOsn_xTq/view?usp=share_link)
-
-While running the demo, ensure that access is granted to the GitHub Organization when prompted.
-
-![Grant Access](/docs/docs/getting_started/assets/grant-access.png)
 
 To create a local copy of the requisite environment variables for future use, run the following command:
 
@@ -200,7 +193,7 @@ export GITHUB_BACKSTAGE_CLIENT_ID=$GITHUB_BACKSTAGE_CLIENT_ID
 export GITHUB_BACKSTAGE_CLIENT_SECRET=$GITHUB_BACKSTAGE_CLIENT_SECRET" > env.sh
 ```
 
-### FAQ
+### Troubleshooting
 
 #### Stuck on `FAILED - RETRYING: [localhost]: Wait for Keycloak to be Ready (xxx retries left)` for over 2 minutes
 
@@ -209,12 +202,6 @@ Bounce the pod deployed by the `keycloak` StatefulSet in the `backstage` namespa
 #### Failed on `Run RHSSO Backstage Helm Chart` during initial run `no matches for kind \"Keycloak\" in version...`
 
 The RHSSO operator may not have completed installation, try rerunning the Ansible Playbook.
-
-#### Failed on `Create Manifests Repo`
-
-Most likely an environment variable is not set, or not set correctly. Validate, delete the Postgres Database Deployment and re-try the playbook.
-
-> Note: If there is an issue post the Postgres database creation please delete the database (or the entire namespace) before attempting to rerun the ansible playbook.
 
 #### Log in to Argo Cluster
 

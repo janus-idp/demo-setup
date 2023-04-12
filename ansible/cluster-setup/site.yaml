@@ -107,6 +107,10 @@
         namespaces:
           - janus-argocd
           - infra-argocd
+        projects:
+          - name: janus
+            namespace: janus-argocd
+            role: automation
       create_namespace: true
   - name: Wait for ArgoCD to be Ready
     with_items: "{{ env }}"
@@ -239,7 +243,7 @@
   - name: Generate ArgoCD Auth Token
     with_items: "{{ env }}"
     uri:
-      url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}/api/v1/session"
+      url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}/api/v1/projects/janus/roles/automation/token"
       method: POST
       body: '{"username":"admin","password":"{{ argocd_admin_pwd }}"}'
       body_format: json

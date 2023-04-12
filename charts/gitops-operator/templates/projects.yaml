@@ -6,6 +6,9 @@ kind: AppProject
 metadata:
   name: {{ $project.name }}
   namespace: {{ $project.namespace }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "25"
 spec:
   clusterResourceWhitelist:
     - group: '*'
@@ -16,7 +19,7 @@ spec:
   sourceRepos:
     - '*'
   roles:
-      name: {{ $project.role }}
+    - name: {{ $project.role }}
       policies:
         - >-
           p, proj:{{ $project.name }}:{{ $project.role }}, applications, get,

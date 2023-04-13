@@ -8,7 +8,7 @@ metadata:
   namespace: {{ $project.namespace }}
   annotations:
     "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-weight": "25"
+    "helm.sh/hook-weight": "26"
 spec:
   clusterResourceWhitelist:
     - group: '*'
@@ -21,11 +21,9 @@ spec:
   roles:
     - name: {{ $project.role }}
       policies:
-        - >-
-          p, proj:{{ $project.name }}:{{ $project.role }}, applications, get,
-          {{ $project.name }}/*, allow
-        - >-
-          p, proj:{{ $project.name }}:{{ $project.role }}, applications, create,
-          {{ $project.name }}/*, allow
+        - 'p, proj:{{ $project.name }}:{{ $project.role }}, applications, get, {{ $project.name }}/*, allow'
+        - 'p, proj:{{ $project.name }}:{{ $project.role }}, applications, create, {{ $project.name }}/*, allow'
+        - 'p, proj:{{ $project.name }}:{{ $project.role }}, applications, update, {{ $project.name }}/*, allow'
+        - 'p, proj:{{ $project.name }}:{{ $project.role }}, applications, delete, {{ $project.name }}/*, allow'
 {{- end }}
 {{- end }}

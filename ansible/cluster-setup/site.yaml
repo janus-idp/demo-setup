@@ -240,21 +240,36 @@
   - name: Extract Password
     set_fact:
       argocd_admin_pwd: "{{ argocd_admin_pwd_rsp.results[0].stdout }}"
-  - name: Generate ArgoCD Auth Token
+  - name: Generate ArgoCD Admin Token
     with_items: "{{ env }}"
     uri:
-      url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}/api/v1/projects/janus/roles/automation/token"
+      url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}/api/v1/session"
       method: POST
       body: '{"username":"admin","password":"{{ argocd_admin_pwd }}"}'
       body_format: json
       status_code: 200
-    register: argocd_auth_token_rsp
-    until: argocd_auth_token_rsp.status == 200
+    register: argocd_admin_token_rsp
+    until: argocd_admin_token_rsp.status == 200
     retries: 35
     delay: 5
   - name: Extract Token
     set_fact:
-      argocd_auth_token: "{{ argocd_auth_token_rsp.results[0].json.token }}"
+      argocd_admin_token: "{{ argocd_admin_token_rsp.results[0].json.token }}"
+  - name: Generate ArgoCD Automation Token
+    with_items: "{{ env }}"
+    uri:
+      url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}/api/v1/projects/janus/roles/automation/token"
+      method: POST
+      headers:
+        Cookie: "argocd.token={{ argocd_admin_token }}"
+      status_code: 200
+    register: argocd_automation_token_rsp
+    until: argocd_automation_token_rsp.status == 200
+    retries: 35
+    delay: 5
+  - name: Extract Token
+    set_fact:
+      argocd_automation_token: "{{ argocd_automation_token_rsp.results[0].json.token }}"
   - name: Fetching Default Service Account Token
     with_items: "{{ env }}"
     shell: "oc create token default -n default --duration 72h"
@@ -315,7 +330,7 @@
           enabled: true
           waitCycles: 25
           url: "https://argocd-server-{{ item.gitopsnamespace }}.apps{{ cluster_host }}"
-          token: "{{ argocd_auth_token }}"
+          token: "{{ argocd_automation_token }}"
         auth:
           github:
             enabled: true

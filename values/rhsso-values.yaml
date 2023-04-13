@@ -1,6 +1,6 @@
 rhsso:
   # Generate this through the command line using
-  # echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth"
+  # echo "https://keycloak-backstage.apps$(oc cluster-info | head -n 1 | sed 's/^.*https\:\/\/api//' | sed 's/.6443.*$//')/auth"
   baseUrl: <BASE_URL>
   # The pre-set clientId set by the RHSSO Chart
   clientId: backstage
@@ -15,7 +15,7 @@ oauth:
 backstage:
   companyName: "UPDATE_ME"
   port: 7007
-  # echo "https://janus-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+  # echo "https://janus-demo.apps$(oc cluster-info | head -n 1 | sed 's/^.*https\:\/\/api//' | sed 's/.6443.*$//')"
   baseUrl: "<BASE_URL>"
 
   # Ignore NodeJS insecure certificate warnings

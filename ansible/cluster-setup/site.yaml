@@ -4,7 +4,7 @@
   hosts: 'localhost'
   tasks:
   - name: Determine Host
-    shell: "oc cluster-info | grep -Eo '.cluster(.*?).com'"
+    shell: "oc cluster-info | head -n 1 | sed 's/^.*https...api//' | sed 's/.6443.*$//'"
     register: cluster_response
   - name: Extract Cluster
     set_fact:

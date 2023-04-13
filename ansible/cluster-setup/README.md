@@ -35,7 +35,7 @@ A guide to installing `Janus with Ansible`. An [instructional video](https://dri
 Log in to your OpenShift cluster via the `oc` client.  Set the `OPENSHIFT_CLUSTER_INFO` variable for use later.
 
 ``` sh
-export OPENSHIFT_CLUSTER_INFO=$(echo "$(oc cluster-info | grep -Eo '.cluster(.*?).com')")
+export OPENSHIFT_CLUSTER_INFO=$(oc cluster-info | head -n 1 | sed 's/^.*https...api//' | sed 's/.6443.*$//' )
 ```
 
 If you are using Linux environment, set the alias for the following commands to work:

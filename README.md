@@ -48,7 +48,7 @@ helm upgrade --install vault-config-operator . -f ./values-vault-config-operator
 ```
 # From the charts/vault directory
 # Get cluster DNS for the certificate
-echo "$(oc cluster-info | grep -Eo 'cluster(.*?).com')"
+echo "$(oc cluster-info | head -n 1 | sed 's/^.*https\:\/\/api//' | sed 's/.6443.*$//' )"
 helm dependency build
 helm upgrade --install vault . -f ./values.yaml -n vault --create-namespace --set dns.zone='<cluster dns>'
 ```
@@ -75,13 +75,13 @@ Create a [GitHub OAuth Application](https://docs.github.com/en/developers/apps/b
 Homepage URL:
 
 ```sh
-HOMEPAGE_URL="janus-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+HOMEPAGE_URL="janus-demo.apps$(oc cluster-info | head -n 1 | sed 's/^.*https\:\/\/api//' | sed 's/.6443.*$//' )"
 ```
 
 Authorization callback URL:
 
 ```sh
-AUTHORIZATION_URL="keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth/realms/backstage/broker/github/endpoint"
+AUTHORIZATION_URL="keycloak-backstage.apps$(oc cluster-info | head -n 1 | sed 's/^.*https\:\/\/api//' | sed 's/.6443.*$//')/auth/realms/backstage/broker/github/endpoint"
 ```
 
 Capture the Github Client ID:
@@ -123,7 +123,7 @@ Update the `values/rhsso-values.yaml` file with the following content:
 ```yaml
 rhsso:
   # Generate this through the command line using
-  # echo "https://keycloak-backstage.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')/auth"
+  # echo "https://keycloak-backstage.apps$(oc cluster-info | head -n 1 | sed 's/^.*https\:\/\/api//' | sed 's/.6443.*$//')/auth"
   baseUrl: <BASE_URL>
   # The pre-set clientId set by the RHSSO Chart
   clientId: backstage
@@ -158,7 +158,7 @@ backstage:
   companyName: "<UPDATE_ME>"
   port: 7007
   # Generate this through the command line using
-  # echo "https://janus-demo.apps$(oc cluster-info | grep -Eo '.cluster(.*?).com')"
+  # echo "https://janus-demo.apps$(oc cluster-info | head -n 1 | sed 's/^.*https\:\/\/api//' | sed 's/.6443.*$//')"
   baseUrl: "<BASE_URL>"
 ```
 

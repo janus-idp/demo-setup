@@ -144,11 +144,11 @@ export GITHUB_BACKSTAGE_CLIENT_SECRET=
 
 ## Install
 
-Clone the `janus-platforms` repo and run the next commands from inside of the `ansible/cluster-setup` directory
+Clone the `demo-setup` repo and run the next commands from inside of the `ansible/cluster-setup` directory
 
 ```sh
-git clone https://github.com/janus-idp/janus-platforms.git
-cd janus-platforms/ansible/cluster-setup
+git clone https://github.com/janus-idp/demo-setup.git
+cd demo-setup/ansible/cluster-setup
 ```
 
 ### Run the Software Templates Setup Playbook

@@ -5,7 +5,7 @@ metadata:
 spec:
   generators:
     - git:
-        repoURL: https://github.com/{{ .Values.git.infraOrgName }}/janus-platforms.git
+        repoURL: https://github.com/{{ .Values.git.infraOrgName }}/demo-setup.git
         revision: {{ .Values.git.infraRevision }}
         files:
         - path: "clusters/**/config.json"
@@ -16,7 +16,7 @@ spec:
       project: default
       source:
         path: charts/apps
-        repoURL: https://github.com/{{ .Values.git.infraOrgName }}/janus-platforms.git
+        repoURL: https://github.com/{{ .Values.git.infraOrgName }}/demo-setup.git
         targetRevision: {{ .Values.git.infraRevision }}
         helm:
           parameters:

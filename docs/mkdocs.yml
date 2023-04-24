@@ -1,8 +1,8 @@
 site_name: Janus IDP Demo
-site_url: https://janus-idp.github.io/janus-platforms/
+site_url: https://janus-idp.github.io/demo-setup/
 site_description: From Idea to Production Faster
-repo_name: janus-idp/janus-platforms
-repo_url: https://github.com/janus-idp/janus-platforms.git
+repo_name: janus-idp/demo-setup
+repo_url: https://github.com/janus-idp/demo-setup.git
 theme:
   name: material
   logo: assets/janus_bg.svg

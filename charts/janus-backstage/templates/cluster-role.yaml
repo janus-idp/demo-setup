@@ -40,4 +40,14 @@ rules:
     verbs:
       - get
       - list
+{{- if .Values.kubernetes.tektonEnabled }}
+  - apiGroups:
+      - tekton.dev
+    resources:
+      - pipelineruns
+      - taskruns
+    verbs:
+      - get
+      - list
+{{- end }}
 {{- end }}

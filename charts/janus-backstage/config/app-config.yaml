@@ -122,6 +122,15 @@
               authProvider: "serviceAccount"
               skipTLSVerify: true
               serviceAccountToken: {{ .token | quote }}
+{{- if .tektonEnabled }}
+      customResources:
+        - group: 'tekton.dev'
+          apiVersion: 'v1beta1'
+          plural: 'pipelineruns'
+        - group: 'tekton.dev'
+          apiVersion: 'v1beta1'
+          plural: 'taskruns'
+{{- end }}
 {{- end }}
 {{- end }}
     github-org-provider:

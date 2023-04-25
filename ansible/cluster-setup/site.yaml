@@ -340,4 +340,5 @@
           enabled: true
           url: "https://api{{ cluster_host }}:6443"
           token: "{{ svc_account_token }}"
+          tektonEnabled: true
       create_namespace: true

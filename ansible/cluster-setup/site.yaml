@@ -106,7 +106,7 @@
       values:
         namespaces:
           - janus-argocd
-          - infra-argocd
+          - janus-infra-argocd
         projects:
           - name: janus
             namespace: janus-argocd
@@ -128,7 +128,7 @@
     with_items: "{{ env }}"
     kubernetes.core.helm:
       state: present
-      name: infra-argocd
+      name: janus-infra-argocd
       namespace: "{{ item.gitopsinfranamespace }}"
       chart_ref: ../../charts/applicationset
       values:

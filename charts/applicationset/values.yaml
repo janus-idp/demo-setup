@@ -1,6 +1,6 @@
 destination:
-  namespace: infra-argocd
+  namespace: janus-infra-argocd
 git:
   applicationId: changeme
-  infraOrgName: janus-idp
+  infraOrgName: ppremru-janus
   infraRevision: main

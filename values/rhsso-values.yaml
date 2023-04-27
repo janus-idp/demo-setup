@@ -37,7 +37,7 @@ nt, System, API, Resource, Loca        - allow: [Componetion, Template]
       locations:
         # Add reference to sample template
         - type: url
-          target: https://github.com/janus-idp/software-templates/blob/main/scaffolder-templates/quarkus-web-template/template.yaml
+          target: https://github.com/ppremru-janus/software-templates/blob/main/scaffolder-templates/quarkus-web-template/template.yaml
   
 
 github:

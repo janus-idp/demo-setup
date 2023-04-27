@@ -3,4 +3,4 @@ appVersion: v1.4.0
 description: A Helm chart for customising the deployment of backstage application for the Red Hat Janus IDP Demo
 name: janus-backstage
 version: 0.1.0
-home: https://github.com/halkyonio/demo-setup/charts
+home: https://github.com/ppremru-janus/demo-setup/charts

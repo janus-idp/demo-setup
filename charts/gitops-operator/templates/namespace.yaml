@@ -12,6 +12,7 @@ metadata:
   labels:
     kubernetes.io/metadata.name: {{ $ns }}
     openshift.io/cluster-monitoring: "true"
+    argocd.argoproj.io/managed-by: openshift-gitops
   name: {{ $ns }}
 spec:
   finalizers:

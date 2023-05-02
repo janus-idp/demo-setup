@@ -117,7 +117,7 @@
       clusterLocatorMethods:
         - type: "config"
           clusters:
-            - name: {{ .name | default "dev-cluster-infra" }}
+            - name: {{ .name | default "ppremru-janus-infra" }}
               url: {{ .url }}
               authProvider: "serviceAccount"
               skipTLSVerify: true

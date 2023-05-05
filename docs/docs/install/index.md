@@ -1,5 +1,8 @@
 # Getting Started
 
+!!! note
+    This demo was developed with the [Janus IDP Demo](https://demo.redhat.com/catalog?search=janus&item=babylon-catalog-prod%2Fcommunity-content.com-janus-idp.prod) catalog item on the Red Hat Demo Platform as the intended target for deployment.  Though not supported, the full setup and demo should work on any OpenShift 4.12+ cluster.
+
 ## Instructional Video
 
 <iframe src="https://drive.google.com/file/d/1TJZLEwKFJer5RMpKn3rh9w2ftYGChPtg/preview" width="100%" height="480" allow="autoplay"></iframe>

@@ -141,11 +141,11 @@ export GITHUB_BACKSTAGE_CLIENT_SECRET=
 ```
 ## Install
 
-Clone the `janus-platforms` repo and run the next commands from inside of the `ansible/cluster-setup` directory
+Clone the `demo-setup` repo and run the next commands from inside of the `ansible/cluster-setup` directory
 
 ```sh
-git clone https://github.com/janus-idp/janus-platforms.git
-cd janus-platforms/ansible/cluster-setup
+git clone https://github.com/janus-idp/demo-setup.git
+cd demo-setup/ansible/cluster-setup
 ```
 
 ### Run the Software Templates Setup Playbook
@@ -170,7 +170,7 @@ ansible-playbook site.yaml -i inventory
 
 > **_NOTE:_** The deployment of most infrastructure is delegated to ArgoCD.  Once the playbook successfully runs, it may take several minutes until the demo is fully operational. The deployment can be monitored in the ArgoCD console.
 
-The cluster is now set up to run the Janus IDP Demo.  Please refer to the [Architecture](https://janus-idp.io/janus-platforms/architecture/) and [Demo](https://janus-idp.io/janus-platforms/demo/) sections for further guidance. 
+The cluster is now set up to run the Janus IDP Demo.  Please refer to the [Architecture](https://janus-idp.io/demo-setup/architecture/) and [Demo](https://janus-idp.io/demo-setup/demo/) sections for further guidance. 
 
 
 To create a local copy of the requisite environment variables for future use, run the following command:

@@ -1,7 +1,8 @@
-# Janus with Ansible
+# Janus IDP Demo with Ansible
 
-A guide to installing `Janus with Ansible`. An [instructional video](https://drive.google.com/file/d/1TJZLEwKFJer5RMpKn3rh9w2ftYGChPtg/view) walking through the setup is available for reference.
+A guide to installing the `Janus IDP Demo with Ansible`.  An [instructional video](https://drive.google.com/file/d/1TJZLEwKFJer5RMpKn3rh9w2ftYGChPtg/view) walking through the setup is available for reference.
 
+> **_NOTE:_** This demo was developed with the [Janus IDP Demo](https://demo.redhat.com/catalog?search=janus&item=babylon-catalog-prod%2Fcommunity-content.com-janus-idp.prod) catalog item on the Red Hat Demo Platform as the intended target for deployment.  Though not supported, the full setup and demo should work on any OpenShift 4.12+ cluster.
 ## Prerequisites
 
 - [oc](https://docs.openshift.com/container-platform/4.12/cli_reference/openshift_cli/getting-started-cli.html) (4.11+)

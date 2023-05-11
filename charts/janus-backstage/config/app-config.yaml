@@ -133,11 +133,28 @@
 {{- end }}
 {{- end }}
 {{- end }}
+{{- if .Values.githubOrgProvider.enabled }}
     github-org-provider:
       id: "github-org-entity-provider"
       orgUrl: "https://github.com/{{ .Values.github.organization }}"
+{{- end }}
+{{- with .Values.ocm }}
+{{- if .enabled }}
     ocm:
       hub:
         name: 'replace_me'
         url: 'replace_me'
         serviceAccountToken: 'replace_me'
+{{- end }}
+{{- end }}
+    enabled:
+      kubernetes: {{ .Values.kubernetes.enabled }}
+      techdocs: {{ .Values.techdocs.enabled }}
+      argocd: {{ .Values.argocd.enabled }}
+      sonarqube: {{ .Values.sonarqube.enabled }}
+      keycloak: {{ .Values.oauth.enabled }}
+      ocm: {{ .Values.ocm.enabled }}
+      github: {{ .Values.github.enabled }}
+      githubOrg: {{ .Values.githubOrgProvider.enabled }}
+      gitlab: false
+      jenkins: false

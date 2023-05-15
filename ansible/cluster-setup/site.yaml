@@ -340,4 +340,13 @@
           enabled: true
           url: "https://api{{ cluster_host }}:6443"
           token: "{{ svc_account_token }}"
+          tektonEnabled: true
+        githubOrgProvider:
+          enabled: true
+        ocm:
+          enabled: false
+        sonarqube:
+          enabled: false
+        techdocs:
+          enabled: false
       create_namespace: true

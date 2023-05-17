@@ -272,7 +272,7 @@
       argocd_automation_token: "{{ argocd_automation_token_rsp.results[0].json.token }}"
   - name: Fetching Default Service Account Token
     with_items: "{{ env }}"
-    shell: "oc create token default -n default --duration 72h"
+    shell: "oc create token default -n default --duration 8760h"
     register: svc_account_token_rsp
   - name: Extract Token
     set_fact:

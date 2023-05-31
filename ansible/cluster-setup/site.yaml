@@ -348,5 +348,5 @@
         sonarqube:
           enabled: false
         techdocs:
-          enabled: false
+          enabled: true
       create_namespace: true

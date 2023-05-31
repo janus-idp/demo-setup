@@ -9,9 +9,6 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-techdocs:
-  enabled: true
-
 rhsso:
   baseUrl: ""
   realm: backstage

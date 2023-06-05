@@ -33,7 +33,7 @@ backstage:
   catalog:
       #  Add Template to the allowed types
       rules:
-nt, System, API, Resource, Loca        - allow: [Componetion, Template]
+        - allow: [Component, System, API, Resource, Location, Template]
       locations:
         # Add reference to sample template
         - type: url

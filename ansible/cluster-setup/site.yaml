@@ -93,6 +93,23 @@
         org: "{{ lookup('ansible.builtin.env', 'GITHUB_ORGANIZATION') }}"
         private_key: "{{ lookup('ansible.builtin.file', lookup('ansible.builtin.env', 'GITHUB_KEY_FILE')) }}"
       token: "{{ vault_token }}"
+  - name: Concatenate Registry Credentials
+    with_items: "{{ env }}"
+    set_fact:
+      registry_credentials: "{{ lookup('ansible.builtin.env', 'JANUS_QUAY_USER') }}:{{ lookup('ansible.builtin.env', 'JANUS_QUAY_TOKEN') }}"
+  - name: Encode Registry Credentials
+    with_items: "{{ env }}"
+    set_fact:
+      encoded_registry_credentials: "{{ registry_credentials | b64encode }}"
+  - name: Populate Vault with Registry Credentials
+    with_items: "{{ env }}"
+    community.hashi_vault.vault_write:
+      url: "https://vault-vault.apps{{ cluster_host }}"
+      path: kv/{{ item.janusinstancename }}/registry
+      validate_certs: false
+      data:
+        credentials: "{{ encoded_registry_credentials }}"
+      token: "{{ vault_token }}"
 - name: Install and Configure GitOps.
   hosts: 'localhost'
   tasks:

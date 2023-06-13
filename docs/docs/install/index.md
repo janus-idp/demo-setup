@@ -119,7 +119,7 @@ Create a **second** GitHub OAuth application to enable Dev Spaces to seamlessly 
 open "https://github.com/settings/applications/new?oauth_application[name]=$GITHUB_ORGANIZATION-dev-spaces&oauth_application[url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://devspaces.apps$OPENSHIFT_CLUSTER_INFO/api/oauth/callback"
 ```
 
-Set the `GITHUB_DEV_SPACES_CLIENT_ID` and `GITHUB_DEV_SPACES_CLIENT_SECRET` environment variables will the values from the OAuth application.
+Set the `GITHUB_DEV_SPACES_CLIENT_ID` and `GITHUB_DEV_SPACES_CLIENT_SECRET` environment variables with the values from the OAuth application.
 
 ``` sh
 export GITHUB_DEV_SPACES_CLIENT_ID=
@@ -135,7 +135,7 @@ Create a **third** GitHub OAuth application to enable the numerous Backstage plu
 open "https://github.com/settings/applications/new?oauth_application[name]=$GITHUB_ORGANIZATION-backstage&oauth_application[url]=https://janus-demo.apps$OPENSHIFT_CLUSTER_INFO&oauth_application[callback_url]=https://janus-demo.apps$OPENSHIFT_CLUSTER_INFO/api/auth/github/handler/frame"
 ```
 
-Set the `GITHUB_BACKSTAGE_CLIENT_ID` and `GITHUB_BACKSTAGE_CLIENT_SECRET` environment variables will the values from the OAuth application.
+Set the `GITHUB_BACKSTAGE_CLIENT_ID` and `GITHUB_BACKSTAGE_CLIENT_SECRET` environment variables with the values from the OAuth application.
 
 ``` sh
 export GITHUB_BACKSTAGE_CLIENT_ID=
@@ -145,6 +145,38 @@ export GITHUB_BACKSTAGE_CLIENT_ID=
 export GITHUB_BACKSTAGE_CLIENT_SECRET=
 ```
 
+### Optional: Create Quay Repository
+
+Providing a Quay repository will allow the user to demonstrate pushing to an external image registry, as well as the functionality of the Quay plugin in Backstage.
+
+Create an organization in Quay, if one is not already available to use.
+
+``` sh
+open "https://quay.io/organizations/new/?namespace=$GITHUB_ORGANIZATION"
+```
+
+Create a repository for each application to be instantiated through Backstage, ensuring that it is in the specified organization, and that the visibility is set to public.
+
+``` sh
+open "https://quay.io/new/?name=YOUR_APP_NAME"
+```
+
+![Create Quay Repo](assets/quay-repo.png)
+
+Under `Repository Settings -> User and Robot Permissions`, create a new robot account with write permission to the repository.
+
+![Add Permission](assets/quay-permission.png)
+
+Set the `JANUS_QUAY_USER` and `JANUS_QUAY_TOKEN` environment variables to the username and token of the robot account.
+
+
+``` sh
+export JANUS_QUAY_USER=
+```
+
+``` sh
+export JANUS_QUAY_TOKEN=
+```
 ## Install
 
 Clone the `demo-setup` repo and run the next commands from inside of the `ansible/cluster-setup` directory

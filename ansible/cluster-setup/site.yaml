@@ -109,6 +109,8 @@
       validate_certs: false
       data:
         credentials: "{{ encoded_registry_credentials }}"
+        user: "{{ lookup('ansible.builtin.env', 'JANUS_QUAY_USER') }}"
+        token: "{{ lookup('ansible.builtin.env', 'JANUS_QUAY_TOKEN') }}"
       token: "{{ vault_token }}"
 - name: Install and Configure GitOps.
   hosts: 'localhost'

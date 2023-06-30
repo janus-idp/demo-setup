@@ -251,3 +251,41 @@ export GITHUB_BACKSTAGE_CLIENT_SECRET=$GITHUB_BACKSTAGE_CLIENT_SECRET" > env.sh
     ```sh
     open "https://console-openshift-console.apps$OPENSHIFT_CLUSTER_INFO/command-line-tools"
     ```
+## Setup for Previously Run Demo
+If you previously run a demo and want to use the same GitHub Organization and repostiories you can.  Janus will discover previous repositories and automatically add them to the catalog.  In order to create the Argo CD resources, OpenShift namespaces and Tekton pipelines, follow the steps below:
+
+### Set your Environment Variables
+Make sure properly set all your environment variables as described in the Configuration section above.  This includes the setting of the `OPENSHIFT_CLUSTER_INFO`
+
+### Update GitHub OAuth Apps
+Update all OAuth apps created in the Configuration section above with the new cluster URL.
+
+![OAuth Apps](assets/existing-org-oauth.png)
+
+### Run Ansible Playbooks
+Run both playbooks as described in the [`Run the Software Templates Setup Playbook`](#run-the-software-templates-setup-playbook) and [`Run the Cluster Setup Playbook`](#run-the-cluster-setup-playbook) sections above
+
+### Clone the XXX-gitops repo(s)
+1. Clone your `-gitops` repo.
+2. Update the `helm/build/values.yaml` by changing the `app.cluster` value to match your new cluster URL and commit the change
+3. Create the Argo CD resources by running the following command from the root of the `-gitops` repo
+```
+oc apply -f ./argocd
+```
+Repeat the above steps for as many `-gitops` repos you have in your Organization
+
+### Update Webhooks
+Update the Webhooks for all of the source repos in your GitHub Organization
+
+Click on the Settings tab for your source repo and then click `Webhooks` on the left hand side
+
+![Webhook 1](assets/existing-org-webhook-1.png)
+
+Click the `Edit` button next to the webhook
+
+![Webhook 2](assets/existing-org-webhook-2.png)
+
+Update the `Payload URL` with your new cluster URL and click the `Update webhook` button at the bottom of the page
+![Webhook 3](assets/existing-org-webhook-3.png)
+
+Repeat for as many source repos as you wish.

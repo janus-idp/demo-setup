@@ -1,0 +1,1032 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="From Idea to Production Faster">
+      
+      
+      
+        <link rel="canonical" href="https://janus-idp.github.io/demo-setup/install/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../architecture/">
+      
+      <link rel="icon" href="../assets/favicon.ico">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
+    
+    
+      
+        <title>Install - Janus IDP Demo</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.26e3688c.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ecc896b0.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Red+Hat+Text:300,300i,400,400i,700,700i%7CRed+Hat+Monospace:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Red Hat Text";--md-code-font:"Red Hat Monospace"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="janus" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#getting-started" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Janus IDP Demo" class="md-header__button md-logo" aria-label="Janus IDP Demo" data-md-component="logo">
+      
+  <img src="../assets/janus_bg.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Janus IDP Demo
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Install
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+          
+            
+            
+            
+            <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="janus" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+            
+              <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+              </label>
+            
+          
+            
+            
+            
+            <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+            
+              <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+              </label>
+            
+          
+        </form>
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/janus-idp/demo-setup.git" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    janus-idp/demo-setup
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href=".." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  <li class="md-tabs__item">
+    <a href="./" class="md-tabs__link md-tabs__link--active">
+      Install
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../architecture/" class="md-tabs__link">
+      Architecture
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../demo/" class="md-tabs__link">
+      Demo
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../help/" class="md-tabs__link">
+      Help
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Janus IDP Demo" class="md-nav__button md-logo" aria-label="Janus IDP Demo" data-md-component="logo">
+      
+  <img src="../assets/janus_bg.svg" alt="logo">
+
+    </a>
+    Janus IDP Demo
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/janus-idp/demo-setup.git" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    janus-idp/demo-setup
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Install
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Install
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#instructional-video" class="md-nav__link">
+    Instructional Video
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-packages" class="md-nav__link">
+    Install Packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-github-organization" class="md-nav__link">
+    Create GitHub Organization
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-up-github-application" class="md-nav__link">
+    Set Up GitHub Application
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-github-oauth-applications" class="md-nav__link">
+    Create Github OAuth Applications
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-create-quay-repository" class="md-nav__link">
+    Optional: Create Quay Repository
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install" class="md-nav__link">
+    Install
+  </a>
+  
+    <nav class="md-nav" aria-label="Install">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-the-software-templates-setup-playbook" class="md-nav__link">
+    Run the Software Templates Setup Playbook
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-the-cluster-setup-playbook" class="md-nav__link">
+    Run the Cluster Setup Playbook
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    Troubleshooting
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-for-previously-run-demo" class="md-nav__link">
+    Setup for Previously Run Demo
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup for Previously Run Demo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#set-your-environment-variables" class="md-nav__link">
+    Set your Environment Variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-github-oauth-apps" class="md-nav__link">
+    Update GitHub OAuth Apps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-software-templates" class="md-nav__link">
+    Update Software Templates
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-ansible-playbooks" class="md-nav__link">
+    Run Ansible Playbooks
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clone-the-xxx-gitops-repos" class="md-nav__link">
+    Clone the XXX-gitops repo(s)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-webhooks" class="md-nav__link">
+    Update Webhooks
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        Architecture
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo/" class="md-nav__link">
+        Demo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../help/" class="md-nav__link">
+        Help
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#instructional-video" class="md-nav__link">
+    Instructional Video
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-packages" class="md-nav__link">
+    Install Packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-github-organization" class="md-nav__link">
+    Create GitHub Organization
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-up-github-application" class="md-nav__link">
+    Set Up GitHub Application
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-github-oauth-applications" class="md-nav__link">
+    Create Github OAuth Applications
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-create-quay-repository" class="md-nav__link">
+    Optional: Create Quay Repository
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install" class="md-nav__link">
+    Install
+  </a>
+  
+    <nav class="md-nav" aria-label="Install">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-the-software-templates-setup-playbook" class="md-nav__link">
+    Run the Software Templates Setup Playbook
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-the-cluster-setup-playbook" class="md-nav__link">
+    Run the Cluster Setup Playbook
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    Troubleshooting
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-for-previously-run-demo" class="md-nav__link">
+    Setup for Previously Run Demo
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup for Previously Run Demo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#set-your-environment-variables" class="md-nav__link">
+    Set your Environment Variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-github-oauth-apps" class="md-nav__link">
+    Update GitHub OAuth Apps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-software-templates" class="md-nav__link">
+    Update Software Templates
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-ansible-playbooks" class="md-nav__link">
+    Run Ansible Playbooks
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clone-the-xxx-gitops-repos" class="md-nav__link">
+    Clone the XXX-gitops repo(s)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-webhooks" class="md-nav__link">
+    Update Webhooks
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="getting-started">Getting Started</h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This demo was developed with the <a href="https://demo.redhat.com/catalog?search=janus&amp;item=babylon-catalog-prod%2Fcommunity-content.com-janus-idp.prod">Janus IDP Demo</a> catalog item on the Red Hat Demo Platform as the intended target for deployment.  Though not supported, the full setup and demo should work on any OpenShift 4.12+ cluster.</p>
+</div>
+<h2 id="instructional-video">Instructional Video</h2>
+<iframe src="https://drive.google.com/file/d/1TJZLEwKFJer5RMpKn3rh9w2ftYGChPtg/preview" width="100%" height="480" allow="autoplay"></iframe>
+
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><a href="https://docs.openshift.com/container-platform/4.12/cli_reference/openshift_cli/getting-started-cli.html">oc</a> (4.11+)</li>
+<li><a href="https://www.ansible.com/">ansible</a>/<a href="https://galaxy.ansible.com/">ansible-galaxy</a></li>
+<li><a href="https://helm.sh/">helm</a><ul>
+<li>Please use the version included with your Openshift Deployment</li>
+</ul>
+</li>
+<li><a href="https://pypi.org/project/pip/">pip3</a></li>
+</ul>
+<h2 id="install-packages">Install Packages</h2>
+<ol>
+<li>
+<p>The Ansible <code>kubernetes.core</code> and <code>community.hashi_vault</code> collections need to be installed before using this playbook.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>install<span class="w"> </span>kubernetes.core<span class="w"> </span>community.hashi_vault
+</code></pre></div>
+</li>
+<li>
+<p>The <code>kubernetes</code>, <code>openshift</code>, <code>hvac</code>, and <code>PyYAML</code> python packages need to be installed before using this playbook.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip3<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>kubernetes<span class="w"> </span>openshift<span class="w"> </span>hvac<span class="w"> </span>PyYAML
+</code></pre></div>
+</li>
+<li>
+<p>The <code>helm diff</code> plugin should to be installed before using this playbook.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>helm<span class="w"> </span>plugin<span class="w"> </span>install<span class="w"> </span>https://github.com/databus23/helm-diff
+</code></pre></div>
+</li>
+</ol>
+<h2 id="configuration">Configuration</h2>
+<p>Log in to your OpenShift cluster via the <code>oc</code> client.  Set the <code>OPENSHIFT_CLUSTER_INFO</code> variable for use later.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENSHIFT_CLUSTER_INFO</span><span class="o">=</span><span class="k">$(</span>oc<span class="w"> </span>cluster-info<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^.*https...api//&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/.6443.*$//&#39;</span><span class="w"> </span><span class="k">)</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Using Linux?</p>
+<p>If you are using a <code>Linux</code> environment, set the alias for the following commands to work:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">alias</span><span class="w"> </span><span class="nv">open</span><span class="o">=</span><span class="s2">&quot;xdg-open&quot;</span>
+</code></pre></div>
+</div>
+<p>For the remaining environment variables, it may be preferable to make use of <code>./env.sh</code> file provided at the root of this project.  Fill in the listed env vars as you complete the setup configuration, then run <code>source ./env.sh</code>.</p>
+<h3 id="create-github-organization">Create GitHub Organization</h3>
+<p>Create a new <a href="https://github.com/account/organizations/new?plan=free">Github Organization</a>. This organization will contain the code repositories for the <code>components</code> created by Backstage.</p>
+<p>The <code>GITHUB_ORGANIZATION</code> environment variable will be set to the name of the organization.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You may also use any organization you are a member of, as long as you have the ability to create new repositories within it.</p>
+</div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_ORGANIZATION</span><span class="o">=</span>
+</code></pre></div>
+<h3 id="set-up-github-application">Set Up GitHub Application</h3>
+<ol>
+<li>
+<p>Create a new GitHub Application to use the <code>Git WebHooks</code> functionality in this demo.  The required field will be populated, and correct permissions set.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>open<span class="w"> </span><span class="s2">&quot;https://github.com/organizations/</span><span class="nv">$GITHUB_ORGANIZATION</span><span class="s2">/settings/apps/new?name=</span><span class="nv">$GITHUB_ORGANIZATION</span><span class="s2">-webhook&amp;url=https://janus-idp.io/blog&amp;webhook_active=false&amp;public=false&amp;administration=write&amp;checks=write&amp;actions=write&amp;contents=write&amp;statuses=write&amp;vulnerability_alerts=write&amp;dependabot_secrets=write&amp;deployments=write&amp;discussions=write&amp;environments=write&amp;issues=write&amp;packages=write&amp;pages=write&amp;pull_requests=write&amp;repository_hooks=write&amp;repository_projects=write&amp;secret_scanning_alerts=write&amp;secrets=write&amp;security_events=write&amp;workflows=write&amp;webhooks=write&quot;</span>
+</code></pre></div>
+</li>
+<li>
+<p>Set the <code>GITHUB_APP_ID</code> and <code>GITHUB_APP_CLIENT_ID</code> environment variables to the App ID  and App Client ID, respectively. Generate a new client secret and set the <code>GITHUB_APP_CLIENT_SECRET</code> environment variable.  Then, generate a <code>Private Key</code> for this app and <strong>download</strong> the private key file.  Set the <code>GITHUB_KEY_FILE</code> environment variable to the downloaded file, using either the absolute path or the path relative to the <code>ansible/cluster-setup</code> directory.
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_APP_ID</span><span class="o">=</span>
+</code></pre></div>
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_APP_CLIENT_ID</span><span class="o">=</span>
+</code></pre></div>
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_APP_CLIENT_SECRET</span><span class="o">=</span>
+</code></pre></div>
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_KEY_FILE</span><span class="o">=</span>
+</code></pre></div></p>
+<p><img alt="Organization Client Info" src="assets/org-client-info.png" /></p>
+</li>
+<li>
+<p>Go to the <code>Install App</code> table on the left side of the page and install the GitHub App that you created for your organization.</p>
+<p><img alt="Install App" src="assets/org-install-app.png" /></p>
+</li>
+</ol>
+<h3 id="create-github-oauth-applications">Create Github OAuth Applications</h3>
+<p>Create an GitHub OAuth application in order to use GitHub as an Identity Provider for Backstage.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>open<span class="w"> </span><span class="s2">&quot;https://github.com/settings/applications/new?oauth_application[name]=</span><span class="nv">$GITHUB_ORGANIZATION</span><span class="s2">-identity-provider&amp;oauth_application[url]=https://janus-demo.apps</span><span class="nv">$OPENSHIFT_CLUSTER_INFO</span><span class="s2">&amp;oauth_application[callback_url]=https://keycloak-backstage.apps</span><span class="nv">$OPENSHIFT_CLUSTER_INFO</span><span class="s2">/auth/realms/backstage/broker/github/endpoint&quot;</span>
+</code></pre></div>
+<p>Set the <code>GITHUB_KEYCLOAK_CLIENT_ID</code> and <code>GITHUB_KEYCLOAK_CLIENT_SECRET</code> environment variables with the values from the OAuth application.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_KEYCLOAK_CLIENT_ID</span><span class="o">=</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_KEYCLOAK_CLIENT_SECRET</span><span class="o">=</span>
+</code></pre></div>
+<p><img alt="Get Client ID" src="assets/client-info.png" /></p>
+<p>Create a <strong>second</strong> GitHub OAuth application to enable Dev Spaces to seamlessly push code changes to the repository for new components created in Backstage.  </p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>open<span class="w"> </span><span class="s2">&quot;https://github.com/settings/applications/new?oauth_application[name]=</span><span class="nv">$GITHUB_ORGANIZATION</span><span class="s2">-dev-spaces&amp;oauth_application[url]=https://devspaces.apps</span><span class="nv">$OPENSHIFT_CLUSTER_INFO</span><span class="s2">&amp;oauth_application[callback_url]=https://devspaces.apps</span><span class="nv">$OPENSHIFT_CLUSTER_INFO</span><span class="s2">/api/oauth/callback&quot;</span>
+</code></pre></div>
+<p>Set the <code>GITHUB_DEV_SPACES_CLIENT_ID</code> and <code>GITHUB_DEV_SPACES_CLIENT_SECRET</code> environment variables with the values from the OAuth application.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_DEV_SPACES_CLIENT_ID</span><span class="o">=</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_DEV_SPACES_CLIENT_SECRET</span><span class="o">=</span>
+</code></pre></div>
+<p>Create a <strong>third</strong> GitHub OAuth application to enable the numerous Backstage plugins utilizing GitHub to authenticate and access the relevant data.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>open<span class="w"> </span><span class="s2">&quot;https://github.com/settings/applications/new?oauth_application[name]=</span><span class="nv">$GITHUB_ORGANIZATION</span><span class="s2">-backstage&amp;oauth_application[url]=https://janus-demo.apps</span><span class="nv">$OPENSHIFT_CLUSTER_INFO</span><span class="s2">&amp;oauth_application[callback_url]=https://janus-demo.apps</span><span class="nv">$OPENSHIFT_CLUSTER_INFO</span><span class="s2">/api/auth/github/handler/frame&quot;</span>
+</code></pre></div>
+<p>Set the <code>GITHUB_BACKSTAGE_CLIENT_ID</code> and <code>GITHUB_BACKSTAGE_CLIENT_SECRET</code> environment variables with the values from the OAuth application.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_BACKSTAGE_CLIENT_ID</span><span class="o">=</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_BACKSTAGE_CLIENT_SECRET</span><span class="o">=</span>
+</code></pre></div>
+<h3 id="optional-create-quay-repository">Optional: Create Quay Repository</h3>
+<p>Providing a Quay repository will allow the user to demonstrate pushing to an external image registry, as well as the functionality of the Quay plugin in Backstage.</p>
+<p>Create an organization in Quay, if one is not already available to use.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>open<span class="w"> </span><span class="s2">&quot;https://quay.io/organizations/new/?namespace=</span><span class="nv">$GITHUB_ORGANIZATION</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>Create a repository for each application to be instantiated through Backstage, ensuring that it is in the specified organization, and that the visibility is set to public.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>open<span class="w"> </span><span class="s2">&quot;https://quay.io/new/?name=YOUR_APP_NAME&quot;</span>
+</code></pre></div>
+<p><img alt="Create Quay Repo" src="assets/quay-repo.png" /></p>
+<p>Under <code>Repository Settings -&gt; User and Robot Permissions</code>, create a new robot account with write permission to the repository.</p>
+<p><img alt="Add Permission" src="assets/quay-permission.png" /></p>
+<p>Set the <code>JANUS_QUAY_USER</code> and <code>JANUS_QUAY_TOKEN</code> environment variables to the username and token of the robot account.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">JANUS_QUAY_USER</span><span class="o">=</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">JANUS_QUAY_TOKEN</span><span class="o">=</span>
+</code></pre></div>
+<h2 id="install">Install</h2>
+<p>Clone the <code>demo-setup</code> repo and run the next commands from inside of the <code>ansible/cluster-setup</code> directory</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/janus-idp/demo-setup.git
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="nb">cd</span><span class="w"> </span>demo-setup/ansible/cluster-setup
+</code></pre></div>
+<h3 id="run-the-software-templates-setup-playbook">Run the Software Templates Setup Playbook</h3>
+<p>Fork the <a href="https://github.com/janus-idp/software-templates/fork">Software Templates</a> repository to your organization. Ensure that the name of the forked repo remains as <code>software-templates</code></p>
+<p>Execute the following command to complete setup of the fork. This playbook will customize your fork of the Software Templates repo with relevant information pertaining to your cluster, and mimic the structure of a custom template being used in an enterprise IT environment.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>ansible-playbook<span class="w"> </span>./template.yaml
+</code></pre></div>
+<h3 id="run-the-cluster-setup-playbook">Run the Cluster Setup Playbook</h3>
+<p>The Inventory values in <code>inventory/group_vars/all.yml</code> can be changed, but it is not required</p>
+<p>Run Command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>ansible-playbook<span class="w"> </span>site.yaml<span class="w"> </span>-i<span class="w"> </span>inventory
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The deployment of most infrastructure is delegated to ArgoCD.  Once the playbook successfully runs, it may take several minutes until the demo is fully operational. The deployment can be monitored in the ArgoCD console.</p>
+</div>
+<p>The cluster is now set up to run the Janus IDP Demo. Please refer to the <a href="../architecture/">Architecture</a> and <a href="../demo/">Demo</a> sections for further guidance. </p>
+<p>To create a local copy of the requisite environment variables for future use, run the following command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;export GITHUB_ORGANIZATION=</span><span class="nv">$GITHUB_ORGANIZATION</span>
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="s2">export GITHUB_APP_ID=</span><span class="nv">$GITHUB_APP_ID</span>
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="s2">export GITHUB_APP_CLIENT_ID=</span><span class="nv">$GITHUB_APP_CLIENT_ID</span>
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="s2">export GITHUB_APP_CLIENT_SECRET=</span><span class="nv">$GITHUB_APP_CLIENT_SECRET</span>
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="s2">export GITHUB_KEY_FILE=</span><span class="nv">$GITHUB_KEY_FILE</span>
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>
+<a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="s2">export GITHUB_KEYCLOAK_CLIENT_ID=</span><span class="nv">$GITHUB_KEYCLOAK_CLIENT_ID</span>
+<a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="s2">export GITHUB_KEYCLOAK_CLIENT_SECRET=</span><span class="nv">$GITHUB_KEYCLOAK_CLIENT_SECRET</span>
+<a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a>
+<a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="s2">export GITHUB_DEV_SPACES_CLIENT_ID=</span><span class="nv">$GITHUB_DEV_SPACES_CLIENT_ID</span>
+<a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="s2">export GITHUB_DEV_SPACES_CLIENT_SECRET=</span><span class="nv">$GITHUB_DEV_SPACES_CLIENT_SECRET</span>
+<a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>
+<a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="s2">export GITHUB_BACKSTAGE_CLIENT_ID=</span><span class="nv">$GITHUB_BACKSTAGE_CLIENT_ID</span>
+<a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="s2">export GITHUB_BACKSTAGE_CLIENT_SECRET=</span><span class="nv">$GITHUB_BACKSTAGE_CLIENT_SECRET</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>env.sh
+</code></pre></div>
+<h3 id="troubleshooting">Troubleshooting</h3>
+<details class="question">
+<summary>Stuck on <code>FAILED - RETRYING: [localhost]: Wait for Keycloak to be Ready (xxx retries left)</code> for over 2 minutes</summary>
+<p>Bounce the pod deployed by the <code>keycloak</code> StatefulSet in the <code>backstage</code> namespace.  The playbook will pick up again once the new pod is up.</p>
+</details>
+<details class="question">
+<summary>Failed on <code>Run RHSSO Backstage Helm Chart</code> during initial run <code>no matches for kind \"Keycloak\" in version...</code></summary>
+<p>The RHSSO operator may not have completed installation, try rerunning the Ansible Playbook.</p>
+</details>
+<details class="question">
+<summary>Log in to Argo Cluster</summary>
+<p>To access the console, the password for the <code>admin</code> user can be found in the <code>argocd-cluster</code> secret.</p>
+</details>
+<details class="question">
+<summary>Failed on <code>Fetching Default Service Account Token</code> with <code>unknown command \"token default\"</code></summary>
+<p>Ensure your <code>oc</code> client is 4.11 or above
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>oc<span class="w"> </span>version<span class="w"> </span>--client
+</code></pre></div>
+The latest <code>oc</code> client can be downloaded here:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>open<span class="w"> </span><span class="s2">&quot;https://console-openshift-console.apps</span><span class="nv">$OPENSHIFT_CLUSTER_INFO</span><span class="s2">/command-line-tools&quot;</span>
+</code></pre></div></p>
+</details>
+<h2 id="setup-for-previously-run-demo">Setup for Previously Run Demo</h2>
+<p>If you previously run a demo and want to use the same GitHub Organization and repostiories you can.  Janus will discover previous repositories and automatically add them to the catalog.  In order to create the Argo CD resources, OpenShift namespaces and Tekton pipelines, follow the steps below:</p>
+<h3 id="set-your-environment-variables">Set your Environment Variables</h3>
+<p>Make sure properly set all your environment variables as described in the Configuration section above.  This includes the setting of the <code>OPENSHIFT_CLUSTER_INFO</code></p>
+<h3 id="update-github-oauth-apps">Update GitHub OAuth Apps</h3>
+<p>Update all OAuth apps created in the Configuration section above with the new cluster URL.</p>
+<p><img alt="OAuth Apps" src="assets/existing-org-oauth.png" /></p>
+<h3 id="update-software-templates">Update Software Templates</h3>
+<p>Make sure your <code>$GITHUB_ORGANIZATION/software-templates</code> repository is up-to-date to ensure you get the latest features in the templates.  To do this, either hit the "Sync fork" button, delete and re-clone the repo as described in the first step <a href="#run-the-software-templates-setup-playbook">here</a> or run the following commands:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>git<span class="w"> </span>fetch<span class="w"> </span>upstream
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>git<span class="w"> </span>checkout<span class="w"> </span>main
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>git<span class="w"> </span>merge<span class="w"> </span>upstream/main
+</code></pre></div>
+<h3 id="run-ansible-playbooks">Run Ansible Playbooks</h3>
+<p>Run both playbooks as described in the <a href="#run-the-software-templates-setup-playbook"><code>Run the Software Templates Setup Playbook</code></a> and <a href="#run-the-cluster-setup-playbook"><code>Run the Cluster Setup Playbook</code></a> sections above</p>
+<h3 id="clone-the-xxx-gitops-repos">Clone the XXX-gitops repo(s)</h3>
+<ol>
+<li>Clone your <code>-gitops</code> repo.</li>
+<li>Update the <code>helm/build/values.yaml</code> by changing the <code>app.cluster</code> value to match your new cluster URL and commit the change</li>
+<li>Create the Argo CD resources by running the following command from the root of the <code>-gitops</code> repo
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>oc apply -f ./argocd
+</code></pre></div>
+Repeat the above steps for as many <code>-gitops</code> repos you have in your Organization</li>
+</ol>
+<h3 id="update-webhooks">Update Webhooks</h3>
+<p>Update the Webhooks for all of the source repos in your GitHub Organization</p>
+<p>Click on the Settings tab for your source repo and then click <code>Webhooks</code> on the left hand side</p>
+<p><img alt="Webhook 1" src="assets/existing-org-webhook-1.png" /></p>
+<p>Click the <code>Edit</code> button next to the webhook</p>
+<p><img alt="Webhook 2" src="assets/existing-org-webhook-2.png" /></p>
+<p>Update the <code>Payload URL</code> with your new cluster URL and click the <code>Update webhook</code> button at the bottom of the page
+<img alt="Webhook 3" src="assets/existing-org-webhook-3.png" /></p>
+<p>Repeat for as many source repos as you wish.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tracking", "navigation.tabs", "navigation.top", "navigation.instant", "content.code.copy"], "search": "../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.220ee61c.min.js"></script>
+      
+    
+  </body>
+</html>

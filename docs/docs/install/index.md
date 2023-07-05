@@ -262,6 +262,17 @@ Update all OAuth apps created in the Configuration section above with the new cl
 
 ![OAuth Apps](assets/existing-org-oauth.png)
 
+### Update Software Templates
+Make sure your `$GITHUB_ORGANIZATION/software-templates` repository is up-to-date to ensure you get the latest features in the templates.  To do this, either hit the "Sync fork" button, delete and re-clone the repo as described in the first step [here](#run-the-software-templates-setup-playbook) or run the following commands:
+
+```bash
+git fetch upstream
+
+git checkout main
+
+git merge upstream/main
+```
+
 ### Run Ansible Playbooks
 Run both playbooks as described in the [`Run the Software Templates Setup Playbook`](#run-the-software-templates-setup-playbook) and [`Run the Cluster Setup Playbook`](#run-the-cluster-setup-playbook) sections above
 
